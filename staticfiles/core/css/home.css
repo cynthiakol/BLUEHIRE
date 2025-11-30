@@ -1,0 +1,214 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f9fafb;
+  color: #333;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.left-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-logo {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #2563eb;
+}
+
+.navbar nav a {
+  margin: 0 0.6rem;
+  text-decoration: none;
+  color: #555;
+  font-size: 0.95rem;
+  transition: 0.3s;
+}
+
+.navbar nav a:hover {
+  color: #2563eb;
+}
+
+.divider {
+  color: #aaa;
+  margin: 0 6px;
+  font-size: 0.95rem;
+}
+
+.btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background: #1d4ed8;
+}
+
+.big-btn {
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+/* ===== HERO ===== */
+.hero {
+  text-align: center;
+  padding: 6rem 2rem;
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  position: relative;
+}
+
+.hero .overlay {
+  position: relative;
+  z-index: 2;
+}
+
+/* Search box styling */
+.search-box {
+  margin: 2rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  padding: 0.8rem 1rem;
+  border-radius: 50px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  max-width: 700px;
+}
+
+.search-box input {
+  padding: 0.8rem 1rem;
+  width: 70%;
+  border: none;
+  outline: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.search-box .btn {
+  border-radius: 50px;
+  font-weight: 700;
+  transition: 0.25s;
+}
+
+.search-box .btn:hover {
+  background: #facc15;
+  color: #1f2937;
+}
+
+.trending {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+/* ===== HOMEPAGE WELCOME BOX ===== */
+.hero .welcome-box {
+  position: relative;
+  z-index: 3;
+  background: #fff;
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  color: #1f2937;
+  max-width: 700px;
+  margin: 5rem auto 0;
+  text-align: center;
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 0 40px rgba(250, 250, 250, 0.35);
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+.hero .welcome-box:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.25),
+    0 0 60px rgba(255, 255, 255, 0.5);
+}
+
+.hero .welcome-box h3 {
+  color: #2563eb;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero .welcome-box p {
+  color: #111;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.hero .welcome-box .btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  transition: all 0.25s ease;
+}
+
+.hero .welcome-box .btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
+}
+
+.big-btn i {
+  margin-left: 8px;
+  font-size: 1rem;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: #1f2937;
+  color: #9ca3af;
+  padding: 2rem;
+  text-align: center;
+}
+
+.footer .links a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: #9ca3af;
+}
+
+.footer .links a:hover {
+  color: #fff;
+}

@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Recommendations | BlueHire</title>
+  <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+  <style>
+    table { width:100%; border-collapse:collapse; background:white; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+    th,td { padding:12px 16px; border-bottom:1px solid #eee;}
+    th { background:#007bff; color:white;}
+    tr:hover { background:#f8f9fa;}
+    .score { color:#007bff; font-weight:600;}
+  </style>
+</head>
+<body>
+  {% include 'core/navbar.html' %}
+  <main class="dashboard">
+    <h2>Top Matching Applicants for: {{ job.title }}</h2>
+    <p>Ranked by AI similarity score.</p>
+
+    {% if ranked_seekers %}
+    <table>
+      <tr><th>Name</th><th>Skills</th><th>Experience</th><th>Score</th><th>Profile</th></tr>
+      {% for seeker, score in ranked_seekers %}
+      <tr>
+        <td>{{ seeker.user.first_name }} {{ seeker.user.last_name }}</td>
+        <td>{{ seeker.skills|join:", " }}</td>
+        <td>{{ seeker.experience_years }} years</td>
+        <td class="score">{{ score|floatformat:2 }}</td>
+        <td><a href="{% url 'jobseeker_public_profile' seeker.seeker_id %}">View</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>No seekers found.</p>
+    {% endif %}
+  </main>
+</body>
+</html>

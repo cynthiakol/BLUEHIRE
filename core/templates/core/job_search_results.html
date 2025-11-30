@@ -1,0 +1,905 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Search - BlueHire</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+
+    /* Navbar - Mobile First */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 2%;
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      gap: 0.5rem;
+    }
+
+    .left-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-logo {
+      height: 32px;
+      width: auto;
+      filter: brightness(0) invert(1);
+    }
+
+    .navbar nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .navbar nav a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .divider {
+      color: rgba(255, 255, 255, 0.3);
+      margin: 0 0.3rem;
+      font-size: 0.8rem;
+    }
+
+    .auth {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .auth a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.45rem 0.8rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .auth a:first-child {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .auth a:last-child {
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+    }
+
+    /* Search Section - Multi-Facet */
+    .search-section {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      padding: 1.5rem 3%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .search-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      background: white;
+      padding: 0.8rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+
+    /* Input/Select Shared Styles */
+    .search-box input,
+    .search-box select {
+      padding: 0.9rem 1rem;
+      border: 2px solid #e2e8f0;
+      outline: none;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+      width: 100%;
+      background: white;
+      font-family: inherit;
+    }
+
+    .search-box input:focus,
+    .search-box select:focus {
+      border-color: #3b82f6;
+    }
+
+    .search-box select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.8rem center;
+      padding-right: 2.5rem;
+    }
+
+    .search-box .btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      border: none;
+      padding: 0.9rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+      width: 100%;
+    }
+
+    .search-box .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+    }
+
+    .search-tips {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.8rem;
+      margin-top: 0.8rem;
+      padding: 0 1rem;
+      line-height: 1.5;
+    }
+
+    .search-tips strong {
+      color: white;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem 3%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Sidebar - Hidden on mobile by default */
+    .sidebar {
+      width: 100%;
+      order: 2;
+    }
+
+    .filter-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .filter-card h3 {
+      font-size: 1rem;
+      color: #1e3a8a;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-option {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .filter-option:last-child {
+      border-bottom: none;
+    }
+
+    .filter-option a {
+      color: #475569;
+      text-decoration: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .filter-option a:hover {
+      color: #3b82f6;
+    }
+
+    .filter-option.active a {
+      color: #3b82f6;
+      font-weight: 600;
+    }
+
+    /* Main Content */
+    .main-content {
+      width: 100%;
+      order: 1;
+    }
+
+    .results-header {
+      background: white;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .results-header h2 {
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      color: #1e3a8a;
+      margin-bottom: 0.5rem;
+    }
+
+    .results-info {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .sort-dropdown {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .sort-dropdown label {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .sort-dropdown select {
+      padding: 0.5rem 0.8rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: white;
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.8rem;
+    }
+
+    .filter-tag {
+      background: #eff6ff;
+      color: #3b82f6;
+      padding: 0.3rem 0.8rem;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .filter-tag .remove {
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    /* Job Cards - Mobile Optimized */
+    .job-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .job-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      border-color: #3b82f6;
+    }
+
+    .job-title {
+      font-size: clamp(1.1rem, 4vw, 1.5rem);
+      color: #1e3a8a;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .company-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .company-logo {
+      width: 35px;
+      height: 35px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 2px solid #e2e8f0;
+    }
+
+    .job-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.8rem;
+      margin: 1rem 0;
+      padding: 1rem 0;
+      border-top: 1px solid #f1f5f9;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+
+    .meta-item i {
+      color: #3b82f6;
+      font-size: 0.9rem;
+    }
+
+    .meta-item strong {
+      color: #1e3a8a;
+    }
+
+    .job-description {
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .job-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .job-tags {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: #eff6ff;
+      color: #3b82f6;
+      padding: 0.3rem 0.8rem;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .applicant-count {
+      background: #fef3c7;
+      color: #d97706;
+      padding: 0.3rem 0.8rem;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .apply-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    .apply-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
+    }
+
+    .applied-badge {
+      background: #10b981;
+      color: white;
+      padding: 0.8rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .no-results i {
+      font-size: 3rem;
+      color: #cbd5e1;
+      margin-bottom: 1rem;
+    }
+
+    .no-results h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .no-results p {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      background: #0f172a;
+      color: white;
+      padding: 2rem 3%;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .footer .links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer p {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Tablet & Desktop */
+    @media (min-width: 768px) {
+      .navbar {
+        padding: 1rem 4%;
+        gap: 2rem;
+      }
+
+      .brand-logo {
+        height: 40px;
+      }
+
+      .navbar nav a {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .divider {
+        margin: 0 0.5rem;
+        font-size: 1rem;
+      }
+
+      .auth a {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.95rem;
+      }
+
+      .search-section {
+        padding: 2.5rem 4%;
+      }
+
+      .search-box {
+        display: grid;
+        grid-template-columns: 2fr 1.5fr 1.5fr auto;
+        gap: 0.8rem;
+      }
+
+      .search-box input,
+      .search-box select {
+        padding: 1rem 1.2rem;
+        font-size: 0.95rem;
+      }
+
+      .search-box .btn {
+        padding: 1rem 2rem;
+        font-size: 0.95rem;
+        width: auto;
+        white-space: nowrap;
+      }
+
+      .search-tips {
+        font-size: 0.9rem;
+      }
+
+      .container {
+        padding: 2.5rem 4%;
+        flex-direction: row;
+        gap: 2rem;
+      }
+
+      .sidebar {
+        width: 280px;
+        order: 1;
+        flex-shrink: 0;
+      }
+
+      .main-content {
+        order: 2;
+      }
+
+      .results-header {
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .sort-dropdown {
+        margin-top: 0;
+      }
+
+      .sort-dropdown select {
+        flex: none;
+      }
+
+      .job-card {
+        padding: 1.8rem;
+      }
+
+      .job-footer {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .apply-btn {
+        width: auto;
+      }
+
+      .applied-badge {
+        width: auto;
+      }
+
+      .footer .links {
+        flex-direction: row;
+        justify-content: center;
+        gap: 2rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .navbar {
+        padding: 1.2rem 5%;
+      }
+
+      .brand-logo {
+        height: 45px;
+      }
+
+      .search-section {
+        padding: 3rem 5%;
+      }
+
+      .container {
+        padding: 3rem 5%;
+      }
+
+      .job-card {
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="left-nav">
+      <div class="logo">
+        <a href="{% url 'homepage' %}">
+          <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+        </a>
+      </div>
+      <nav>
+        <a href="{% url 'homepage' %}">Home</a><span class="divider">|</span>
+      </nav>
+    </div>
+    <div class="auth">
+      {% if user.is_authenticated %}
+        {% if user.role == 'JobSeeker' %}
+          <a href="{% url 'jobseeker_dashboard' %}">Dashboard</a>
+        {% elif user.role == 'Employer' %}
+          <a href="{% url 'employer_dashboard' %}">Dashboard</a>
+        {% endif %}
+      {% else %}
+        <a href="{% url 'signin_register' %}">Sign in</a>
+        <span class="divider">|</span>
+        <a href="{% url 'employer' %}">Employer / Post Job</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Multi-Facet Search Section -->
+  <section class="search-section">
+    <div class="search-container">
+      <form action="{% url 'public_job_search' %}" method="GET" class="search-box">
+        <!-- Keywords Input -->
+        <input type="text" name="q" placeholder="🔍 Job title, keywords, or company" value="{{ query }}">
+        
+        <!-- Location Dropdown -->
+        <select name="location" id="location">
+          <option value="">📍 All Locations</option>
+          {% for loc in locations %}
+            <option value="{{ loc }}" {% if location == loc %}selected{% endif %}>{{ loc }}</option>
+          {% endfor %}
+        </select>
+        
+        <!-- Category Dropdown -->
+        <select name="category" id="category">
+          <option value="">💼 All Categories</option>
+          {% for cat in categories %}
+            <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+          {% endfor %}
+        </select>
+        
+        <!-- Search Button -->
+        <button type="submit" class="btn">
+          <i class="fas fa-search"></i> Search
+        </button>
+      </form>
+      <div class="search-tips">
+        <strong>Pro tip:</strong> Use the dropdowns to filter by location and category, or leave blank to see all jobs
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    
+    <!-- Sidebar - Employer List -->
+    <aside class="sidebar">
+      <!-- Employers -->
+      {% if employers %}
+      <div class="filter-card">
+        <h3><i class="fas fa-building"></i> Top Employers</h3>
+        {% for emp in employers|slice:":10" %}
+          <div class="filter-option">
+            <a href="{% url 'employer_public_profile' emp.employer_id %}">
+              {{ emp.company_name|default:emp.user.username }}
+              <i class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- Results Header with Sort -->
+      <div class="results-header">
+        <div style="flex: 1;">
+          <h2>
+            {% if query %}Results for "{{ query }}"{% else %}All Jobs{% endif %}
+          </h2>
+          <p class="results-info">
+            <strong>{{ total_results }}</strong> job{{ total_results|pluralize }} found
+            {% if location %} in {{ location }}{% endif %}
+            {% if category %} • {{ category }}{% endif %}
+          </p>
+
+          <!-- Active Filters Display -->
+          {% if query or location or category %}
+          <div class="active-filters">
+            {% if query %}
+              <span class="filter-tag">
+                🔍 "{{ query }}"
+                <a href="?location={{ location }}&category={{ category }}&sort={{ sort_by }}" class="remove">×</a>
+              </span>
+            {% endif %}
+            {% if location %}
+              <span class="filter-tag">
+                📍 {{ location }}
+                <a href="?q={{ query }}&category={{ category }}&sort={{ sort_by }}" class="remove">×</a>
+              </span>
+            {% endif %}
+            {% if category %}
+              <span class="filter-tag">
+                💼 {{ category }}
+                <a href="?q={{ query }}&location={{ location }}&sort={{ sort_by }}" class="remove">×</a>
+              </span>
+            {% endif %}
+            <a href="{% url 'public_job_search' %}" class="filter-tag" style="background: #fee2e2; color: #dc2626;">
+              Clear All ×
+            </a>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Sort Dropdown -->
+        <div class="sort-dropdown">
+          <label for="sort">Sort by:</label>
+          <select id="sort" onchange="window.location.href='?q={{ query }}&location={{ location }}&category={{ category }}&sort=' + this.value">
+            <option value="recent" {% if sort_by == 'recent' %}selected{% endif %}>Most Recent</option>
+            <option value="title_asc" {% if sort_by == 'title_asc' %}selected{% endif %}>Title (A-Z)</option>
+            <option value="title_desc" {% if sort_by == 'title_desc' %}selected{% endif %}>Title (Z-A)</option>
+            <option value="location" {% if sort_by == 'location' %}selected{% endif %}>Location</option>
+            <option value="company" {% if sort_by == 'company' %}selected{% endif %}>Company</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Job Listings -->
+      {% if jobs %}
+        {% for job in jobs %}
+          <div class="job-card">
+            <h2 class="job-title">{{ job.title }}</h2>
+            <div class="company-info">
+              {% if job.employer.company_logo %}
+                <img src="{{ job.employer.company_logo.url }}" alt="Logo" class="company-logo">
+              {% else %}
+                <i class="fas fa-building" style="font-size: 1.3rem; color: #3b82f6;"></i>
+              {% endif %}
+              <span>{{ job.employer.company_name|default:job.employer.user.username }}</span>
+            </div>
+
+            <div class="job-meta">
+              <div class="meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                {{ job.location }}
+              </div>
+              
+              <!-- ✅ NEW: Job Type Display -->
+              {% if job.job_type %}
+              <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                {{ job.job_type }}
+              </div>
+              {% endif %}
+              
+              {% if job.salary %}
+              <div class="meta-item">
+                <i class="fas fa-money-bill-wave"></i>
+                {{ job.salary }}
+              </div>
+              {% endif %}
+
+              <div class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                {{ job.created_at|timesince }} ago
+              </div>
+
+              <div class="meta-item">
+                <i class="fas fa-users"></i>
+                <strong>{{ job.total_applicants }}</strong> applicant{{ job.total_applicants|pluralize }}
+              </div>
+
+              {% if job.hired_count > 0 %}
+              <div class="meta-item" style="color: #16a34a;">
+                <i class="fas fa-check-circle"></i>
+                <strong>{{ job.hired_count }}</strong> hired
+              </div>
+              {% endif %}
+            </div>
+
+            <p class="job-description">{{ job.description|truncatewords:40 }}</p>
+
+            <div class="job-footer">
+              <div class="job-tags">
+                <span class="tag">{{ job.category }}</span>
+                {% if job.job_type %}
+                  <span class="tag">{{ job.job_type }}</span>
+                {% endif %}
+                {% if job.total_applicants > 0 %}
+                  <span class="applicant-count">
+                    👥 {{ job.total_applicants }} applied
+                  </span>
+                {% endif %}
+              </div>
+
+              {% if user.is_authenticated %}
+                {% if job.id in applied_job_ids %}
+                  <span class="applied-badge">
+                    <i class="fas fa-check-circle"></i> Applied
+                  </span>
+                {% else %}
+                  <a href="{% url 'apply_job' job.id %}" class="apply-btn">
+                    Apply Now <i class="fas fa-arrow-right"></i>
+                  </a>
+                {% endif %}
+              {% else %}
+                <a href="{% url 'signin_register' %}?next={% url 'apply_job' job.id %}" class="apply-btn">
+                  Sign in to Apply <i class="fas fa-sign-in-alt"></i>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+
+      {% else %}
+        <div class="no-results">
+          <i class="fas fa-search"></i>
+          <h3>No jobs found</h3>
+          <p>Try adjusting your filters or search terms</p>
+        </div>
+      {% endif %}
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="links">
+      <a href="{% url 'help_center' %}">Help Center</a>
+      <a href="{% url 'privacy' %}">Privacy</a>
+      <a href="{% url 'terms' %}">Terms</a>
+      <a href="{% url 'contact' %}">Contact</a>
+      <a href="{% url 'about' %}">About</a>
+    </div>
+    <p>© 2025 BlueHire</p>
+  </footer>
+
+</body>
+</html>

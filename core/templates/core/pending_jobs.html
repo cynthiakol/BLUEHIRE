@@ -1,0 +1,680 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pending Job Approvals | BlueHire</title>
+  <link rel="stylesheet" href="{% static 'core/css/system_admin.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #f1f5f9 0%, #e2e8f0 100%);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.6rem 1.2rem;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    header a:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 5%;
+    }
+
+    .page-title {
+      color: #1e3a8a;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      color: #64748b;
+      margin-bottom: 2rem;
+    }
+
+    /* Job Card */
+    .job-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .job-card:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 6px 25px rgba(59, 130, 246, 0.15);
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #e2e8f0;
+      flex-wrap: wrap;
+    }
+
+    .job-title-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .job-title {
+      font-size: 1.8rem;
+      color: #1e3a8a;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .job-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .job-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .job-actions {
+      display: flex;
+      gap: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    /* Job Details Grid */
+    .job-details {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .detail-section {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .detail-section h4 {
+      color: #1e3a8a;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .detail-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+      font-size: 0.95rem;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: #475569;
+      min-width: 100px;
+    }
+
+    .detail-value {
+      color: #64748b;
+    }
+
+    .job-description {
+      line-height: 1.7;
+      color: #475569;
+    }
+
+    /* Employer Profile */
+    .employer-profile {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      padding: 2rem;
+      border-radius: 16px;
+      border: 2px solid #bfdbfe;
+      margin-top: 2rem;
+    }
+
+    .employer-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #bfdbfe;
+    }
+
+    .employer-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .employer-info h3 {
+      color: #1e3a8a;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .employer-type {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .employer-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Documents Section */
+    .documents-section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .documents-section h4 {
+      color: #1e3a8a;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .document-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .document-item {
+      background: #f8fafc;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .document-item:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 3px 10px rgba(59, 130, 246, 0.15);
+    }
+
+    .document-name {
+      font-weight: 600;
+      color: #475569;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .document-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .document-link:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .no-document {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-approve {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    .btn-reject {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    /* Empty State */
+    .no-pending {
+      text-align: center;
+      background: white;
+      padding: 4rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .no-pending i {
+      font-size: 4rem;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+    }
+
+    .no-pending h3 {
+      color: #475569;
+      margin-bottom: 0.5rem;
+    }
+
+    .no-pending p {
+      color: #94a3b8;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 0.8rem;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .job-details {
+        grid-template-columns: 1fr;
+      }
+
+      .job-header {
+        flex-direction: column;
+      }
+
+      .job-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .employer-header {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2><i class="fas fa-clipboard-list"></i> Pending Job Approvals</h2>
+  <a href="{% url 'system_admin_dashboard' %}"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+</header>
+
+<div class="container">
+  <h3 class="page-title">Jobs Awaiting Admin Approval</h3>
+  <p class="page-subtitle">Review complete job details and employer information before approval</p>
+
+  {% if pending_jobs %}
+    {% for job in pending_jobs %}
+      <div class="job-card">
+        <!-- Job Header -->
+        <div class="job-header">
+          <div class="job-title-section">
+            <h2 class="job-title">{{ job.title }}</h2>
+            <div class="job-meta">
+              <span><i class="fas fa-tag"></i> {{ job.category }}</span>
+              <span><i class="fas fa-map-marker-alt"></i> {{ job.location|default:"Not specified" }}</span>
+              <span><i class="fas fa-calendar"></i> Posted {{ job.created_at|date:"F j, Y" }}</span>
+            </div>
+          </div>
+          <div class="job-actions">
+            <form action="{% url 'approve_job' job.id %}" method="post" style="display:inline;" onsubmit="return confirm('Approve this job posting?');">
+              {% csrf_token %}
+              <button class="btn btn-approve" type="submit">
+                <i class="fas fa-check"></i> Approve
+              </button>
+            </form>
+            <form action="{% url 'reject_job' job.id %}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to reject and delete this job?');">
+  {% csrf_token %}
+  <button class="btn btn-reject" type="submit">
+    <i class="fas fa-times"></i> Reject
+  </button>
+</form>
+          </div>
+        </div>
+
+        <!-- Job Details -->
+        <div class="job-details">
+          <div class="detail-section">
+            <h4><i class="fas fa-info-circle"></i> Job Description</h4>
+            <div class="job-description">
+              {{ job.description|linebreaks }}
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4><i class="fas fa-dollar-sign"></i> Compensation & Details</h4>
+            <div class="detail-row">
+              <span class="detail-label">Salary:</span>
+              <span class="detail-value">{{ job.salary|default:"To be discussed" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Location:</span>
+              <span class="detail-value">{{ job.location|default:"Not specified" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Category:</span>
+              <span class="detail-value">{{ job.category }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Posted:</span>
+              <span class="detail-value">{{ job.created_at|date:"F j, Y at g:i A" }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employer Profile -->
+        <div class="employer-profile">
+          <div class="employer-header">
+            {% if job.employer.employer_type == "Company" %}
+              {% if job.employer.company_logo %}
+                <img src="{{ job.employer.company_logo.url }}" alt="Company Logo" class="employer-logo">
+              {% else %}
+                <div class="employer-logo" style="background:#3b82f6;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-building" style="font-size:2rem;color:white;"></i>
+                </div>
+              {% endif %}
+            {% else %}
+              {% if job.employer.profile_photo %}
+                <img src="{{ job.employer.profile_photo.url }}" alt="Profile Photo" class="employer-logo">
+              {% else %}
+                <div class="employer-logo" style="background:#3b82f6;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-user" style="font-size:2rem;color:white;"></i>
+                </div>
+              {% endif %}
+            {% endif %}
+
+            <div class="employer-info">
+              <h3>
+                {% if job.employer.employer_type == "Company" %}
+                  {{ job.employer.company_name|default:"Company Name Not Set" }}
+                {% else %}
+                  {{ job.employer.user.first_name }} {{ job.employer.user.last_name }}
+                {% endif %}
+              </h3>
+              <span class="employer-type">{{ job.employer.employer_type }} Employer</span>
+            </div>
+          </div>
+
+          <div class="employer-details">
+            <div class="detail-section">
+              <h4><i class="fas fa-user-circle"></i> Contact Information</h4>
+              <div class="detail-row">
+                <span class="detail-label">Email:</span>
+                <span class="detail-value">{{ job.employer.user.email }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Phone:</span>
+                <span class="detail-value">{{ job.employer.user.phone|default:"Not provided" }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Username:</span>
+                <span class="detail-value">@{{ job.employer.user.username }}</span>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4><i class="fas fa-building"></i> Employer Details</h4>
+              {% if job.employer.employer_type == "Company" %}
+                <div class="detail-row">
+                  <span class="detail-label">Description:</span>
+                  <span class="detail-value">{{ job.employer.company_description|default:"Not provided"|truncatewords:15 }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Address:</span>
+                  <span class="detail-value">{{ job.employer.company_address|default:"Not provided" }}</span>
+                </div>
+              {% else %}
+                <div class="detail-row">
+                  <span class="detail-label">Address:</span>
+                  <span class="detail-value">{{ job.employer.personal_address|default:"Not provided" }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Bio:</span>
+                  <span class="detail-value">{{ job.employer.bio|default:"Not provided"|truncatewords:15 }}</span>
+                </div>
+              {% endif %}
+              <div class="detail-row">
+                <span class="detail-label">Verified:</span>
+                <span class="detail-value">
+                  {% if job.employer.is_verified %}
+                    <span style="color:#10b981;font-weight:700;"><i class="fas fa-check-circle"></i> Yes</span>
+                  {% else %}
+                    <span style="color:#ef4444;font-weight:700;"><i class="fas fa-times-circle"></i> No</span>
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employer Documents -->
+          <div class="documents-section">
+            <h4><i class="fas fa-file-alt"></i> Uploaded Documents</h4>
+            <div class="document-grid">
+              {% if job.employer.employer_type == "Company" %}
+                <div class="document-item">
+                  <div class="document-name">Business Permit</div>
+                  {% if job.employer.business_permit %}
+                    <a href="{{ job.employer.business_permit.url }}" target="_blank" class="document-link">
+                      <i class="fas fa-eye"></i> View Document
+                    </a>
+                  {% else %}
+                    <span class="no-document">Not uploaded</span>
+                  {% endif %}
+                </div>
+                <div class="document-item">
+                  <div class="document-name">Company ID</div>
+                  {% if job.employer.company_id_file %}
+                    <a href="{{ job.employer.company_id_file.url }}" target="_blank" class="document-link">
+                      <i class="fas fa-eye"></i> View Document
+                    </a>
+                  {% else %}
+                    <span class="no-document">Not uploaded</span>
+                  {% endif %}
+                </div>
+              {% else %}
+                <div class="document-item">
+                  <div class="document-name">Barangay Clearance</div>
+                  {% if job.employer.barangay_clearance %}
+                    <a href="{{ job.employer.barangay_clearance.url }}" target="_blank" class="document-link">
+                      <i class="fas fa-eye"></i> View Document
+                    </a>
+                  {% else %}
+                    <span class="no-document">Not uploaded</span>
+                  {% endif %}
+                </div>
+                <div class="document-item">
+                  <div class="document-name">Police Clearance</div>
+                  {% if job.employer.police_clearance %}
+                    <a href="{{ job.employer.police_clearance.url }}" target="_blank" class="document-link">
+                      <i class="fas fa-eye"></i> View Document
+                    </a>
+                  {% else %}
+                    <span class="no-document">Not uploaded</span>
+                  {% endif %}
+                </div>
+                <div class="document-item">
+                  <div class="document-name">NBI Clearance</div>
+                  {% if job.employer.nbi_clearance %}
+                    <a href="{{ job.employer.nbi_clearance.url }}" target="_blank" class="document-link">
+                      <i class="fas fa-eye"></i> View Document
+                    </a>
+                  {% else %}
+                    <span class="no-document">Not uploaded</span>
+                  {% endif %}
+                </div>
+                <div class="document-item">
+                  <div class="document-name">Valid ID ({{ job.employer.valid_id_type|default:"Not specified" }})</div>
+                  {% if job.employer.valid_id %}
+                    <a href="{{ job.employer.valid_id.url }}" target="_blank" class="document-link">
+                      <i class="fas fa-eye"></i> View Document
+                    </a>
+                  {% else %}
+                    <span class="no-document">Not uploaded</span>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="no-pending">
+      <i class="fas fa-inbox"></i>
+      <h3>No Pending Jobs</h3>
+      <p>All job listings have been reviewed. Check back later for new submissions.</p>
+    </div>
+  {% endif %}
+</div>
+
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="toast-message">Action completed!</span>
+</div>
+
+<script>
+  // Show toast notification
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    
+    toastMessage.textContent = message;
+    
+    if (type === 'error') {
+      toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+    } else {
+      toast.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    }
+    
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // Check for Django messages
+  {% if messages %}
+    {% for message in messages %}
+      showToast('{{ message }}', '{{ message.tags }}');
+    {% endfor %}
+  {% endif %}
+</script>
+
+</body>
+</html>

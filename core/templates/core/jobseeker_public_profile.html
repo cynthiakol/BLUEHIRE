@@ -1,0 +1,655 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ jobseeker.user.first_name }}'s Profile | BlueHire</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      padding: 16px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar .logo {
+      height: 45px;
+      border-radius: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .navbar-brand {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* Profile Header Card */
+    .profile-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      margin-bottom: 30px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      padding-bottom: 30px;
+      border-bottom: 2px solid #f3f5f9;
+    }
+
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .profile-info h1 {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    /* ✅ NEW: Verification Badge Styles */
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .verified-badge i {
+      font-size: 16px;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+      50% {
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+      }
+    }
+
+    .profile-info .bio {
+      color: #6c757d;
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 15px 0;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-left: 4px solid #667eea;
+    }
+
+    .contact-info {
+      display: flex;
+      gap: 30px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #495057;
+      font-size: 15px;
+    }
+
+    .contact-item i {
+      color: #667eea;
+      font-size: 18px;
+    }
+
+    .contact-item strong {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    /* Info Sections */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .info-section {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .info-section h3 {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f5f9;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: #667eea;
+      min-width: 120px;
+      font-size: 14px;
+    }
+
+    .info-value {
+      color: #495057;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    /* Skills Section */
+    .skills-section {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      border: 2px solid #bfdbfe;
+      margin-bottom: 30px;
+    }
+
+    .skills-section h3 {
+      text-align: center;
+      font-size: 24px;
+      color: #1e3a8a;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .skills-section > p {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    .job-type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .job-type-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      font-size: 14px;
+      color: #495057;
+      font-weight: 500;
+    }
+
+    .job-type-item.checked {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      border-color: #667eea;
+      color: #667eea;
+    }
+
+    .job-type-item i {
+      color: #667eea;
+    }
+
+    .additional-skills {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 15px;
+      border-left: 4px solid #667eea;
+    }
+
+    .additional-skills strong {
+      color: #667eea;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .skills-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-tag {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Certificates */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+    }
+
+    .cert-item {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cert-item:hover {
+      border-color: #667eea;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .cert-item i {
+      font-size: 24px;
+      color: #667eea;
+    }
+
+    .cert-item a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      flex: 1;
+      font-size: 15px;
+    }
+
+    .cert-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* Documents */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 15px;
+    }
+
+    .doc-item {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .doc-item:hover {
+      border-color: #667eea;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .doc-item i {
+      font-size: 36px;
+      color: #667eea;
+      margin-bottom: 12px;
+    }
+
+    .doc-item strong {
+      display: block;
+      color: #495057;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .doc-item a {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .doc-item a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #6c757d;
+      font-size: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 2px dashed #e2e8f0;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      color: #cbd5e0;
+      margin-bottom: 15px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 16px 20px;
+      }
+
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .contact-info {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .job-type-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-info h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-left">
+      <img src="{% static 'core/image/logo.png' %}" class="logo" alt="BlueHire">
+      <span class="navbar-brand">BlueHire</span>
+    </div>
+    <a href="{% url 'employer_dashboard' %}" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+  </nav>
+
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="profile-card">
+      <div class="profile-header">
+        {% if jobseeker.profile_photo %}
+          <img src="{{ jobseeker.profile_photo.url }}" alt="Profile" class="profile-pic">
+        {% else %}
+          <img src="{% static 'core/image/default_user.png' %}" alt="Default" class="profile-pic">
+        {% endif %}
+
+        <div class="profile-info">
+          <h1>{{ jobseeker.user.first_name }} {{ jobseeker.user.last_name }}</h1>
+          
+          <!-- ✅ NEW: Verification Badge for JobSeekers -->
+          {% if jobseeker.approval_status == "Approved" %}
+            <span class="verified-badge">
+              <i class="fas fa-check-circle"></i> Verified Job Seeker
+            </span>
+          {% endif %}
+          
+          {% if jobseeker.about %}
+            <div class="bio">{{ jobseeker.about }}</div>
+          {% else %}
+            <div class="bio" style="color: #adb5bd;">No bio provided yet.</div>
+          {% endif %}
+
+          <div class="contact-info">
+            <div class="contact-item">
+              <i class="fas fa-envelope"></i>
+              <span><strong>Email:</strong> {{ jobseeker.user.email|default:"Not available" }}</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-phone"></i>
+              <span><strong>Phone:</strong> {{ jobseeker.contact_number|default:jobseeker.user.phone|default:"Not available" }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Grid -->
+    <div class="info-grid">
+      <!-- Basic Information -->
+      <div class="info-section">
+        <h3><i class="fas fa-user-circle"></i> Basic Information</h3>
+        <div class="info-row">
+          <span class="info-label">Gender:</span>
+          <span class="info-value">{{ jobseeker.gender|default:"N/A" }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Birthdate:</span>
+          <span class="info-value">{{ jobseeker.birthdate|date:"F d, Y"|default:"N/A" }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Location:</span>
+          <span class="info-value">{{ jobseeker.city|default:"N/A" }}, {{ jobseeker.region|default:"N/A" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills & Qualifications -->
+    <div class="skills-section">
+      <h3><i class="fas fa-briefcase"></i> Skills & Qualifications</h3>
+      <p>Here's what this worker is trained and interested in.</p>
+
+      {% if jobseeker.preferred_job_types %}
+        <div class="job-type-grid">
+          {% for type in job_types %}
+            <div class="job-type-item {% if type in jobseeker.preferred_job_types %}checked{% endif %}">
+              {% if type in jobseeker.preferred_job_types %}
+                <i class="fas fa-check-circle"></i>
+              {% else %}
+                <i class="far fa-circle"></i>
+              {% endif %}
+              {{ type }}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>No preferred job types selected.</p>
+        </div>
+      {% endif %}
+
+      {% if jobseeker.skills %}
+        <div class="additional-skills">
+          <strong><i class="fas fa-tools"></i> Additional Skills:</strong>
+          <div class="skills-tags">
+            {% for skill in jobseeker.skills %}
+              <span class="skill-tag">{{ skill }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Certificates -->
+    <div class="info-section">
+      <h3><i class="fas fa-certificate"></i> Certificates</h3>
+      {% if jobseeker.certificates.all %}
+        <div class="cert-grid">
+          {% for cert in jobseeker.certificates.all %}
+            <div class="cert-item">
+              <i class="fas fa-award"></i>
+              <a href="{{ cert.file.url }}" target="_blank">{{ cert.name }}</a>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <i class="fas fa-certificate"></i>
+          <p>No certificates uploaded.</p>
+        </div>
+      {% endif %}
+
+      {% if jobseeker.nc2_certificate %}
+        <div class="cert-item" style="margin-top: 15px; background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-color: #10b981;">
+          <i class="fas fa-medal" style="color: #10b981;"></i>
+          <a href="{{ jobseeker.nc2_certificate.url }}" target="_blank" style="color: #065f46;">
+            NC2 Certificate
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Documents & Clearances -->
+    <div class="info-section">
+      <h3><i class="fas fa-file-alt"></i> Documents & Clearances</h3>
+      <div class="doc-grid">
+        {% if jobseeker.barangay_clearance %}
+          <div class="doc-item">
+            <i class="fas fa-file-contract"></i>
+            <strong>Barangay Clearance</strong>
+            <a href="{{ jobseeker.barangay_clearance.url }}" target="_blank">
+              <i class="fas fa-eye"></i> View
+            </a>
+          </div>
+        {% endif %}
+
+        {% if jobseeker.police_clearance %}
+          <div class="doc-item">
+            <i class="fas fa-shield-alt"></i>
+            <strong>Police Clearance</strong>
+            <a href="{{ jobseeker.police_clearance.url }}" target="_blank">
+              <i class="fas fa-eye"></i> View
+            </a>
+          </div>
+        {% endif %}
+
+        {% if jobseeker.nbi_clearance %}
+          <div class="doc-item">
+            <i class="fas fa-id-badge"></i>
+            <strong>NBI Clearance</strong>
+            <a href="{{ jobseeker.nbi_clearance.url }}" target="_blank">
+              <i class="fas fa-eye"></i> View
+            </a>
+          </div>
+        {% endif %}
+
+        {% if jobseeker.valid_id %}
+          <div class="doc-item">
+            <i class="fas fa-id-card"></i>
+            <strong>Valid ID{% if jobseeker.valid_id_type %} ({{ jobseeker.valid_id_type }}){% endif %}</strong>
+            <a href="{{ jobseeker.valid_id.url }}" target="_blank">
+              <i class="fas fa-eye"></i> View
+            </a>
+          </div>
+        {% endif %}
+
+        {% if not jobseeker.barangay_clearance and not jobseeker.nbi_clearance and not jobseeker.police_clearance and not jobseeker.valid_id %}
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <i class="fas fa-folder-open"></i>
+            <p>No documents uploaded.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

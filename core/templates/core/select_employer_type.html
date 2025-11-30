@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Employer Type - BlueHire</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .type-card {
+      background: white;
+      border-radius: 20px;
+      padding: 50px 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 40px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #6c757d;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .user-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .user-info p {
+      margin: 5px 0;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .user-info strong {
+      color: #333;
+    }
+
+    .type-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .type-btn {
+      padding: 18px 25px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-weight: 600;
+      color: #495057;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .type-btn:hover {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .type-btn i {
+      font-size: 22px;
+    }
+
+    .back-link {
+      color: #6c757d;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-link:hover {
+      color: #667eea;
+    }
+  </style>
+</head>
+<body>
+  <div class="type-card">
+    <div class="logo-icon">
+      <i class="fas fa-building"></i>
+    </div>
+    
+    <h1>Select Employer Type</h1>
+    <p class="subtitle">What type of employer are you?</p>
+    
+    {% if user %}
+    <div class="user-info">
+      <p><strong>Account:</strong></p>
+      <p>{{ user.email }}</p>
+      {% if user.first_name %}
+        <p>{{ user.first_name }} {{ user.last_name }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'select_employer_type' %}">
+      {% csrf_token %}
+      
+      <div class="type-buttons">
+        <button type="submit" name="type" value="Company" class="type-btn">
+          <i class="fas fa-industry"></i>
+          <span>Company Employer</span>
+        </button>
+        
+        <button type="submit" name="type" value="Personal" class="type-btn">
+          <i class="fas fa-home"></i>
+          <span>Personal / Homeowner</span>
+        </button>
+      </div>
+    </form>
+
+    <a href="{% url 'select_role' %}" class="back-link">
+      <i class="fas fa-arrow-left"></i>
+      <span>Back to role selection</span>
+    </a>
+  </div>
+</body>
+</html>

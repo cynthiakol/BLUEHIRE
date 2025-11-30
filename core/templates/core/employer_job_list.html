@@ -1,0 +1,526 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Job Listings | BlueHire</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      padding: 24px 32px;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      color: #1e293b;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h1 i {
+      color: #6366f1;
+    }
+
+    .btn-post {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-post:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .stat-icon.pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .stat-icon.approved {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .stat-icon.closed {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .stat-info h3 {
+      color: #1e293b;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .stat-info p {
+      color: #64748b;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      color: #1e293b;
+      font-size: 20px;
+      font-weight: 600;
+      margin: 32px 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .job-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+    }
+
+    .job-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      transform: translateX(4px);
+    }
+
+    .job-card.pending {
+      border-left-color: #f59e0b;
+    }
+
+    .job-card.approved {
+      border-left-color: #10b981;
+    }
+
+    .job-card.closed {
+      border-left-color: #6366f1;
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+      gap: 16px;
+    }
+
+    .job-title {
+      font-size: 20px;
+      color: #1e293b;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-approved {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-closed {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .job-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .job-meta i {
+      color: #94a3b8;
+    }
+
+    .job-description {
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .job-stats {
+      display: flex;
+      gap: 24px;
+      padding: 12px 0;
+      border-top: 1px solid #f1f5f9;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 16px;
+    }
+
+    .job-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .job-stat i {
+      color: #6366f1;
+    }
+
+    .job-stat strong {
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .job-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-edit {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .btn-edit:hover {
+      background: #bfdbfe;
+    }
+
+    .btn-view {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .btn-view:hover {
+      background: #bbf7d0;
+    }
+
+    .btn-applications {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .btn-applications:hover {
+      background: #c7d2fe;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+
+    .empty-state i {
+      font-size: 64px;
+      color: #cbd5e1;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      color: #475569;
+      margin-bottom: 8px;
+    }
+
+    @media(max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      .job-header {
+        flex-direction: column;
+      }
+
+      .job-meta {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .job-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>
+        <i class="fas fa-briefcase"></i>
+        My Job Listings
+      </h1>
+      <a href="{% url 'post_job' %}" class="btn-post">
+        <i class="fas fa-plus"></i> Post New Job
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon pending">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ pending_jobs.count }}</h3>
+          <p>Pending Approval</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon approved">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ approved_jobs.count }}</h3>
+          <p>Active Jobs</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon closed">
+          <i class="fas fa-archive"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ closed_jobs.count }}</h3>
+          <p>Closed Jobs</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Jobs -->
+    {% if pending_jobs %}
+    <h2 class="section-title">
+      <i class="fas fa-hourglass-half" style="color: #f59e0b;"></i>
+      Pending Admin Approval
+    </h2>
+    {% for job in pending_jobs %}
+    <div class="job-card pending">
+      <div class="job-header">
+        <h3 class="job-title">{{ job.title }}</h3>
+        <span class="status-badge status-pending">
+          <i class="fas fa-clock"></i> Pending Review
+        </span>
+      </div>
+
+      <div class="job-meta">
+        <span><i class="fas fa-tag"></i>{{ job.category }}</span>
+        <span><i class="fas fa-money-bill-wave"></i>{{ job.salary }}</span>
+        <span><i class="fas fa-calendar-plus"></i>Posted {{ job.created_at|date:"M d, Y" }}</span>
+      </div>
+
+      <p class="job-description">{{ job.description|truncatewords:25 }}</p>
+
+      <div class="job-actions">
+        <a href="{% url 'view_job_details' job.id %}" class="btn btn-view">
+          <i class="fas fa-eye"></i> View Details
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Active/Approved Jobs -->
+    {% if approved_jobs %}
+    <h2 class="section-title">
+      <i class="fas fa-check-circle" style="color: #10b981;"></i>
+      Active Job Listings
+    </h2>
+    {% for job in approved_jobs %}
+    <div class="job-card approved">
+      <div class="job-header">
+        <h3 class="job-title">{{ job.title }}</h3>
+        <span class="status-badge status-approved">
+          <i class="fas fa-check"></i> Live
+        </span>
+      </div>
+
+      <div class="job-meta">
+        <span><i class="fas fa-tag"></i>{{ job.category }}</span>
+        <span><i class="fas fa-money-bill-wave"></i>{{ job.salary }}</span>
+        <span><i class="fas fa-map-marker-alt"></i>{{ job.location|default:"Surigao City" }}</span>
+        <span><i class="fas fa-calendar"></i>Posted {{ job.created_at|date:"M d, Y" }}</span>
+      </div>
+
+      <p class="job-description">{{ job.description|truncatewords:25 }}</p>
+
+      <div class="job-stats">
+        <div class="job-stat">
+          <i class="fas fa-users"></i>
+          <strong>{{ job.total_applicants }}</strong> <span style="color: #64748b;">Applicants</span>
+        </div>
+        <div class="job-stat">
+          <i class="fas fa-user-check"></i>
+          <strong>{{ job.hired_count }}</strong> <span style="color: #64748b;">Hired</span>
+        </div>
+        <div class="job-stat">
+          <i class="fas fa-clock"></i>
+          <strong>{{ job.pending_count }}</strong> <span style="color: #64748b;">Pending</span>
+        </div>
+      </div>
+
+      <div class="job-actions">
+        <a href="{% url 'view_job_details' job.id %}" class="btn btn-view">
+          <i class="fas fa-eye"></i> View
+        </a>
+        <a href="{% url 'edit_job' job.id %}" class="btn btn-edit">
+          <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="{% url 'view_applications' %}?job={{ job.id }}" class="btn btn-applications">
+          <i class="fas fa-file-alt"></i> Applications ({{ job.total_applicants }})
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Closed Jobs -->
+    {% if closed_jobs %}
+    <h2 class="section-title">
+      <i class="fas fa-archive" style="color: #6366f1;"></i>
+      Closed/Filled Positions
+    </h2>
+    {% for job in closed_jobs %}
+    <div class="job-card closed">
+      <div class="job-header">
+        <h3 class="job-title">{{ job.title }}</h3>
+        <span class="status-badge status-closed">
+          <i class="fas fa-lock"></i> Closed
+        </span>
+      </div>
+
+      <div class="job-meta">
+        <span><i class="fas fa-tag"></i>{{ job.category }}</span>
+        <span><i class="fas fa-money-bill-wave"></i>{{ job.salary }}</span>
+        <span><i class="fas fa-calendar-check"></i>Closed {{ job.created_at|date:"M d, Y" }}</span>
+      </div>
+
+      <div class="job-stats">
+        <div class="job-stat">
+          <i class="fas fa-users"></i>
+          <strong>{{ job.total_applicants }}</strong> <span style="color: #64748b;">Total Applicants</span>
+        </div>
+        <div class="job-stat">
+          <i class="fas fa-user-check"></i>
+          <strong>{{ job.hired_count }}</strong> <span style="color: #64748b;">Hired</span>
+        </div>
+      </div>
+
+      <div class="job-actions">
+        <a href="{% url 'view_job_details' job.id %}" class="btn btn-view">
+          <i class="fas fa-eye"></i> View Details
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Empty State -->
+    {% if not all_jobs %}
+    <div class="empty-state">
+      <i class="fas fa-briefcase"></i>
+      <h3>No jobs posted yet</h3>
+      <p>Start by posting your first job listing</p>
+      <a href="{% url 'post_job' %}" class="btn-post" style="margin-top: 16px; display: inline-flex;">
+        <i class="fas fa-plus"></i> Post Your First Job
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

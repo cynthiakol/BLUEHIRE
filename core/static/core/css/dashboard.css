@@ -1,0 +1,111 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  color: #333;
+}
+
+/* ============ NAVBAR (already styled in navbar.html) ============ */
+.navbar {
+  background: linear-gradient(90deg, #007bff, #00a6ff);
+  padding: 15px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 25px;
+  font-weight: 500;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* ============ DASHBOARD ============ */
+.dashboard {
+  padding: 40px 80px;
+}
+
+.dashboard h2 {
+  color: #007bff;
+  margin-bottom: 10px;
+  font-size: 26px;
+  letter-spacing: 0.5px;
+}
+
+.dashboard p {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* ============ CARDS ============ */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  text-decoration: none;
+  color: #333;
+  border-top: 5px solid transparent;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+  border-top: 5px solid #007bff;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  color: #007bff;
+  font-size: 20px;
+}
+
+.card p {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ============ TABLES ============ */
+.job-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 25px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.job-table th, .job-table td {
+  padding: 15px;
+  text-align: left;
+}
+
+.job-table th {
+  background: #007bff;
+  color: white;
+  font-weight: 600;
+}
+
+.job-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.job-table tr:hover {
+  background: #eef6ff;
+}

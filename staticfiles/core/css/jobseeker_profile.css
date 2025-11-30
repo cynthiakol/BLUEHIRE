@@ -1,0 +1,131 @@
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f4f7fb;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #007bff, #0044cc);
+  color: #fff;
+  padding: 10px 20px;
+}
+
+.logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.site-title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.profile-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.profile-sidebar {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.profile-main {
+  flex: 2.5;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.profile-pic {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #007bff;
+}
+
+.upload-btn input {
+  display: none;
+}
+
+.upload-btn {
+  background: #007bff;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.verified-badge {
+  color: white;
+  background: green;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.pending-badge {
+  color: white;
+  background: orange;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.progress-container {
+  margin-top: 15px;
+}
+
+.progress-bar {
+  background: #ddd;
+  border-radius: 5px;
+  height: 10px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 10px;
+  background: #007bff;
+}
+
+.info-form, .docs-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input, textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.save-btn, .upload-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-btn:hover, .upload-btn:hover {
+  background: #0056b3;
+}
+
+.docs-title {
+  margin-top: 25px;
+}

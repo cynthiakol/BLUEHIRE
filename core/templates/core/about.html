@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About BlueHire</title>
+  <link rel="stylesheet" href="{% static 'core/css/style_base.css' %}">
+  <link rel="stylesheet" href="{% static 'core/css/about.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body class="about-page">
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="left-nav">
+      <div class="logo">
+        <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+      </div>
+        <nav>
+        <a href="{% url 'homepage' %}">Home</a><span class="divider">|</span>
+        <a href="{% url 'contact' %}">Contact</a><span class="divider">|</span>
+      </nav>
+    </div>
+
+    <div class="auth">
+      <a href="{% url 'help_center' %}">Help Center?</a>
+      <span class="divider">|</span>
+      <a href="{% url 'signin_register' %}">Sign in</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>About BlueHire</h1>
+    <p>BlueHire is a Filipino-built platform that bridges hardworking skilled workers and trusted employers nationwide — designed to make blue-collar hiring simple, transparent, and secure.</p>
+  </section>
+
+  <!-- CONTENT -->
+  <section class="page-content about-content">
+
+    <div class="intro">
+      <p>Whether you’re a foreman searching for a dependable crew or a welder looking for your next project, BlueHire connects both sides through verified networks built on trust and opportunity.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <i class="fa-solid fa-bullseye"></i>
+        <h3>Our Mission</h3>
+        <p>To make blue-collar recruitment fast, verified, and transparent for every Filipino worker and employer.</p>
+      </div>
+
+      <div class="card">
+        <i class="fa-solid fa-eye"></i>
+        <h3>Our Vision</h3>
+        <p>To become the go-to platform for trusted job opportunities and skilled hiring across the country.</p>
+      </div>
+
+      <div class="card">
+        <i class="fa-solid fa-handshake"></i>
+        <h3>Our Values</h3>
+        <p>Integrity, reliability, and opportunity — empowering the workforce that builds our nation.</p>
+      </div>
+    </div>
+
+    <div class="how-it-works">
+      <h2>How BlueHire Works</h2>
+      <div class="steps">
+        <div class="step">
+          <i class="fa-solid fa-user-plus"></i>
+          <h4>1. Register</h4>
+          <p>Sign up easily as a Job Seeker or Employer.</p>
+        </div>
+        <div class="step">
+          <i class="fa-solid fa-clipboard-list"></i>
+          <h4>2. Verify</h4>
+          <p>Submit required documents to ensure trust and authenticity.</p>
+        </div>
+        <div class="step">
+          <i class="fa-solid fa-briefcase"></i>
+          <h4>3. Connect</h4>
+          <p>Employers post jobs, job seekers apply — fast and secure.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="team">
+      <h2>Meet the Developer Team</h2>
+      <div class="team-members">
+        <div class="member">
+          <img src="{% static 'core/img/team1.jpg' %}" alt="Member 1">
+          <h4>Augustine-J G. Comon</h4>
+          <p>Full-stack</p>
+        </div>
+        <div class="member">
+          <img src="{% static 'core/img/team2.jpg' %}" alt="Member 2">
+          <h4>Ronnikko Perigo</h4>
+          <p>Front-end</p>
+        </div>
+        <div class="member">
+          <img src="{% static 'core/img/team3.jpg' %}" alt="Member 3">
+          <h4>JB Iverson Samontina</h4>
+          <p>Front-end</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <h2>Join Our Mission</h2>
+      <p>Be part of a growing platform that empowers Filipino workers and businesses.</p>
+      <a href="/signin/?show=register" class="cta-btn">Get Started</a>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 BlueHire. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Job | BlueHire</title>
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+  <style>
+    body { font-family:'Segoe UI'; background-color:#f4f6f9; margin:0; }
+    .container {
+      width:70%;
+      margin:40px auto;
+      background:white;
+      padding:30px;
+      border-radius:10px;
+      box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    }
+    input, textarea, select {
+      width:100%;
+      padding:10px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      font-size:15px;
+      margin-bottom:15px;
+      outline:none;
+      transition:border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color:#007bff;
+    }
+    button {
+      background:#007bff;
+      color:white;
+      padding:10px 25px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:15px;
+      font-weight:600;
+    }
+    button:hover { background:#0056b3; }
+    h2 {
+      color:#007bff;
+      margin-bottom:20px;
+      border-bottom:2px solid #007bff;
+      padding-bottom:6px;
+    }
+    h3 {
+      margin-top: 25px;
+      color: #007bff;
+      font-size: 18px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .checkbox-wrapper input {
+      width: auto;
+      margin: 0;
+    }
+    @media (max-width: 768px) {
+      .container {
+        width: 90%;
+        padding: 20px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>✏️ Edit Job Listing</h2>
+    <form method="post">
+      {% csrf_token %}
+      
+      <label>Job Title</label>
+      <input type="text" name="title" value="{{ job.title }}" required>
+
+      <label>Description</label>
+      <textarea name="description" rows="4" required>{{ job.description }}</textarea>
+
+      <label>Category</label>
+      <select name="category" required>
+        {% for c in categories %}
+          <option value="{{ c }}" {% if job.category == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- ✅ NEW: Job Type Field -->
+      <label>Job Type / Employment Type</label>
+      <select name="job_type" required>
+        <option value="">Select employment type</option>
+        <option value="Full-time" {% if job.job_type == "Full-time" %}selected{% endif %}>Full-time</option>
+        <option value="Part-time" {% if job.job_type == "Part-time" %}selected{% endif %}>Part-time</option>
+        <option value="Commission" {% if job.job_type == "Commission" %}selected{% endif %}>Commission-based</option>
+      </select>
+
+      <label>Location</label>
+      <input type="text" name="location" value="{{ job.location }}" placeholder="e.g. Surigao City, CDO, Butuan" required>
+
+      <label>Salary</label>
+      <input type="text" name="salary" value="{{ job.salary|default:'' }}" placeholder="e.g. ₱800/day, ₱15,000/month" required>
+
+      <!-- ✅ Deadline and Quota Fields -->
+      <h3>📅 Hiring Timeline</h3>
+      
+      <div class="form-row">
+        <div>
+          <label>Application Deadline (Optional)</label>
+          <input 
+            type="datetime-local" 
+            name="application_deadline" 
+            value="{% if job.application_deadline %}{{ job.application_deadline|date:'Y-m-d\TH:i' }}{% endif %}"
+          >
+        </div>
+        <div>
+          <label>Workers Needed</label>
+          <input 
+            type="number" 
+            name="hiring_quota" 
+            value="{{ job.hiring_quota }}" 
+            min="1" 
+            max="100"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="checkbox-wrapper">
+        <input 
+          type="checkbox" 
+          name="auto_close_on_quota" 
+          id="autoClose"
+          {% if job.auto_close_on_quota %}checked{% endif %}
+        >
+        <label for="autoClose" style="margin: 0; font-weight: 500;">
+          🔒 Automatically close job when hiring quota is met
+        </label>
+      </div>
+
+      <button type="submit" style="margin-top: 20px;">💾 Save Changes</button>
+    </form>
+
+    <div style="margin-top:15px;">
+      <a href="{% url 'employer_dashboard' %}" style="color:#007bff;font-weight:500;text-decoration:none;">← Back to Dashboard</a>
+    </div>
+  </div>
+</body>
+</html>

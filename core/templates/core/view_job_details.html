@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ job.title }} | BlueHire</title>
+  <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+  <style>
+    body { font-family:'Segoe UI',sans-serif;background:#f4f6f9;margin:0 }
+    .container { width:80%;margin:40px auto;background:white;padding:30px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1) }
+    h2 { color:#007bff;margin-top:0 }
+    p { margin:10px 0;line-height:1.6 }
+    a.back { display:inline-block;margin-top:20px;background:#007bff;color:white;padding:10px 20px;border-radius:8px;text-decoration:none }
+    a.back:hover { background:#0056b3 }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>{{ job.title }}</h2>
+    <p><strong>Category:</strong> {{ job.category|default:"N/A" }}</p>
+    <p><strong>Job Type:</strong> {{ job.job_type|default:"N/A" }}</p>
+    <p><strong>Description:</strong><br>{{ job.description|default:"No description provided." }}</p>
+    <p><strong>Employer:</strong>
+      {% if job.employer %}
+        {% if job.employer.employer_type == "Company" %}
+          {{ job.employer.company_name }}
+        {% elif job.employer.employer_type == "Personal" %}
+          {{ job.employer.first_name }} {{ job.employer.last_name }}
+        {% else %}
+          Unassigned
+        {% endif %}
+      {% else %}
+        Unassigned
+      {% endif %}
+    </p>
+    <a href="{% url 'jobseeker_recommendations' %}" class="back">← Back</a>
+  </div>
+</body>
+</html>

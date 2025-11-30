@@ -1,0 +1,55 @@
+{% load static %}
+<header class="navbar">
+  <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="logo">
+  <h2 class="site-title">BlueHire</h2>
+  
+  <nav>
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'logout_view' %}" class="logout">Logout</a>
+  </nav>
+
+  <div class="account-dropdown">
+    <button class="dropbtn">Account ▾</button>
+    <div class="dropdown-content">
+      {% if user.role == 'JobSeeker' %}
+        <a href="{% url 'jobseeker_profile' %}">My Profile</a>
+      {% elif user.role == 'Employer' %}
+  <a href="{% url 'employer_profile' %}">My Profile</a>
+  {% endif %}
+      <a href="{% url 'logout_view' %}">Logout</a>
+    </div>
+  </div>
+</header>
+
+<style>
+.navbar {
+  background: linear-gradient(90deg,#007bff,#00b4d8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  color: white;
+}
+.logo { height: 45px; }
+.navbar a { color: white; text-decoration: none; margin-left: 20px; }
+.account-dropdown { position: relative; display: inline-block; }
+.dropbtn { background:none; border:none; color:white; cursor:pointer; font-size:16px; }
+.dropdown-content {
+  display:none;
+  position:absolute;
+  right:0;
+  background:white;
+  color:black;
+  min-width:150px;
+  box-shadow:0 8px 16px rgba(0,0,0,0.2);
+  z-index:1;
+}
+.dropdown-content a {
+  color:black;
+  padding:10px;
+  text-decoration:none;
+  display:block;
+}
+.dropdown-content a:hover { background:#f0f0f0; }
+.account-dropdown:hover .dropdown-content { display:block; }
+</style>

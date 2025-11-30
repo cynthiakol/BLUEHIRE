@@ -1,0 +1,1090 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueHire for Employers</title>
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'core/css/employer.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #1a1a1a;
+      overflow-x: hidden;
+    }
+
+    /* === NAVBAR === */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 5%;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      padding: 0.8rem 5%;
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    }
+
+    .left-nav {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-logo {
+      height: 45px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      transition: transform 0.3s ease;
+    }
+
+    .brand-logo:hover {
+      transform: scale(1.05);
+    }
+
+    .navbar nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .navbar nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+
+    .navbar nav a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .auth {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .auth a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .auth a:not(.btn-scroll) {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    .auth a:not(.btn-scroll):hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .btn-scroll {
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%) !important;
+      box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+    }
+
+    .btn-scroll:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
+    }
+
+    .divider {
+      color: rgba(255, 255, 255, 0.4);
+      margin: 0 0.5rem;
+    }
+
+    /* === HERO === */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 3rem 5%;
+      max-width: 900px;
+    }
+
+    .hero-text h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      animation: fadeInDown 1s ease;
+    }
+
+    .hero-text h1 span {
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-text p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+      animation: fadeInUp 1s ease 0.2s both;
+    }
+
+    .hero-text .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      color: white;
+      padding: 1.2rem 3rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+      animation: fadeInUp 1s ease 0.4s both;
+    }
+
+    .hero-text .btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 35px rgba(249, 115, 22, 0.6);
+    }
+
+    /* === FEATURES === */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 4rem 5%;
+      background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+    }
+
+    .feature-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.15);
+    }
+
+    .feature-card i {
+      font-size: 3rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.4rem;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    /* === WHY CHOOSE === */
+    .why-choose {
+      padding: 5rem 5%;
+      background: white;
+      text-align: center;
+    }
+
+    .why-choose h2 {
+      font-size: 2.8rem;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+
+    .why-choose > p {
+      font-size: 1.2rem;
+      color: #64748b;
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      line-height: 1.8;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .card {
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.15);
+    }
+
+    .card i {
+      font-size: 3rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+    }
+
+    .card p {
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    /* === HOW IT WORKS === */
+    .how-it-works {
+      padding: 5rem 5%;
+      background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+      text-align: center;
+    }
+
+    .how-it-works h2 {
+      font-size: 2.8rem;
+      color: #1e3a8a;
+      margin-bottom: 3rem;
+      font-weight: 800;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .step {
+      position: relative;
+      padding: 2.5rem;
+    }
+
+    .step i {
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+    }
+
+    .step h3 {
+      font-size: 1.5rem;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+    }
+
+    .step p {
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    /* === PROJECT INFO === */
+    .project-info {
+      padding: 4rem 5%;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      text-align: center;
+    }
+
+    .project-info h2 {
+      font-size: 2.5rem;
+      color: #92400e;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+    }
+
+    .project-info p {
+      font-size: 1.1rem;
+      color: #78350f;
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* === CTA === */
+    .cta {
+      padding: 5rem 5%;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      text-align: center;
+      color: white;
+    }
+
+    .cta h2 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+    }
+
+    .cta p {
+      font-size: 1.2rem;
+      margin-bottom: 2.5rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      color: white;
+      padding: 1.3rem 3.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(249, 115, 22, 0.5);
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(249, 115, 22, 0.7);
+    }
+
+    /* === MODAL === */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal {
+      background: white;
+      padding: 3rem;
+      border-radius: 24px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.show .modal {
+      transform: scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #64748b;
+      transition: all 0.3s ease;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .modal-close:hover {
+      background: #f1f5f9;
+      color: #1e3a8a;
+      transform: rotate(90deg);
+    }
+
+    .modal h2 {
+      font-size: 2rem;
+      color: #1e3a8a;
+      margin-bottom: 0.5rem;
+      font-weight: 800;
+    }
+
+    .modal > p {
+      color: #64748b;
+      margin-bottom: 2rem;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .social-btn.google {
+      background: white;
+      border-color: #e2e8f0;
+      color: #1a1a1a;
+    }
+
+    .social-btn.google:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+
+    .social-btn.fb {
+      background: #1877f2;
+      color: white;
+    }
+
+    .social-btn.fb:hover {
+      background: #0c63d4;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+    }
+
+    .modal-divider {
+      text-align: center;
+      color: #94a3b8;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+
+    .modal-divider::before,
+    .modal-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .modal-divider::before {
+      left: 0;
+    }
+
+    .modal-divider::after {
+      right: 0;
+    }
+
+    .modal input[type="email"] {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .modal input[type="email"]:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .modal .continue {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .modal .continue:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .modal-disclaimer {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .modal-disclaimer a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .modal-disclaimer a:hover {
+      text-decoration: underline;
+    }
+
+    /* === FOOTER === */
+    .footer {
+      background: #0f172a;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 2rem 5%;
+      text-align: center;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 992px) {
+      .navbar {
+        padding: 1rem 4%;
+      }
+
+      .left-nav {
+        gap: 1.5rem;
+      }
+
+      .cards, .steps, .features {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 4%;
+      }
+
+      .left-nav {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .brand-logo {
+        height: 38px;
+      }
+
+      .navbar nav {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .auth {
+        width: 100%;
+        justify-content: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+      }
+
+      .divider {
+        display: none;
+      }
+
+      .auth a {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+
+      .hero {
+        min-height: 70vh;
+        padding: 3rem 4%;
+      }
+
+      .hero-text h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-text p {
+        font-size: 1.1rem;
+      }
+
+      .hero-text .btn {
+        padding: 1rem 2.5rem;
+        font-size: 1rem;
+      }
+
+      .features, .why-choose, .how-it-works, .project-info, .cta {
+        padding: 3rem 4%;
+      }
+
+      .features, .cards, .steps {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .feature-card, .card, .step {
+        padding: 2rem;
+      }
+
+      .why-choose h2,
+      .how-it-works h2,
+      .cta h2 {
+        font-size: 2rem;
+      }
+
+      .cta-btn {
+        padding: 1.1rem 2.5rem;
+        font-size: 1.1rem;
+      }
+
+      .modal {
+        padding: 2.5rem;
+        width: 92%;
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar {
+        padding: 1rem 3%;
+      }
+
+      .brand-logo {
+        height: 32px;
+      }
+
+      .left-nav {
+        gap: 1rem;
+      }
+
+      .navbar nav a {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+      }
+
+      .auth {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.6rem;
+      }
+
+      .auth a {
+        width: 100%;
+        text-align: center;
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .hero {
+        min-height: 60vh;
+        padding: 2rem 4%;
+      }
+
+      .hero-text h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .hero-text p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .hero-text .btn {
+        padding: 1rem 2rem;
+        font-size: 0.95rem;
+      }
+
+      .features, .why-choose, .how-it-works, .project-info, .cta {
+        padding: 2.5rem 4%;
+      }
+
+      .feature-card, .card, .step {
+        padding: 1.8rem;
+      }
+
+      .feature-card h3, .card h3, .step h3 {
+        font-size: 1.2rem;
+      }
+
+      .feature-card p, .card p, .step p {
+        font-size: 0.95rem;
+      }
+
+      .why-choose h2,
+      .how-it-works h2 {
+        font-size: 1.8rem;
+      }
+
+      .project-info h2 {
+        font-size: 1.8rem;
+      }
+
+      .cta h2 {
+        font-size: 2rem;
+      }
+
+      .cta p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .cta-btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+      }
+
+      .modal {
+        padding: 2rem 1.5rem;
+        width: 95%;
+      }
+
+      .modal h2 {
+        font-size: 1.6rem;
+        padding-right: 2.5rem;
+      }
+
+      .modal-close {
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.6rem;
+        width: 30px;
+        height: 30px;
+      }
+
+      .social-btn {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+      }
+
+      .modal input[type="email"] {
+        padding: 0.9rem 1.2rem;
+        font-size: 0.95rem;
+      }
+
+      .modal .continue {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+      }
+
+      .modal-disclaimer {
+        font-size: 0.8rem;
+      }
+
+      .footer {
+        font-size: 0.85rem;
+        padding: 1.5rem 4%;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .hero-text h1 {
+        font-size: 1.6rem;
+      }
+
+      .hero-text p {
+        font-size: 0.9rem;
+      }
+
+      .feature-card, .card, .step {
+        padding: 1.5rem;
+      }
+
+      .modal {
+        padding: 1.5rem 1.2rem;
+      }
+
+      .modal h2 {
+        font-size: 1.4rem;
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- === NAVBAR === -->
+  <header class="navbar">
+    <div class="left-nav">
+      <div class="logo">
+        <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+      </div>
+      <nav>
+        <a href="#">Find Applicants</a>
+      </nav>
+    </div>
+
+    <div class="auth">
+      <a href="#">Help Center?</a>
+      <span class="divider">|</span>
+      <a href="/signin/?show=signin">Sign in</a>
+      <span class="divider">|</span>
+      <a href="{% url 'homepage' %}">Find Jobs</a>
+    </div>
+  </header>
+
+  <!-- === HERO === -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Let's make your next great hire. <span>Fast.</span></h1>
+        <p>Post a job today and connect with verified skilled workers across the Philippines.</p>
+        <a href="#" id="openModalBtn" class="btn">Post a Job</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- === FEATURES === -->
+  <section class="features">
+    <div class="feature-card">
+      <i class="fa-solid fa-id-card"></i>
+      <h3>Verified Applicants</h3>
+      <p>All job seekers are verified through barangay, police, or NBI clearance.</p>
+    </div>
+    <div class="feature-card">
+      <i class="fa-solid fa-hammer"></i>
+      <h3>Skilled Workers</h3>
+      <p>Connect directly with carpenters, electricians, drivers, and more.</p>
+    </div>
+    <div class="feature-card">
+      <i class="fa-solid fa-envelope"></i>
+      <h3>Reach Applicants Easily</h3>
+      <p>Employers can contact applicants via their provided email or phone number — no chat system required.</p>
+    </div>
+  </section>
+
+  <!-- === WHY CHOOSE === -->
+  <section class="why-choose">
+    <h2>Why Choose BlueHire</h2>
+    <p>BlueHire connects Filipino workers and employers faster, safer, and easier building local hiring networks based on trust and authenticity.</p>
+    <div class="cards">
+      <div class="card">
+        <i class="fa-solid fa-users"></i>
+        <h3>Large Talent Pool</h3>
+        <p>Access thousands of verified applicants across construction, logistics, and domestic work.</p>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-user-check"></i>
+        <h3>Verified Credentials</h3>
+        <p>Each worker provides IDs and clearances ensuring a reliable hiring process for everyone.</p>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-paper-plane"></i>
+        <h3>Direct Communication</h3>
+        <p>Employers can reach applicants directly through email or phone for faster hires.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- === HOW IT WORKS === -->
+  <section class="how-it-works">
+    <h2>How BlueHire Works</h2>
+    <div class="steps">
+      <div class="step">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>1. Post a Job</h3>
+        <p>Fill out a short form and instantly reach skilled workers nearby.</p>
+      </div>
+      <div class="step">
+        <i class="fa-solid fa-user-tie"></i>
+        <h3>2. Review Candidates</h3>
+        <p>Browse verified profiles with credentials for simple, transparent hiring.</p>
+      </div>
+      <div class="step">
+        <i class="fa-solid fa-clipboard-check"></i>
+        <h3>3. Hire with Confidence</h3>
+        <p>Hire directly through contact details no middlemen, no delay.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- === PROJECT INFO === -->
+  <section class="project-info">
+    <h2>Project Information</h2>
+    <p><strong>BlueHire</strong> is a <strong>student capstone project</strong> created for academic and research purposes only. This platform collects job and applicant data strictly for evaluation and system testing.<br><br>
+    The system does <strong>not perform actual hiring</strong>. All data is used solely for academic research within the project scope.</p>
+  </section>
+
+  <!-- === CTA === -->
+  <section class="cta">
+    <h2>Start Hiring Today</h2>
+    <p>Experience how BlueHire streamlines recruitment for employers — try posting your first job and explore our prototype.</p>
+    <a href="#" id="openModalBtn2" class="cta-btn">Post a Job Now</a>
+  </section>
+
+  <!-- === MODAL === -->
+  <div class="modal-overlay" id="popupModal">
+    <div class="modal">
+      <span class="modal-close" id="closeModal">&times;</span>
+      <h2>Create an account or sign in</h2>
+      <p>to do more with BlueHire</p>
+
+      <div class="social-btn google"><i class="fa-brands fa-google"></i> Continue with Google</div>
+      <div class="social-btn fb"><i class="fa-brands fa-facebook-f"></i> Continue with Facebook</div>
+
+      <div class="modal-divider">or</div>
+
+      <input type="email" placeholder="Enter your email">
+      <button class="continue" onclick="window.location.href='/signin/?show=register'">Continue</button>
+
+      <p class="modal-disclaimer">
+        By continuing, you agree to BlueHire's <a href="{% url 'terms' %}">Terms</a> and acknowledge our <a href="">Privacy</a> and <a href="">Cookie</a> policies.
+      </p>
+    </div>
+  </div>
+
+  <!-- === FOOTER === -->
+  <footer class="footer">
+    <p>© 2025 BlueHire. All Rights Reserved. | Capstone Project</p>
+  </footer>
+
+    <!-- === SCRIPT === -->
+  <script>
+    // === modal open/close ===
+    const modal = document.getElementById('popupModal');
+    const openBtn = document.getElementById('openModalBtn');
+    const openBtn2 = document.getElementById('openModalBtn2');
+    const closeBtn = document.getElementById('closeModal');
+
+    function openModal(e){
+      e.preventDefault();
+      modal.classList.add('show');
+    }
+
+    [openBtn, openBtn2].forEach(btn => btn && btn.addEventListener('click', openModal));
+    closeBtn.addEventListener('click', ()=>modal.classList.remove('show'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('show'); });
+
+    // === NAVBAR SCROLL BEHAVIOR ===
+    const navbar = document.querySelector('.navbar');
+    const auth = navbar.querySelector('.auth');
+    const leftNav = navbar.querySelector('.left-nav nav');
+    const originalAuthHTML = auth.innerHTML;
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 150) {
+        navbar.classList.add('scrolled');
+        if (leftNav) leftNav.style.display = 'none';
+
+        // replace auth section: only Sign in + Post a Job
+        auth.innerHTML = `
+          <a href="/signin/?show=signin">Sign in</a>
+          <a href="#" id="openModalBtnScroll" class="btn-scroll">Post a Job</a>
+        `;
+
+        document.getElementById('openModalBtnScroll')
+          .addEventListener('click', e => {
+            e.preventDefault();
+            modal.classList.add('show');
+          });
+      } else {
+        navbar.classList.remove('scrolled');
+        if (leftNav) leftNav.style.display = 'flex';
+        auth.innerHTML = originalAuthHTML;
+
+        // rebind modal open buttons after restoring
+        const restoredBtns = [
+          document.getElementById('openModalBtn'),
+          document.getElementById('openModalBtn2')
+        ];
+        restoredBtns.forEach(btn => btn && btn.addEventListener('click', openModal));
+      }
+    });
+  </script>
+
+</body>
+</html>

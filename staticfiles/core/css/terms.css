@@ -1,0 +1,189 @@
+/* ----------------------------- */
+/* BlueHire | Terms & Conditions Page */
+/* ----------------------------- */
+
+body {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  margin: 0;
+  background-color: #f5f7fb;
+  color: #1a1a1a;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #004aad, #007bff);
+  padding: 15px 40px;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* --- identical to home.css --- */
+.logo img,
+.left-nav .logo img,
+.navbar .logo img,
+.brand-logo {
+  height: 90px !important;
+  width: auto !important;
+  max-height: none !important;
+  object-fit: contain;
+  display: block;
+  transition: 0.3s ease;
+}
+
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+.left-nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.navbar nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  margin: 0 12px;
+  transition: 0.3s ease;
+}
+
+.navbar nav a:hover {
+  color: #ffe66d;
+}
+
+.divider {
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 4px;
+}
+
+.auth a {
+  text-decoration: none;
+  color: #004aad;
+  background-color: #fff;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.auth a:hover {
+  background-color: #ffe66d;
+  color: #004aad;
+}
+
+/* HERO SECTION */
+.hero {
+  background: linear-gradient(to right, #004aad, #0066cc);
+  color: #fff;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.6em;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.hero p {
+  font-size: 1.15em;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+  color: #e6e6e6;
+}
+
+/* TERMS CONTENT */
+.terms-content {
+  max-width: 950px;
+  margin: 50px auto;
+  padding: 40px 35px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  line-height: 1.8;
+}
+
+.terms-content h2 {
+  color: #004aad;
+  margin-top: 30px;
+  font-size: 1.5em;
+  border-left: 4px solid #004aad;
+  padding-left: 10px;
+}
+
+.terms-content p {
+  margin-top: 10px;
+  color: #333;
+  font-size: 1.05em;
+  text-align: justify;
+}
+
+.terms-content a {
+  color: #004aad;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.terms-content a:hover {
+  text-decoration: underline;
+}
+
+/* QUOTE STYLE SECTION */
+.terms-content blockquote {
+  background: #f0f5ff;
+  border-left: 5px solid #004aad;
+  margin: 20px 0;
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: #222;
+  font-style: italic;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 25px;
+  background-color: #004aad;
+  color: #fff;
+  margin-top: 60px;
+  font-size: 0.95em;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .navbar nav {
+    margin-top: 10px;
+  }
+
+  .hero {
+    padding: 60px 15px;
+  }
+
+  .hero h1 {
+    font-size: 2em;
+  }
+
+  .terms-content {
+    margin: 30px 15px;
+    padding: 25px 20px;
+  }
+
+  .terms-content h2 {
+    font-size: 1.3em;
+  }
+
+  .logo img {
+    height: 70px !important;
+  }
+}

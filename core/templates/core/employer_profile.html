@@ -1,0 +1,715 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | BlueHire</title>
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); background-attachment: fixed; min-height: 100vh; color: #333; overflow-x: hidden; }
+    
+    .navbar { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 16px 60px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 100; }
+    .navbar-left { display: flex; align-items: center; gap: 12px; }
+    .navbar .logo { height: 45px; border-radius: 8px; }
+    .navbar-brand { font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links { display: flex; align-items: center; gap: 25px; }
+    .nav-links a { color: #1e3a8a; text-decoration: none; font-weight: 600; font-size: 15px; transition: all 0.3s; padding: 8px 16px; border-radius: 8px; }
+    .nav-links a:hover { background: rgba(30, 58, 138, 0.1); }
+    .nav-links a.logout { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3); }
+    
+    .alert-box { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f; padding: 16px 60px; margin: 0; border-bottom: 2px solid #f59e0b; font-weight: 600; text-align: center; }
+    .alert-box a { color: #f59e0b; font-weight: 700; text-decoration: none; border-bottom: 2px solid #f59e0b; }
+    
+    .profile-layout { display: flex; gap: 30px; padding: 40px 60px 80px 60px; max-width: 1400px; margin: 0 auto; }
+    
+    .sidebar { width: 320px; background: white; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); padding: 30px; text-align: center; height: fit-content; flex-shrink: 0; align-self: flex-start; }
+    .profile-pic { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid #1e3a8a; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3); }
+    .upload-btn { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 600; display: inline-block; margin-bottom: 20px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3); }
+    .upload-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30, 58, 138, 0.4); }
+    .upload-btn input { display: none; }
+    .sidebar h3 { margin: 10px 0 5px; font-size: 22px; color: #1a1a1a; font-weight: 700; }
+    .sidebar > p { color: #6c757d; font-size: 15px; margin-bottom: 20px; }
+    .sidebar-links { text-align: left; margin: 20px 0; }
+    .sidebar-links a { display: flex; align-items: center; gap: 12px; color: #1e3a8a; text-decoration: none; padding: 12px 16px; font-weight: 600; border-radius: 8px; transition: all 0.3s; margin-bottom: 8px; }
+    .sidebar-links a:hover { background: linear-gradient(135deg, rgba(30, 58, 138, 0.1), rgba(59, 130, 246, 0.1)); transform: translateX(4px); }
+    .progress-section { margin-top: 25px; padding-top: 25px; border-top: 2px solid #f3f5f9; }
+    .progress-label { font-size: 14px; color: #6c757d; margin-bottom: 10px; font-weight: 600; }
+    .progress { background: #f3f5f9; border-radius: 10px; height: 12px; overflow: hidden; margin-bottom: 8px; }
+    .progress div { background: linear-gradient(135deg, #1e3a8a, #3b82f6); height: 100%; transition: width 0.5s; border-radius: 10px; }
+    .progress-text { font-size: 18px; font-weight: 700; color: #1e3a8a; }
+    
+    .main-panel { flex: 1; min-width: 0; overflow: visible; }
+    .card { background: white; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); padding: 30px; margin-bottom: 30px; width: 100%; }
+    .card h2 { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+    
+    label { font-weight: 600; display: block; margin-bottom: 8px; color: #495057; font-size: 14px; }
+    input, select, textarea { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; margin-bottom: 20px; font-size: 15px; transition: all 0.3s; background: #f8f9fa; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #1e3a8a; background: white; box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1); }
+    textarea { resize: vertical; min-height: 100px; }
+    
+    .btn { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; border: none; padding: 12px 28px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4); }
+    .btn-outline { border: 2px solid #1e3a8a; color: #1e3a8a; background: white; padding: 10px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; display: inline-block; transition: all 0.3s; font-size: 15px; }
+    .btn-outline:hover { background: #1e3a8a; color: white; }
+    
+    .document-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
+    .document-card { background: linear-gradient(135deg, #f8f9ff 0%, #f0f3ff 100%); border-radius: 12px; padding: 24px; text-align: center; border: 2px solid #e0e8f0; transition: all 0.3s; }
+    .document-card:hover { border-color: #1e3a8a; box-shadow: 0 8px 24px rgba(30, 58, 138, 0.15); transform: translateY(-2px); }
+    .document-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .document-icon i { font-size: 28px; color: white; }
+    .document-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .document-status { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+    .status-uploaded { background: #d4edda; color: #155724; }
+    .status-missing { background: #f8d7da; color: #721c24; }
+    .doc-link { color: #1e3a8a; font-weight: 600; text-decoration: none; }
+    .doc-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-left: 10px; text-transform: uppercase; }
+    .doc-status.verified { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; }
+    .doc-status.rejected { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #7f1d1d; }
+    .doc-status.pending { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e3a8a; }
+    
+    .alert-info { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e3a8a; padding: 16px 20px; border-radius: 12px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border: 2px solid #93c5fd; }
+    .alert-warning { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f; padding: 16px 20px; border-radius: 12px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border: 2px solid #fbbf24; }
+    
+    .security-info { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #1e3a8a; }
+    .verified-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; border-radius: 8px; font-weight: 600; font-size: 14px; margin-left: 10px; }
+    .unverified-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: linear-gradient(135deg, #fee2e2, #fecaca); color: #7f1d1d; border-radius: 8px; font-weight: 600; font-size: 14px; margin-left: 10px; }
+    .id-upload-section { background: linear-gradient(135deg, #f8f9ff 0%, #f0f3ff 100%); border-radius: 16px; padding: 30px; margin-bottom: 24px; border: 2px dashed #1e3a8a; }
+    .upload-step { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-left: 4px solid #1e3a8a; transition: all 0.3s; }
+    .upload-step.disabled { opacity: 0.5; pointer-events: none; }
+    .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .step-number { width: 36px; height: 36px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+    .step-title { font-size: 18px; font-weight: 700; color: #1a1a1a; }
+    .upload-area { border: 2px dashed #cbd5e0; border-radius: 12px; padding: 30px; text-align: center; transition: all 0.3s; background: #f8f9fa; cursor: pointer; }
+    .upload-area:hover { border-color: #1e3a8a; background: #f0f3ff; }
+    .upload-area.has-file { border-color: #28a745; background: #f0fff4; border-style: solid; }
+    .upload-icon { font-size: 48px; color: #cbd5e0; margin-bottom: 16px; }
+    .upload-area.has-file .upload-icon { color: #28a745; }
+    .upload-text { color: #6c757d; font-size: 15px; margin-bottom: 8px; }
+    .upload-subtext { color: #adb5bd; font-size: 13px; }
+    .file-preview { display: none; margin-top: 16px; padding: 16px; background: white; border-radius: 8px; align-items: center; gap: 12px; }
+    .file-preview.active { display: flex; }
+    .file-preview i { font-size: 24px; color: #28a745; }
+    .file-info { flex: 1; }
+    .file-name { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .file-size { font-size: 13px; color: #6c757d; }
+    .remove-file { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.3s; }
+    .remove-file:hover { background: #c82333; }
+    
+    @media (max-width: 768px) { 
+      .navbar { flex-direction: column; padding: 16px 20px; gap: 16px; } 
+      .navbar-left { justify-content: center; }
+      .nav-links { flex-wrap: wrap; justify-content: center; }
+      .profile-layout { flex-direction: column; padding: 20px 20px 60px 20px; } 
+      .sidebar { width: 100%; position: relative; top: 0; }
+      .document-grid { grid-template-columns: 1fr; }
+      .card { padding: 20px; }
+      .card h2 { font-size: 22px; }
+      .alert-box { padding: 12px 20px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="navbar-left">
+    <img src="{% static 'core/image/logo.png' %}" class="logo" alt="BlueHire">
+    <span class="navbar-brand">BlueHire</span>
+  </div>
+  <div class="nav-links">
+    <a href="{% url 'employer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{% url 'logout_view' %}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+</header>
+
+{% if not user.is_verified %}
+<div class="alert-box">
+  <i class="fas fa-exclamation-triangle"></i> Your email is not verified yet – <a href="{% url 'resend_verification' %}">verify now</a>
+</div>
+{% endif %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert-box"><i class="fas fa-check-circle"></i> {{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<main class="profile-layout">
+  <aside class="sidebar">
+    {% if employer.employer_type == "Company" %}
+      {% if employer.company_logo %}
+        <img src="{{ employer.company_logo.url }}" class="profile-pic" alt="{{ employer.company_name }}">
+      {% else %}
+        <img src="{% static 'core/image/default_company.png' %}" class="profile-pic" alt="Default Company">
+      {% endif %}
+    {% else %}
+      {% if employer.profile_photo %}
+        <img src="{{ employer.profile_photo.url }}" class="profile-pic" alt="Profile">
+      {% else %}
+        <img src="{% static 'core/image/default-avatar.png' %}" class="profile-pic" alt="Default Avatar">
+      {% endif %}
+    {% endif %}
+    
+    <form id="photo-form" action="{% url 'update_employer_profile' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label class="upload-btn">
+        <i class="fas fa-camera"></i> Change Photo
+        {% if employer.employer_type == "Company" %}
+          <input type="file" name="company_logo" accept="image/*" onchange="this.form.submit()">
+        {% else %}
+          <input type="file" name="profile_photo" accept="image/*" onchange="this.form.submit()">
+        {% endif %}
+      </label>
+    </form>
+
+    <h3>
+      {% if employer.employer_type == "Company" %}
+        {{ employer.company_name|default:"Your Company" }}
+      {% else %}
+        {{ user.first_name }} {{ user.last_name }}
+      {% endif %}
+    </h3>
+    <p>@{{ user.username }}</p>
+    {% if user.phone %}
+      <p style="font-size:13px;color:#6c757d;margin-top:0.4rem;"><i class="fas fa-phone"></i> {{ user.phone }}</p>
+    {% else %}
+      <p style="font-size:13px;color:#94a3b8;margin-top:0.4rem;"><i class="fas fa-phone-slash"></i> No phone number yet</p>
+    {% endif %}
+
+    <div class="sidebar-links">
+      <a href="#overview"><i class="fas fa-user"></i> Overview</a>
+      <a href="#documents"><i class="fas fa-file-alt"></i> Documents</a>
+      <a href="#security"><i class="fas fa-shield-alt"></i> Security</a>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-label">Profile Completion</div>
+      <div class="progress">
+        <div style="width:{{ employer.profile_completion }}%"></div>
+      </div>
+      <div class="progress-text">{{ employer.profile_completion }}%</div>
+    </div>
+  </aside>
+
+  <section class="main-panel">
+
+    <div class="card" id="overview">
+      {% if employer.employer_type == "Company" %}
+        <h2><i class="fas fa-building"></i> Company Overview</h2>
+      {% else %}
+        <h2><i class="fas fa-user-circle"></i> Personal Overview</h2>
+      {% endif %}
+      
+      <form action="{% url 'update_employer_profile' %}" method="POST">
+        {% csrf_token %}
+        
+        <div class="alert-info">
+          <i class="fas fa-info-circle"></i>
+          <span><strong>Edit Your Name:</strong> You can update your first name, last name, and phone number below (especially useful for Google/Gmail sign-in users)</span>
+        </div>
+
+        <label><i class="fas fa-user"></i> First Name</label>
+        <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="Your first name" required>
+        
+        <label><i class="fas fa-user"></i> Last Name</label>
+        <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="Your last name" required>
+        
+        <label><i class="fas fa-phone"></i> Mobile Number</label>
+        <input type="text" name="phone" value="{{ user.phone|default:'' }}" placeholder="09XXXXXXXXX">
+        
+        <hr style="margin: 25px 0; border: none; border-top: 2px solid #f3f5f9;">
+        
+        {% if employer.employer_type == "Company" %}
+          <label><i class="fas fa-building"></i> Company Name</label>
+          <input type="text" name="company_name" value="{{ employer.company_name }}" placeholder="Enter company name">
+          
+          <label><i class="fas fa-info-circle"></i> Company Description</label>
+          <textarea name="company_description" rows="4" placeholder="Tell us about your company...">{{ employer.company_description }}</textarea>
+          
+          <label><i class="fas fa-map-marker-alt"></i> Company Address</label>
+          <input type="text" name="company_address" value="{{ employer.company_address }}" placeholder="Enter complete address">
+        {% else %}
+          <label><i class="fas fa-map-marker-alt"></i> Address</label>
+          <input type="text" name="personal_address" value="{{ employer.personal_address|default:'' }}" placeholder="Enter your address">
+          
+          <label><i class="fas fa-info-circle"></i> About You</label>
+          <textarea name="bio" rows="4" placeholder="Tell us about yourself...">{{ employer.bio|default:'' }}</textarea>
+        {% endif %}
+        
+        <button type="submit" class="btn"><i class="fas fa-save"></i> Save Changes</button>
+      </form>
+    </div>
+
+    <div class="card" id="documents">
+      <h2><i class="fas fa-file-upload"></i> Required Documents</h2>
+      
+      {% if employer.employer_type == "Company" %}
+        <div class="alert-info">
+          <i class="fas fa-info-circle"></i>
+          <span>Please upload both Business Permit and Company ID for verification</span>
+        </div>
+      {% else %}
+        <div class="alert-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Please upload all required clearances and valid ID for verification</span>
+        </div>
+      {% endif %}
+
+      <form id="document-form" action="{% url 'upload_employer_documents' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if employer.employer_type == "Company" %}
+          <div class="document-grid">
+            <div class="document-card">
+              <div class="document-icon">
+                <i class="fas fa-certificate"></i>
+              </div>
+              <div class="document-title">Business Permit</div>
+              {% if employer.business_permit %}
+                <span class="document-status status-uploaded">Uploaded ✓</span>
+                <a href="{{ employer.business_permit.url }}" target="_blank" class="doc-link" style="display:block; margin-bottom:12px;">
+                  <i class="fas fa-eye"></i> View Document
+                </a>
+                <span class="doc-status {% if employer.business_permit_status|lower in 'approved verified' %}verified{% elif employer.business_permit_status|lower == 'rejected' %}rejected{% else %}pending{% endif %}">
+                  <i class="fas fa-{% if employer.business_permit_status|lower in 'approved verified' %}check-circle{% elif employer.business_permit_status|lower == 'rejected' %}times-circle{% else %}clock{% endif %}"></i>
+                  {{ employer.business_permit_status|default:"Pending" }}
+                </span>
+              {% else %}
+                <span class="document-status status-missing">Not Uploaded</span>
+              {% endif %}
+              <input type="file" name="business_permit" id="businessPermitFile" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+              <label for="businessPermitFile" class="btn" style="width:100%; margin-top:12px; cursor:pointer; margin-bottom:0;">
+                <i class="fas fa-upload"></i> {% if employer.business_permit %}Replace{% else %}Upload{% endif %}
+              </label>
+            </div>
+
+            <div class="document-card">
+              <div class="document-icon">
+                <i class="fas fa-id-card"></i>
+              </div>
+              <div class="document-title">Company ID</div>
+              {% if employer.company_id_file %}
+                <span class="document-status status-uploaded">Uploaded ✓</span>
+                <a href="{{ employer.company_id_file.url }}" target="_blank" class="doc-link" style="display:block; margin-bottom:12px;">
+                  <i class="fas fa-eye"></i> View Document
+                </a>
+                <span class="doc-status {% if employer.company_id_status|lower in 'approved verified' %}verified{% elif employer.company_id_status|lower == 'rejected' %}rejected{% else %}pending{% endif %}">
+                  <i class="fas fa-{% if employer.company_id_status|lower in 'approved verified' %}check-circle{% elif employer.company_id_status|lower == 'rejected' %}times-circle{% else %}clock{% endif %}"></i>
+                  {{ employer.company_id_status|default:"Pending" }}
+                </span>
+              {% else %}
+                <span class="document-status status-missing">Not Uploaded</span>
+              {% endif %}
+              <input type="file" name="company_id_file" id="companyIdFile" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+              <label for="companyIdFile" class="btn" style="width:100%; margin-top:12px; cursor:pointer; margin-bottom:0;">
+                <i class="fas fa-upload"></i> {% if employer.company_id_file %}Replace{% else %}Upload{% endif %}
+              </label>
+            </div>
+          </div>
+
+        {% else %}
+          <div class="document-grid">
+            <div class="document-card">
+              <div class="document-icon">
+                <i class="fas fa-certificate"></i>
+              </div>
+              <div class="document-title">Barangay Clearance</div>
+              {% if employer.barangay_clearance %}
+                <span class="document-status status-uploaded">Uploaded ✓</span>
+                <a href="{{ employer.barangay_clearance.url }}" target="_blank" class="doc-link" style="display:block; margin-bottom:12px;">
+                  <i class="fas fa-eye"></i> View Document
+                </a>
+                <span class="doc-status {% if employer.barangay_status|lower in 'approved verified' %}verified{% elif employer.barangay_status|lower == 'rejected' %}rejected{% else %}pending{% endif %}">
+                  <i class="fas fa-{% if employer.barangay_status|lower in 'approved verified' %}check-circle{% elif employer.barangay_status|lower == 'rejected' %}times-circle{% else %}clock{% endif %}"></i>
+                  {{ employer.barangay_status|default:"Pending" }}
+                </span>
+              {% else %}
+                <span class="document-status status-missing">Not Uploaded</span>
+              {% endif %}
+              <input type="file" name="barangay_clearance" id="barangayFile" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+              <label for="barangayFile" class="btn" style="width:100%; margin-top:12px; cursor:pointer; margin-bottom:0;">
+                <i class="fas fa-upload"></i> {% if employer.barangay_clearance %}Replace{% else %}Upload{% endif %}
+              </label>
+            </div>
+
+            <div class="document-card">
+              <div class="document-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div class="document-title">Police Clearance</div>
+              {% if employer.police_clearance %}
+                <span class="document-status status-uploaded">Uploaded ✓</span>
+                <a href="{{ employer.police_clearance.url }}" target="_blank" class="doc-link" style="display:block; margin-bottom:12px;">
+                  <i class="fas fa-eye"></i> View Document
+                </a>
+                <span class="doc-status {% if employer.police_status|lower in 'approved verified' %}verified{% elif employer.police_status|lower == 'rejected' %}rejected{% else %}pending{% endif %}">
+                  <i class="fas fa-{% if employer.police_status|lower in 'approved verified' %}check-circle{% elif employer.police_status|lower == 'rejected' %}times-circle{% else %}clock{% endif %}"></i>
+                  {{ employer.police_status|default:"Pending" }}
+                </span>
+              {% else %}
+                <span class="document-status status-missing">Not Uploaded</span>
+              {% endif %}
+              <input type="file" name="police_clearance" id="policeFile" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+              <label for="policeFile" class="btn" style="width:100%; margin-top:12px; cursor:pointer; margin-bottom:0;">
+                <i class="fas fa-upload"></i> {% if employer.police_clearance %}Replace{% else %}Upload{% endif %}
+              </label>
+            </div>
+
+            <div class="document-card">
+              <div class="document-icon">
+                <i class="fas fa-user-shield"></i>
+              </div>
+              <div class="document-title">NBI Clearance</div>
+              {% if employer.nbi_clearance %}
+                <span class="document-status status-uploaded">Uploaded ✓</span>
+                <a href="{{ employer.nbi_clearance.url }}" target="_blank" class="doc-link" style="display:block; margin-bottom:12px;">
+                  <i class="fas fa-eye"></i> View Document
+                </a>
+                <span class="doc-status {% if employer.nbi_status|lower in 'approved verified' %}verified{% elif employer.nbi_status|lower == 'rejected' %}rejected{% else %}pending{% endif %}">
+                  <i class="fas fa-{% if employer.nbi_status|lower in 'approved verified' %}check-circle{% elif employer.nbi_status|lower == 'rejected' %}times-circle{% else %}clock{% endif %}"></i>
+                  {{ employer.nbi_status|default:"Pending" }}
+                </span>
+              {% else %}
+                <span class="document-status status-missing">Not Uploaded</span>
+              {% endif %}
+              <input type="file" name="nbi_clearance" id="nbiFile" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+              <label for="nbiFile" class="btn" style="width:100%; margin-top:12px; cursor:pointer; margin-bottom:0;">
+                <i class="fas fa-upload"></i> {% if employer.nbi_clearance %}Replace{% else %}Upload{% endif %}
+              </label>
+            </div>
+          </div>
+        {% endif %}
+      </form>
+
+      {% if employer.employer_type != "Company" %}
+        <hr style="margin: 35px 0; border: none; border-top: 2px solid #f3f5f9;">
+        
+        <h2 style="margin-top: 40px;"><i class="fas fa-id-card-clip"></i> Valid ID Upload</h2>
+        
+        <div class="alert-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Please select your ID type first, then upload both the front and back side of your ID</span>
+        </div>
+
+        <form id="id-upload-form" action="{% url 'upload_employer_documents' %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          
+          <div class="id-upload-section">
+            <div class="upload-step" id="step1">
+              <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-title">Select ID Type</div>
+              </div>
+              <select name="valid_id_type" id="idTypeSelect" required>
+                <option value="">Choose ID Type</option>
+                <option value="PhilHealth" {% if employer.valid_id_type == 'PhilHealth' %}selected{% endif %}>PhilHealth ID</option>
+                <option value="SSS" {% if employer.valid_id_type == 'SSS' %}selected{% endif %}>SSS ID</option>
+                <option value="Pag-IBIG" {% if employer.valid_id_type == 'Pag-IBIG' %}selected{% endif %}>Pag-IBIG ID</option>
+                <option value="Driver's License" {% if employer.valid_id_type == "Driver's License" %}selected{% endif %}>Driver's License</option>
+                <option value="National ID" {% if employer.valid_id_type == 'National ID' %}selected{% endif %}>National ID (PhilSys)</option>
+                <option value="Passport" {% if employer.valid_id_type == 'Passport' %}selected{% endif %}>Passport</option>
+                <option value="Voter's ID" {% if employer.valid_id_type == "Voter's ID" %}selected{% endif %}>Voter's ID</option>
+                <option value="Postal ID" {% if employer.valid_id_type == "Postal ID" %}selected{% endif %}>Postal ID</option>
+                <option value="PRC ID" {% if employer.valid_id_type == "PRC ID" %}selected{% endif %}>PRC ID</option>
+              </select>
+            </div>
+
+            <div class="upload-step {% if not employer.valid_id_type %}disabled{% endif %}" id="step2">
+              <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-title">Upload Front Side of ID</div>
+              </div>
+              {% if employer.valid_id %}
+                <div class="alert-info">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Front side already uploaded. <a href="{{ employer.valid_id.url }}" target="_blank" class="doc-link">View Document</a></span>
+                </div>
+              {% endif %}
+              <div class="upload-area" id="frontUploadArea">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <div class="upload-text">Click to upload or drag and drop</div>
+                <div class="upload-subtext">PNG, JPG or PDF (Max 5MB)</div>
+                <input type="file" name="valid_id" id="frontFileInput" accept="image/*,.pdf" style="display: none;">
+              </div>
+              <div class="file-preview" id="frontPreview">
+                <i class="fas fa-check-circle"></i>
+                <div class="file-info">
+                  <div class="file-name" id="frontFileName"></div>
+                  <div class="file-size" id="frontFileSize"></div>
+                </div>
+                <button type="button" class="remove-file" id="removeFront">Remove</button>
+              </div>
+            </div>
+
+            <div class="upload-step disabled" id="step3">
+              <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="step-title">Upload Back Side of ID</div>
+              </div>
+              {% if employer.valid_id_back %}
+                <div class="alert-info">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Back side already uploaded. <a href="{{ employer.valid_id_back.url }}" target="_blank" class="doc-link">View Document</a></span>
+                </div>
+              {% endif %}
+              <div class="upload-area" id="backUploadArea">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <div class="upload-text">Click to upload or drag and drop</div>
+                <div class="upload-subtext">PNG, JPG or PDF (Max 5MB)</div>
+                <input type="file" name="valid_id_back" id="backFileInput" accept="image/*,.pdf" style="display: none;">
+              </div>
+              <div class="file-preview" id="backPreview">
+                <i class="fas fa-check-circle"></i>
+                <div class="file-info">
+                  <div class="file-name" id="backFileName"></div>
+                  <div class="file-size" id="backFileSize"></div>
+                </div>
+                <button type="button" class="remove-file" id="removeBack">Remove</button>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn"><i class="fas fa-upload"></i> Upload ID Documents</button>
+        </form>
+
+        <hr style="margin: 35px 0; border: none; border-top: 2px solid #f3f5f9;">
+        
+        <h2 style="margin-top: 40px;"><i class="fas fa-file-contract"></i> Business Permit (SME)</h2>
+        
+        <div class="alert-info">
+          <i class="fas fa-info-circle"></i>
+          <span>Business permit is ONLY for SME employers as it is recommended for credibility.</span>
+        </div>
+
+        <form id="optional-docs-form" action="{% url 'upload_employer_documents' %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          
+          <div class="document-grid">
+            <div class="document-card">
+              <div class="document-icon">
+                <i class="fas fa-certificate"></i>
+              </div>
+              <div class="document-title">Business Permit (Optional)</div>
+              {% if employer.business_permit %}
+                <span class="document-status status-uploaded">Uploaded ✓</span>
+                <a href="{{ employer.business_permit.url }}" target="_blank" class="doc-link" style="display:block; margin-bottom:12px;">
+                  <i class="fas fa-eye"></i> View Document
+                </a>
+                <span class="doc-status {% if employer.business_permit_status|lower in 'approved verified' %}verified{% elif employer.business_permit_status|lower == 'rejected' %}rejected{% else %}pending{% endif %}">
+                  <i class="fas fa-{% if employer.business_permit_status|lower in 'approved verified' %}check-circle{% elif employer.business_permit_status|lower == 'rejected' %}times-circle{% else %}clock{% endif %}"></i>
+                  {{ employer.business_permit_status|default:"Pending" }}
+                </span>
+              {% else %}
+                <span class="document-status status-missing">Not Uploaded</span>
+              {% endif %}
+              <input type="file" name="business_permit" id="businessPermitOptional" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+              <label for="businessPermitOptional" class="btn" style="width:100%; margin-top:12px; cursor:pointer; margin-bottom:0;">
+                <i class="fas fa-upload"></i> {% if employer.business_permit %}Replace{% else %}Upload{% endif %}
+              </label>
+            </div>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+
+    <div class="card" id="security">
+      <h2><i class="fas fa-shield-alt"></i> Account Security</h2>
+      
+      <div class="security-info">
+        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> {{ user.email }}
+          {% if user.is_verified %}
+            <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
+          {% else %}
+            <span class="unverified-badge"><i class="fas fa-exclamation-circle"></i> Not Verified</span>
+          {% endif %}
+        </p>
+        
+        {% if not user.is_verified %}
+          <a href="{% url 'resend_verification' %}" class="btn-verify">
+            <i class="fas fa-paper-plane"></i> Send Verification Email
+          </a>
+        {% endif %}
+      </div>
+
+      <label><i class="fas fa-key"></i> Change Password</label>
+      <a href="{% url 'password_change' %}" class="btn-outline">
+        <i class="fas fa-lock"></i> Change Password
+      </a>
+    </div>
+
+  </section>
+</main>
+
+<script>
+// ID Upload Flow Logic
+const idTypeSelect = document.getElementById('idTypeSelect');
+const step2 = document.getElementById('step2');
+const step3 = document.getElementById('step3');
+const frontUploadArea = document.getElementById('frontUploadArea');
+const frontFileInput = document.getElementById('frontFileInput');
+const frontPreview = document.getElementById('frontPreview');
+const frontFileName = document.getElementById('frontFileName');
+const frontFileSize = document.getElementById('frontFileSize');
+const removeFront = document.getElementById('removeFront');
+const backUploadArea = document.getElementById('backUploadArea');
+const backFileInput = document.getElementById('backFileInput');
+const backPreview = document.getElementById('backPreview');
+const backFileName = document.getElementById('backFileName');
+const backFileSize = document.getElementById('backFileSize');
+const removeBack = document.getElementById('removeBack');
+
+// ✅ FIX: Check if front ID already exists on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if ID type is already selected
+  if (idTypeSelect && idTypeSelect.value) {
+    step2.classList.remove('disabled');
+  }
+  
+  // ✅ Check if front side already uploaded (from database)
+  const frontExists = {% if employer.valid_id %}true{% else %}false{% endif %};
+  if (frontExists && step3) {
+    step3.classList.remove('disabled');
+  }
+});
+
+// Enable step 2 when ID type is selected
+if (idTypeSelect) {
+  idTypeSelect.addEventListener('change', function() {
+    if (this.value) {
+      step2.classList.remove('disabled');
+    } else {
+      step2.classList.add('disabled');
+      step3.classList.add('disabled');
+    }
+  });
+}
+
+// Front side upload
+if (frontUploadArea) {
+  frontUploadArea.addEventListener('click', () => frontFileInput.click());
+
+  frontFileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      frontUploadArea.classList.add('has-file');
+      frontPreview.classList.add('active');
+      frontFileName.textContent = file.name;
+      frontFileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+      step3.classList.remove('disabled');
+    }
+  });
+
+  removeFront.addEventListener('click', (e) => {
+    e.stopPropagation();
+    frontFileInput.value = '';
+    frontUploadArea.classList.remove('has-file');
+    frontPreview.classList.remove('active');
+    step3.classList.add('disabled');
+  });
+}
+
+// Back side upload
+if (backUploadArea) {
+  backUploadArea.addEventListener('click', () => backFileInput.click());
+
+  backFileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      backUploadArea.classList.add('has-file');
+      backPreview.classList.add('active');
+      backFileName.textContent = file.name;
+      backFileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+    }
+  });
+
+  removeBack.addEventListener('click', (e) => {
+    e.stopPropagation();
+    backFileInput.value = '';
+    backUploadArea.classList.remove('has-file');
+    backPreview.classList.remove('active');
+  });
+}
+
+// Drag and drop support
+[frontUploadArea, backUploadArea].forEach(area => {
+  if (area) {
+    area.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      area.style.borderColor = '#1e3a8a';
+      area.style.background = '#f0f3ff';
+    });
+
+    area.addEventListener('dragleave', () => {
+      area.style.borderColor = '#cbd5e0';
+      area.style.background = '#f8f9fa';
+    });
+
+    area.addEventListener('drop', (e) => {
+      e.preventDefault();
+      area.style.borderColor = '#cbd5e0';
+      area.style.background = '#f8f9fa';
+      
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const input = area.querySelector('input[type="file"]');
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        input.files = dataTransfer.files;
+        input.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+});
+
+// Rest of auto-submit code...
+const clearanceInputs = document.querySelectorAll('#document-form input[type="file"]:not(#frontFileInput):not(#backFileInput)');
+
+clearanceInputs.forEach(input => {
+  input.addEventListener('change', function() {
+    if (this.files.length > 0) {
+      const label = this.closest('label') || this.parentElement.querySelector('label[for="' + this.id + '"]');
+      if (label) {
+        label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+      }
+      
+      this.closest('form').submit();
+    }
+  });
+});
+
+const businessPermitOptional = document.getElementById('businessPermitOptional');
+if (businessPermitOptional) {
+  businessPermitOptional.addEventListener('change', function() {
+    if (this.files.length > 0) {
+      const label = this.closest('label') || this.parentElement.querySelector('label[for="' + this.id + '"]');
+      if (label) {
+        label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+      }
+      
+      this.closest('form').submit();
+    }
+  });
+}
+
+const companyInputs = ['businessPermitFile', 'companyIdFile'];
+companyInputs.forEach(id => {
+  const input = document.getElementById(id);
+  if (input) {
+    input.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        const label = this.closest('label') || this.parentElement.querySelector('label[for="' + this.id + '"]');
+        if (label) {
+          label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        }
+        
+        this.closest('form').submit();
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>

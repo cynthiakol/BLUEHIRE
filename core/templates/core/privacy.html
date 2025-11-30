@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | BlueHire</title>
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'core/css/style_base.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- === NAVBAR === -->
+  <header class="navbar">
+    <div class="left-nav">
+      <div class="logo">
+        <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+      </div>
+      <nav>
+        <a href="{% url 'homepage' %}">Home</a><span class="divider">|</span>
+        <a href="{% url 'terms' %}">Terms</a><span class="divider">|</span>
+        <a href="{% url 'help_center' %}">Help Center?</a>
+      </nav>
+    </div>
+
+    <div class="auth">
+      <a href="/signin/?show=signin">Sign in</a>
+    </div>
+  </header>
+
+  <!-- === PAGE HEADER === -->
+  <section class="page-header" style="background:#2563eb; color:white; text-align:center; padding:4rem 1rem;">
+    <h1 style="font-size:2.5rem; margin-bottom:0.5rem;">Privacy Policy</h1>
+    <p>Learn how BlueHire protects and uses your data responsibly</p>
+  </section>
+
+  <!-- === PRIVACY CONTENT === -->
+  <section class="content-section" style="max-width:950px; margin:auto; padding:3rem 2rem; background:#fff;">
+    <p><strong>Last Updated:</strong> October 2025</p>
+
+    <p>At <strong>BlueHire</strong>, we value your privacy and are committed to safeguarding your personal information. This Privacy Policy explains how we collect, use, and protect data when you use our platform or related services.</p>
+
+    <h3>1. Information We Collect</h3>
+    <p>We collect personal details such as your name, contact information, resume, job listings, and verification documents. These details help facilitate job matching and ensure safe interactions between employers and applicants.</p>
+
+    <h3>2. Use of Information</h3>
+    <p>We use collected data to:</p>
+    <ul style="margin-left:2rem;">
+      <li>Authenticate and verify users</li>
+      <li>Process job postings and applications</li>
+      <li>Improve BlueHire’s platform features and experience</li>
+      <li>Comply with academic research requirements as part of the capstone project</li>
+    </ul>
+
+    <h3>3. Data Sharing</h3>
+    <p>BlueHire does not sell or rent your information. Data may only be shared with authorized academic supervisors or research partners for system evaluation purposes under confidentiality agreements.</p>
+
+    <h3>4. Data Retention</h3>
+    <p>Data collected is retained only for the duration of the academic project and securely deleted once the evaluation phase ends.</p>
+
+    <h3>5. Your Rights</h3>
+    <p>Users may request data updates or deletion by contacting the project team. Requests are handled according to ethical standards and project guidelines.</p>
+
+    <h3>6. Security</h3>
+    <p>We implement safety measures such as data encryption and access restrictions. However, as this is a student research platform, it does not operate as a commercial-grade service.</p>
+
+    <h3>7. Policy Updates</h3>
+    <p>We may revise this policy from time to time. Updates will be reflected on this page with the new effective date.</p>
+
+    <h3>8. Contact Us</h3>
+    <p>For questions about this Privacy Policy, reach out via our Help Center or project contact email.</p>
+
+    <p style="margin-top:2rem;">
+      <a href="{% url 'terms' %}" style="color:#2563eb; font-weight:600; text-decoration:none;">Read our Terms & Conditions</a>
+    </p>
+  </section>
+
+  <!-- === FOOTER === -->
+  <footer class="footer">
+    <p>© 2025 BlueHire. All Rights Reserved. | Capstone Project</p>
+  </footer>
+
+</body>
+</html>

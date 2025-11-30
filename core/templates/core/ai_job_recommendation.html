@@ -1,0 +1,517 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Job Recommendations | BlueHire</title>
+  
+  <style>
+    /* ————— GLOBAL ————— */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    /* ————— NAVBAR ————— */
+    nav.navbar {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      padding: 16px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .navbar .logo img {
+      width: 45px;
+      height: 45px;
+      border-radius: 8px;
+    }
+    .navbar .logo span {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    nav.navbar a.back-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    nav.navbar a.back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* ————— PAGE CONTENT ————— */
+    main.dashboard {
+      padding: 40px 60px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    main.dashboard h2 {
+      font-size: 36px;
+      color: white;
+      margin-bottom: 8px;
+      font-weight: 700;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    main.dashboard > p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.95);
+      margin-bottom: 32px;
+    }
+
+    /* ————— EMPTY STATES ————— */
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    .empty-state h3 {
+      font-size: 28px;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+    }
+    .empty-state p {
+      font-size: 16px;
+      color: #6c757d;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .empty-state .steps {
+      text-align: left;
+      max-width: 500px;
+      margin: 0 auto 32px;
+      background: #f8f9fa;
+      padding: 24px;
+      border-radius: 12px;
+    }
+    .empty-state .steps h4 {
+      color: #667eea;
+      margin-bottom: 12px;
+    }
+    .empty-state .steps ol {
+      margin-left: 20px;
+    }
+    .empty-state .steps li {
+      margin-bottom: 8px;
+      color: #495057;
+    }
+    .empty-state a {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    .empty-state a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* ————— JOB CARDS ————— */
+    .jobs-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 24px;
+    }
+    .job-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .job-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.25);
+      border-color: #667eea;
+    }
+
+    /* Top border based on match */
+    .job-card.excellent-match::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #28a745, #20c997);
+    }
+    .job-card.good-match::before {
+      background: linear-gradient(90deg, #17a2b8, #138496);
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .job-card.medium-match::before {
+      background: linear-gradient(90deg, #ffc107, #ffb300);
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .job-card.weak-match::before {
+      background: linear-gradient(90deg, #6c757d, #5a6268);
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+
+    .job-card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f3f5f9;
+    }
+    .job-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+      flex: 1;
+    }
+
+    .match-score-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 80px;
+    }
+    .match-score {
+      font-size: 28px;
+      font-weight: 700;
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .score-excellent { background: linear-gradient(135deg, #28a745, #20c997); }
+    .score-good      { background: linear-gradient(135deg, #17a2b8, #138496); }
+    .score-fair      { background: linear-gradient(135deg, #ffc107, #ffb300); }
+    .score-weak      { background: linear-gradient(135deg, #6c757d, #5a6268); }
+
+    .match-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #6c757d;
+    }
+
+    .job-info { margin-bottom: 16px; }
+    .info-row {
+      display: flex;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: #495057;
+    }
+    .info-label {
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      min-width: 100px;
+    }
+    .info-value { flex: 1; }
+
+    .job-description {
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .posted-by {
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .posted-by-label {
+      font-size: 12px;
+      color: #6c757d;
+      margin-bottom: 4px;
+    }
+    .posted-by-name {
+      font-weight: 700;
+      font-size: 16px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 12px;
+      margin-left: 8px;
+      color: white;
+    }
+    .badge-company { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .badge-personal { background: linear-gradient(135deg, #28a745, #218838); }
+
+    .availability-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .availability-badge {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 12px;
+      color: white;
+    }
+    .badge-available { background: linear-gradient(135deg, #28a745, #20c997); }
+    .badge-unavailable { background: linear-gradient(135deg, #6c757d, #5a6268); }
+
+    .job-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      text-align: center;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+    .btn-primary:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      .jobs-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ————— NAVBAR ————— -->
+<nav class="navbar">
+  <div class="logo">
+    <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo">
+    <span>BlueHire</span>
+  </div>
+  <a href="{% url 'jobseeker_dashboard' %}" class="back-btn">← Back to Dashboard</a>
+</nav>
+
+<!-- ————— MAIN DASHBOARD ————— -->
+<main class="dashboard">
+
+  <h2>AI-Powered Job Recommendations</h2>
+  <p>Jobs ranked by how well they match your skills and preferences.</p>
+
+  {% if not has_profile_data %}
+
+    <!-- ————— EMPTY STATE: NO PROFILE DATA ————— -->
+    <div class="empty-state">
+      <h3>👋 Welcome Lets Get Started</h3>
+      <p>To receive personalized job recommendations please select your preferred job types first</p>
+
+      <div class="steps">
+        <h4>📋 Quick Setup</h4>
+        <ol>
+          <li>Go to your Profile</li>
+          <li>Select Preferred Job Types</li>
+          <li>Return here to view results</li>
+        </ol>
+      </div>
+
+      <a href="{% url 'jobseeker_profile' %}">Set Up Your Profile</a>
+    </div>
+
+  {% elif not recommendations %}
+
+    <!-- ————— EMPTY STATE: NO RECOMMENDATIONS ————— -->
+    <div class="empty-state">
+      <h3>😔 No Matching Jobs Found</h3>
+      <p>Try updating your skills or preferences to see more opportunities</p>
+      <a href="{% url 'jobseeker_profile' %}">Update Profile</a>
+    </div>
+
+  {% else %}
+
+    <!-- ————— JOB LIST ————— -->
+    <div class="jobs-container">
+
+      {% for job, score in recommendations %}
+      <div class="job-card 
+        {% if score >= 70 %}excellent-match
+        {% elif score >= 50 %}good-match
+        {% elif score >= 30 %}medium-match
+        {% else %}weak-match{% endif %}
+      ">
+
+        <!-- HEADER -->
+        <div class="job-card-header">
+          <h3 class="job-title">{{ job.title|default:"(Untitled Job)" }}</h3>
+
+          <div class="match-score-container">
+            <div class="match-score 
+              {% if score >= 70 %}score-excellent
+              {% elif score >= 50 %}score-good
+              {% elif score >= 30 %}score-fair
+              {% else %}score-weak{% endif %}
+            ">
+              {{ score|floatformat:0 }}%
+            </div>
+            <span class="match-label">
+              {% if score >= 70 %}Excellent
+              {% elif score >= 50 %}Good
+              {% elif score >= 30 %}Fair
+              {% else %}Weak{% endif %}
+            </span>
+          </div>
+        </div>
+
+        <!-- POSTED BY -->
+        {% if job.employer %}
+        <div class="posted-by">
+          <div class="posted-by-label">Posted by</div>
+          <a href="{% url 'employer_public_profile' job.employer.employer_id %}" class="posted-by-name">
+
+            {% if job.employer.employer_type == "Company" %}
+              {{ job.employer.company_name|default:job.employer.user.username }}
+            {% else %}
+              {{ job.employer.user.first_name }} {{ job.employer.user.last_name }}
+            {% endif %}
+
+          </a>
+
+          {% if job.employer.employer_type == "Company" %}
+            <span class="badge badge-company">Company</span>
+          {% else %}
+            <span class="badge badge-personal">Personal</span>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- JOB INFO -->
+        <div class="job-info">
+
+          <div class="info-row">
+            <span class="info-label">Category</span>
+            <span class="info-value">{{ job.category|default:"N/A" }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Job Type</span>
+            <span class="info-value">{{ job.job_type|default:"Not specified" }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Location</span>
+            <span class="info-value">{{ job.location|default:"Not specified" }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Salary</span>
+            <span class="info-value">{{ job.salary|default:"Not disclosed" }}</span>
+          </div>
+
+        </div>
+
+        {% if job.description %}
+        <div class="job-description">
+          {{ job.description|linebreaks }}
+        </div>
+        {% endif %}
+
+        <!-- AVAILABILITY -->
+        <div class="availability-row">
+          <span>Status</span>
+          <span class="availability-badge 
+            {% if job.is_available %}badge-available
+            {% else %}badge-unavailable{% endif %}
+          ">
+            {% if job.is_available %}Available{% else %}Unavailable{% endif %}
+          </span>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="job-actions">
+
+          {% if not job.is_available %}
+            <button class="btn btn-primary" disabled>Unavailable</button>
+
+          {% elif job.id in applied_job_ids %}
+            
+            {% if applied_job_statuses|get_item:job.id == "Pending" %}
+              <button class="btn btn-primary" disabled style="background: linear-gradient(135deg, #ffc107, #ffb300);">Pending</button>
+
+            {% elif applied_job_statuses|get_item:job.id == "Approved" %}
+              <button class="btn btn-primary" disabled style="background: linear-gradient(135deg, #28a745, #20c997);">Approved</button>
+
+            {% else %}
+              <button class="btn btn-primary" disabled>Applied</button>
+            {% endif %}
+
+          {% else %}
+            <a href="{% url 'apply_job' job.id %}" class="btn btn-primary">Apply Now</a>
+          {% endif %}
+
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+
+  {% endif %}
+
+</main>
+
+</body>
+</html>

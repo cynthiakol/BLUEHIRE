@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Center | BlueHire</title>
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'core/css/style_base.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- === NAVBAR === -->
+  <header class="navbar">
+    <div class="left-nav">
+      <div class="logo">
+        <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+      </div>
+      <nav>
+        <a href="{% url 'homepage' %}">Find Jobs</a><span class="divider">|</span>
+        <a href="{% url 'employer' %}">Post a Job</a><span class="divider">|</span>
+        <a href="{% url 'privacy' %}">Privacy</a>
+      </nav>
+    </div>
+
+    <div class="auth">
+      <a href="/signin/?show=signin">Sign in</a>
+    </div>
+  </header>
+
+  <!-- === PAGE HEADER === -->
+  <section class="page-header" style="background:#2563eb; color:white; text-align:center; padding:4rem 1rem;">
+    <h1 style="font-size:2.5rem; margin-bottom:0.5rem;">Help Center</h1>
+    <p>Got questions? We’ve got answers</p>
+  </section>
+
+  <!-- === HELP CONTENT === -->
+  <section class="content-section" style="max-width:950px; margin:auto; padding:3rem 2rem; background:#fff;">
+    <h2 style="text-align:center; color:#2563eb; margin-bottom:2rem;">Frequently Asked Questions</h2>
+
+    <div style="margin-bottom:2rem;">
+      <h3>1. What is BlueHire?</h3>
+      <p>BlueHire is a student capstone project that connects Filipino job seekers with employers in blue-collar industries. It’s designed to demonstrate digital hiring solutions and does not facilitate actual employment transactions.</p>
+    </div>
+
+    <div style="margin-bottom:2rem;">
+      <h3>2. Is BlueHire free to use?</h3>
+      <p>Yes. BlueHire is entirely free since it’s for educational and research purposes only. No payments or commercial transactions are made through the system.</p>
+    </div>
+
+    <div style="margin-bottom:2rem;">
+      <h3>3. How do I post a job?</h3>
+      <p>Employers can click <strong>“Post a Job”</strong> on the homepage or employer page. You’ll be asked to sign in or create an account to continue.</p>
+    </div>
+
+    <div style="margin-bottom:2rem;">
+      <h3>4. Are applicants verified?</h3>
+      <p>Yes. Applicants must upload barangay, police, or NBI clearance to confirm their identity before appearing in search results.</p>
+    </div>
+
+    <div style="margin-bottom:2rem;">
+      <h3>5. Who can I contact for help?</h3>
+      <p>For any questions or technical concerns, please reach out through our contact form on the <a href="{% url 'contact' %}" style="color:#2563eb; font-weight:600;">Contact Page</a> or email our project support team.</p>
+    </div>
+
+    <hr style="margin:3rem 0; border:none; border-top:2px solid #e5e7eb;">
+
+    <h2 style="text-align:center; color:#2563eb; margin-bottom:2rem;">Need More Help?</h2>
+    <p style="text-align:center;">If you couldn’t find the answer you were looking for, our project team is happy to assist you.</p>
+    <p style="text-align:center; margin-top:1rem;">
+      <a href="{% url 'contact' %}" style="background:#facc15; padding:1rem 2rem; border-radius:8px; color:#1f2937; font-weight:700; text-decoration:none;">Contact Support</a>
+    </p>
+  </section>
+
+  <!-- === FOOTER === -->
+  <footer class="footer">
+    <p>© 2025 BlueHire. All Rights Reserved. | Capstone Project</p>
+  </footer>
+
+</body>
+</html>

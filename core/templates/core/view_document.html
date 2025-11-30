@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ doc_type }} | Document Viewer</title>
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background:#f4f6f9; margin:0; text-align:center; padding:20px; }
+    img, embed { max-width:90%; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2); }
+    a { display:inline-block; margin-top:20px; background:#007bff; color:white; padding:10px 18px; text-decoration:none; border-radius:6px; }
+    a:hover { background:#0056b3; }
+  </style>
+</head>
+<body>
+  <h2>{{ seeker.user.first_name }} {{ seeker.user.last_name }} — {{ doc_type }}</h2>
+  {% if file_url|lower|endswith:".pdf" %}
+    <embed src="{{ file_url }}" width="90%" height="600px" type="application/pdf">
+  {% else %}
+    <img src="{{ file_url }}" alt="{{ doc_type }}">
+  {% endif %}
+  <br>
+  <a href="{% url 'system_admin_dashboard' %}">← Back to Dashboard</a>
+</body>
+</html>

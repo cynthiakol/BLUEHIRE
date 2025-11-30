@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Your Role - BlueHire</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .role-card {
+      background: white;
+      border-radius: 20px;
+      padding: 50px 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 40px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #6c757d;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .user-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .user-info p {
+      margin: 5px 0;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .user-info strong {
+      color: #333;
+    }
+
+    .role-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .role-btn {
+      padding: 18px 25px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-weight: 600;
+      color: #495057;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .role-btn:hover {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .role-btn i {
+      font-size: 22px;
+    }
+
+    .cancel-link {
+      color: #6c757d;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cancel-link:hover {
+      color: #667eea;
+    }
+  </style>
+</head>
+<body>
+  <div class="role-card">
+    <div class="logo-icon">
+      <i class="fas fa-briefcase"></i>
+    </div>
+    
+    <h1>Welcome to BlueHire!</h1>
+    <p class="subtitle">Choose your account type to continue</p>
+    
+    {% if user %}
+    <div class="user-info">
+      <p><strong>Signing in as:</strong></p>
+      <p>{{ user.email }}</p>
+      {% if user.first_name %}
+        <p>{{ user.first_name }} {{ user.last_name }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'select_role' %}">
+      {% csrf_token %}
+      
+      <div class="role-buttons">
+        <button type="submit" name="role" value="jobseeker" class="role-btn">
+          <i class="fas fa-user-tie"></i>
+          <span>I'm looking for work (Job Seeker)</span>
+        </button>
+        
+        <button type="submit" name="role" value="employer" class="role-btn">
+          <i class="fas fa-building"></i>
+          <span>I'm hiring workers (Employer)</span>
+        </button>
+      </div>
+    </form>
+
+    <a href="{% url 'logout_view' %}" class="cancel-link">
+      <i class="fas fa-times"></i>
+      <span>Cancel and sign out</span>
+    </a>
+  </div>
+</body>
+</html>

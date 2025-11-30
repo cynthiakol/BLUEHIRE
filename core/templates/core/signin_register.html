@@ -1,0 +1,953 @@
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueHire | Sign in or Register</title>
+  <link rel="icon" href="{% static 'core/image/logo.png' %}" type="image/png">
+  <link rel="stylesheet" href="{% static 'core/css/auth.css' %}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" defer></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+      background-attachment: fixed;
+    }
+
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+      background-size: cover;
+      animation: wave 15s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes wave {
+      0% { transform: translateX(0) translateY(0); }
+      50% { transform: translateX(-25%) translateY(-5%); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+
+    .home-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #667eea;
+      font-size: 20px;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .home-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+      background: white;
+    }
+
+    .home-btn .tooltip {
+      display: none;
+    }
+
+    .auth-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 450px;
+      width: 100%;
+      gap: 0;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 0.6s ease;
+      margin: 40px 0;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .auth-layout {
+        grid-template-columns: 1fr 1.2fr;
+        max-width: 1100px;
+        gap: 0;
+      }
+    }
+
+    /* LEFT BRAND SECTION */
+    .auth-brand {
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+      backdrop-filter: blur(20px);
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 20px 20px 0 0;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-bottom: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-brand::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (min-width: 1024px) {
+      .auth-brand {
+        border-radius: 20px 0 0 20px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+      }
+    }
+
+    .brand-logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .auth-brand h1 {
+      font-size: 42px;
+      color: white;
+      margin-bottom: 12px;
+      font-weight: 700;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-brand p {
+      color: rgba(255,255,255,0.95);
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 300px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* RIGHT FORM SECTION */
+    .auth-form-card {
+      background: white;
+      padding: 40px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    @media (min-width: 1024px) {
+      .auth-form-card {
+        border-radius: 0 20px 20px 0;
+        padding: 50px;
+        max-height: none;
+        overflow-y: visible;
+      }
+    }
+
+    /* Messages */
+    .message-container {
+      width: 100%;
+      margin: 0 0 20px 0;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .alert {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+      margin: 8px 0;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      animation: slideIn 0.4s ease;
+      border-left: 4px solid;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border-color: #28a745;
+    }
+
+    .alert-error, .alert-danger {
+      background: #f8d7da;
+      color: #721c24;
+      border-color: #dc3545;
+    }
+
+    .alert-warning {
+      background: #fff3cd;
+      color: #856404;
+      border-color: #ffc107;
+    }
+
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border-color: #17a2b8;
+    }
+
+    /* Tabs */
+    .form-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #e9ecef;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 14px 20px;
+      background: white;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #6c757d;
+      position: relative;
+    }
+
+    .tab:hover {
+      background: #f8f9fa;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: white;
+    }
+
+    /* Forms */
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+      animation: fadeInForm 0.4s ease;
+    }
+
+    @keyframes fadeInForm {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    /* OTP Row */
+    .otp-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .otp-row input {
+      flex: 1;
+    }
+
+    .otp-btn {
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .otp-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .otp-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .otp-group {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .otp-group input {
+      flex: 1;
+    }
+
+    .otp-group .otp-btn.verify {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Forgot Link */
+    .forgot-link {
+      display: inline-block;
+      margin-top: -10px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #667eea;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .forgot-link:hover {
+      color: #764ba2;
+      transform: translateX(3px);
+    }
+
+    /* Social Login */
+    .social-login {
+      margin: 25px 0;
+    }
+
+    .social-text {
+      text-align: center;
+      color: #6c757d;
+      font-size: 13px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .social-text::before,
+    .social-text::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 35%;
+      height: 1px;
+      background: #e9ecef;
+    }
+
+    .social-text::before {
+      left: 0;
+    }
+
+    .social-text::after {
+      right: 0;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .social-buttons a {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: 2px solid;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .social-buttons a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+    }
+
+    .social-buttons a:hover::before {
+      left: 100%;
+    }
+
+    /* Google Button */
+    .btn-google {
+      background: #fff;
+      color: #3c4043;
+      border-color: #dadce0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-google:hover {
+      background: #f8f9fa;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .btn-google i {
+      font-size: 16px;
+      background: linear-gradient(to right, #4285f4, #34a853, #fbbc05, #ea4335);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Facebook Button */
+    .btn-facebook {
+      background: #1877f2;
+      color: #fff;
+      border-color: #1877f2;
+      box-shadow: 0 2px 8px rgba(24, 119, 242, 0.3);
+    }
+
+    .btn-facebook:hover {
+      background: #166fe5;
+      border-color: #166fe5;
+      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-facebook i {
+      font-size: 16px;
+    }
+
+    /* Primary Button */
+    .btn.primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn.primary:active {
+      transform: translateY(0);
+    }
+
+    /* Switch Text */
+    .switch {
+      text-align: center;
+      margin-top: 20px;
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    .switch a {
+      color: #667eea;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .switch a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    /* Facebook Switch Account Helper */
+    .social-helper {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .social-helper a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .social-helper a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .auth-brand {
+        padding: 40px 30px;
+      }
+
+      .auth-brand h1 {
+        font-size: 32px;
+      }
+
+      .auth-form-card {
+        padding: 30px 25px;
+      }
+
+      .social-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<a href="{% url 'homepage' %}" class="home-btn" title="Go back to home">
+  <i class="fa-solid fa-house"></i>
+  <span class="tooltip">Go back to home</span>
+</a>
+
+<div class="auth-layout">
+  <!-- LEFT -->
+  <section class="auth-brand">
+    <a href="{% url 'homepage' %}">
+      <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+    </a>
+    <h1>BlueHire</h1>
+    <p>Connecting skills with verified opportunities through AI-driven matching</p>
+  </section>
+
+  <!-- RIGHT -->
+  <section class="auth-form-card">
+
+    {% if messages %}
+      <div class="message-container">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            <i class="fa-solid 
+              {% if 'error' in message.tags or 'danger' in message.tags %}fa-circle-xmark
+              {% elif 'success' in message.tags %}fa-circle-check
+              {% elif 'warning' in message.tags %}fa-triangle-exclamation
+              {% else %}fa-circle-info{% endif %}"></i>
+            <span class="alert-text">{{ message|safe }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="form-tabs">
+      <button id="signin-tab" class="tab active">Sign In</button>
+      <button id="register-tab" class="tab">Register</button>
+    </div>
+
+    <!-- SIGN IN FORM -->
+    <form id="signin-form" class="form active" method="post" action="{% url 'signin_register' %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="signin">
+
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter username" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required>
+      </div>
+
+      <a href="{% url 'password_reset' %}" class="forgot-link">Forgot Password?</a>
+
+      <div class="social-login">
+        <p class="social-text">or continue with</p>
+        <div class="social-buttons">
+          <a href="{% provider_login_url 'google' %}" class="btn-google">
+            <i class="fab fa-google"></i>
+            Google
+          </a>
+          <a href="{% provider_login_url 'facebook' %}" class="btn-facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+            Facebook
+          </a>
+        </div>
+        <p class="social-helper">
+          Using Facebook? <a href="https://www.facebook.com/logout.php" target="_blank">Log out first</a> to choose a different account.
+        </p>
+      </div>
+
+      <button type="submit" class="btn primary">Sign In</button>
+      <p class="switch">New to BlueHire? <a href="#" id="go-register">Create account</a></p>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="register-form" class="form" method="post" enctype="multipart/form-data" action="{% url 'signin_register' %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="register">
+
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter username" required>
+      </div>
+
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" name="first_name" placeholder="First Name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" name="last_name" placeholder="Last Name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Create password" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter email" required>
+      </div>
+
+      <div class="form-group">
+  <label>Phone Number</label>
+  <div class="otp-row">
+    <input type="tel" id="phone_number" name="phone_number" placeholder="09XXXXXXXXX" required style="flex: 2;">
+    <select id="carrier" name="carrier" required style="flex: 1; padding: 12px 16px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 14px; background: #f8f9fa;">
+      <option value="globe">Globe</option>
+      <option value="smart">Smart</option>
+      <option value="sun">Sun</option>
+      <option value="tnt">TNT</option>
+    </select>
+    <button id="sendOtpBtn" type="button" class="otp-btn">Send OTP</button>
+  </div>
+</div>
+
+      <div class="form-group otp-group hidden">
+        <label>Enter OTP</label>
+        <input type="text" id="otpInput" placeholder="6-digit code">
+        <button type="button" id="verifyOtpBtn" class="otp-btn verify">Verify</button>
+      </div>
+
+      <div class="form-group">
+        <label>Register As</label>
+        <select id="role-select" name="role" required>
+          <option value="" disabled selected>Select role</option>
+          <option value="JobSeeker">Job Seeker</option>
+          <option value="Employer">Employer</option>
+        </select>
+      </div>
+
+      <div id="employer-type-wrap" class="form-group hidden">
+        <label>Employer Type</label>
+        <select id="employer-type-select" name="employer_type">
+          <option value="" disabled selected>Select type</option>
+          <option value="Company">Company</option>
+          <option value="Personal">Homeowner / Personal</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn primary">Create Account</button>
+      <p class="switch">Already have an account? <a href="#" id="go-signin">Sign In</a></p>
+    </form>
+
+  </section>
+</div>
+
+<script>
+// Prevent auth.js from running by defining flag
+window.OTP_HANDLERS_LOADED = true;
+
+// ==================== CSRF TOKEN ====================
+function getCSRFToken() {
+  const name = "csrftoken=";
+  const cookies = document.cookie.split(";");
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith(name)) return cookie.substring(name.length);
+  }
+  return "";
+}
+
+// ==================== OTP FUNCTIONALITY ====================
+// ✅ CLONE BUTTONS TO REMOVE ALL OLD EVENT LISTENERS
+const oldSendBtn = document.getElementById("sendOtpBtn");
+const oldVerifyBtn = document.getElementById("verifyOtpBtn");
+
+const newSendBtn = oldSendBtn.cloneNode(true);
+const newVerifyBtn = oldVerifyBtn.cloneNode(true);
+
+oldSendBtn.parentNode.replaceChild(newSendBtn, oldSendBtn);
+oldVerifyBtn.parentNode.replaceChild(newVerifyBtn, oldVerifyBtn);
+
+// ✅ GET FRESH BUTTONS (no old event listeners)
+const sendOtpBtn = document.getElementById("sendOtpBtn");
+const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+const otpGroup = document.querySelector(".otp-group");
+const phoneInput = document.getElementById("phone_number");
+const carrierSelect = document.getElementById("carrier");
+const otpInput = document.getElementById("otpInput");
+
+let otpLock = false;
+let verifyLock = false;
+
+// ==================== SEND OTP ====================
+sendOtpBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+  
+  if (otpLock) {
+    console.log("🔒 OTP request already in progress");
+    return;
+  }
+  otpLock = true;
+
+  const phone = phoneInput.value.trim();
+  const carrier = carrierSelect.value;
+
+  if (!phone) {
+    alert("⚠️ Please enter your phone number first");
+    otpLock = false;
+    return;
+  }
+
+  sendOtpBtn.disabled = true;
+  sendOtpBtn.textContent = "Sending...";
+
+  try {
+    console.log("📤 Sending OTP request...");
+    console.log("Phone:", phone, "Carrier:", carrier);
+    
+    const res = await fetch("/accounts/send-otp/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken(),
+      },
+      body: JSON.stringify({ 
+        phone_number: phone,
+        carrier: carrier
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const data = await res.json();
+    console.log("✅ OTP Response:", data);
+
+    if (data.status === "ok") {
+      otpGroup.classList.remove("hidden");
+      sendOtpBtn.textContent = "Sent ✓";
+      sendOtpBtn.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+      
+      console.log("🔑 TEST OTP:", data.otp);
+      
+      alert(`✅ OTP sent to your ${carrier.toUpperCase()} number!\n\n` +
+            `📱 Check your phone for SMS (may take 1-5 minutes).\n\n` +
+            `🧪 Test OTP: ${data.otp || 'Check console'}`);
+      
+      // Auto-focus OTP input
+      setTimeout(() => otpInput.focus(), 300);
+    } else {
+      throw new Error(data.message || 'Failed to send OTP');
+    }
+  } catch (err) {
+    console.error("❌ Send OTP error:", err);
+    alert(`❌ Error: ${err.message}`);
+    sendOtpBtn.disabled = false;
+    sendOtpBtn.textContent = "Send OTP";
+    sendOtpBtn.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+  } finally {
+    otpLock = false;
+  }
+});
+
+// ==================== VERIFY OTP ====================
+verifyOtpBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+  
+  if (verifyLock) {
+    console.log("🔒 Verify request already in progress");
+    return;
+  }
+  verifyLock = true;
+
+  const phone = phoneInput.value.trim();
+  const otp = otpInput.value.trim();
+
+  if (!phone || !otp) {
+    alert("⚠️ Please enter both phone number and OTP");
+    verifyLock = false;
+    return;
+  }
+
+  verifyOtpBtn.disabled = true;
+  verifyOtpBtn.textContent = "Verifying...";
+
+  try {
+    console.log("📤 Sending verify request...");
+    const res = await fetch("/accounts/verify-otp/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": getCSRFToken(),
+      },
+      body: `phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`,
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const data = await res.json();
+    console.log("✅ Verify Response:", data);
+
+    if (data.status === "ok") {
+      alert("✅ Phone verified successfully!");
+      verifyOtpBtn.textContent = "Verified ✓";
+      verifyOtpBtn.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+      otpInput.disabled = true;
+      phoneInput.readOnly = true;        // ✅ Use readOnly instead of disabled
+      carrierSelect.disabled = true;
+      sendOtpBtn.disabled = true;
+      } else {
+      throw new Error(data.message || 'Invalid OTP');
+    }
+  } catch (err) {
+    console.error("❌ Verify OTP error:", err);
+    alert(`❌ ${err.message}`);
+    verifyOtpBtn.disabled = false;
+    verifyOtpBtn.textContent = "Verify";
+  } finally {
+    verifyLock = false;
+  }
+});
+</script>
+<!-- Load auth.js AFTER our handlers -->
+<script src="{% static 'core/js/auth.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+/* CONTACT PAGE (inherits from style_base.css) */
+
+.contact-section {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 3rem;
+  max-width: 950px;
+  width: 100%;
+}
+
+.contact-info {
+  flex: 1 1 300px;
+  color: var(--text-dark);
+}
+.contact-info h2 {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
+.contact-info p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.8rem;
+}
+.contact-info i { color: var(--primary); }
+
+.contact-form {
+  flex: 1 1 350px;
+  display: flex;
+  flex-direction: column;
+}
+.contact-form h2 {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
+.contact-form input,
+.contact-form textarea {
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  outline: none;
+  transition: 0.3s;
+}
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+}
+
+.contact-form .btn {
+  align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+  }
+}

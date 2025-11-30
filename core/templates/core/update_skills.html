@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Update Skills | BlueHire</title>
+  <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+</head>
+<body>
+  {% include 'core/navbar.html' %}
+  <div class="container" style="max-width:600px;margin:40px auto;background:white;padding:30px;border-radius:10px;">
+    <h2 style="color:#007bff;text-align:center;">Update Your Skills</h2>
+    <form method="post">
+      {% csrf_token %}
+      <label>Skills (comma separated)</label>
+      <textarea name="skills" rows="3" placeholder="e.g. Carpentry, Welding, Painting">{{ seeker.skills|join:", " }}</textarea>
+
+      <label>Preferred Job Types</label><br>
+      {% for c in ["Construction","Maintenance","Transportation","Warehouse","Driver","Technician","Electrician","Laborer","Other"] %}
+        <label>
+          <input type="checkbox" name="preferred_job_types" value="{{ c }}" 
+            {% if c in seeker.preferred_job_types %}checked{% endif %}> {{ c }}
+        </label><br>
+      {% endfor %}
+
+      <label>Years of Experience</label>
+      <input type="number" name="experience_years" value="{{ seeker.experience_years }}" min="0">
+
+      <label>Certifications (comma separated)</label>
+      <textarea name="certifications" rows="2" placeholder="e.g. NC2 Carpentry, NC2 Plumbing">{{ seeker.certifications|join:", " }}</textarea>
+
+      <button type="submit" class="btn">Save</button>
+    </form>
+  </div>
+</body>
+</html>

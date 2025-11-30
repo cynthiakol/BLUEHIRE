@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms and Conditions | BlueHire</title>
+  <link rel="stylesheet" href="{% static 'core/css/terms.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="left-nav">
+      <div class="logo">
+        <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+      </div>
+      <nav>
+        <a href="{% url 'homepage' %}">Home</a><span class="divider">|</span>
+        <a href="{% url 'contact' %}">Contact</a><span class="divider">|</span>
+      </nav>
+    </div>
+
+    <div class="auth">
+      <a href="{% url 'help_center' %}">Help Center?</a>
+      <span class="divider">|</span>
+      <a href="{% url 'signin_register' %}">Sign in</a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <h1>Terms and Conditions</h1>
+    <p>Welcome to BlueHire. By accessing or using our platform, you agree to the terms below. Please read carefully.</p>
+  </section>
+
+  <!-- TERMS CONTENT -->
+  <section class="terms-content">
+    <h2>1. Acceptance of Terms</h2>
+    <p>By registering or using BlueHire, you acknowledge and agree to be bound by these Terms of Service, our Privacy Policy, and any other guidelines posted on the platform.</p>
+
+    <h2>2. User Responsibilities</h2>
+    <p>You agree to provide accurate, complete, and updated information. Misrepresentation or fraudulent activity may result in account suspension or removal.</p>
+
+    <h2>3. Employer Obligations</h2>
+    <p>Employers must post legitimate job listings and treat all applicants fairly. BlueHire is not responsible for employment agreements between parties.</p>
+
+    <h2>4. Job Seeker Obligations</h2>
+    <p>Job seekers are responsible for ensuring that information in their profiles and uploaded documents is true and verifiable.</p>
+
+    <h2>5. Data & Privacy</h2>
+    <p>We value your privacy. Your data will only be used to improve the platform’s services and match job opportunities effectively. Refer to our Privacy Policy for more details.</p>
+
+    <h2>6. Modifications</h2>
+    <p>BlueHire reserves the right to update these terms at any time. Users will be notified through the website or email of major changes.</p>
+
+    <h2>7. Contact Us</h2>
+    <p>For questions regarding these terms, you may contact us through the <a href="{% url 'contact' %}">Contact Page</a>.</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 BlueHire. All Rights Reserved.</p>
+  </footer>
+</body>
+</html>
