@@ -7,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Job Seeker Dashboard | BlueHire</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
   <style>
   * {
     margin: 0;
@@ -21,7 +20,6 @@
     min-height: 100vh;
   }
 
-  /* Navbar Styling */
   nav.navbar {
     background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
     color: white;
@@ -200,7 +198,6 @@
     opacity: 1;
   }
 
-  /* Bridge the gap between button and dropdown */
   .navbar .dropdown::after {
     content: '';
     position: absolute;
@@ -232,7 +229,6 @@
     padding-left: 24px;
   }
 
-  /* Header Section */
   .page-header {
     background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
     color: white;
@@ -251,14 +247,12 @@
     opacity: 0.95;
   }
 
-  /* Main Container */
   .container {
     max-width: 1400px;
     margin: -30px auto 40px auto;
     padding: 0 60px;
   }
 
-  /* Welcome Card */
   .welcome-card {
     background: white;
     border-radius: 16px;
@@ -279,7 +273,6 @@
     font-size: 16px;
   }
 
-  /* Quick Actions */
   .quick-actions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -314,7 +307,6 @@
     line-height: 1.5;
   }
 
-  /* Alert Warning */
   .alert-warning {
     background: #fff3cd;
     color: #856404;
@@ -343,7 +335,6 @@
     text-decoration: underline;
   }
 
-  /* Search Bar */
   .search-bar {
     display: flex;
     gap: 12px;
@@ -385,7 +376,6 @@
     box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
   }
 
-  /* Section Title */
   .section-title {
     font-size: 22px;
     font-weight: 700;
@@ -395,7 +385,6 @@
     border-left: 5px solid #007bff;
   }
 
-  /* Job Cards */
   .job-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -450,24 +439,85 @@
     text-decoration: underline;
   }
 
+  .job-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: #64748b;
+  }
+
+  .stat-item i {
+    font-size: 0.9rem;
+  }
+
+  .stat-item.applicants i {
+    color: #3b82f6;
+  }
+
+  .stat-item.hired i {
+    color: #10b981;
+  }
+
+  .stat-item.deadline i {
+    color: #ef4444;
+  }
+
+  .stat-item.deadline.expired {
+    color: #dc2626;
+    font-weight: 600;
+  }
+
+  .stat-item.deadline.soon {
+    color: #f59e0b;
+    font-weight: 600;
+  }
+
+  .job-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+
+  .job-tag {
+    background: #eff6ff;
+    color: #3b82f6;
+    padding: 0.3rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .job-tag.applied {
+    background: #fef3c7;
+    color: #d97706;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
   .status-badge {
-    display: inline-block;
-    padding: 4px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 6px 14px;
     border-radius: 12px;
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.3px;
-  }
-
-  .status-available {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    color: white;
-  }
-
-  .status-unavailable {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    color: white;
   }
 
   .status-pending {
@@ -485,7 +535,6 @@
     color: white;
   }
 
-  /* Apply Button */
   .apply-btn {
     display: inline-block;
     margin-top: auto;
@@ -529,7 +578,6 @@
     box-shadow: none;
   }
 
-  /* No Jobs Message */
   .no-jobs {
     text-align: center;
     padding: 60px 20px;
@@ -544,15 +592,11 @@
     margin-bottom: 20px;
   }
 
-  /* Responsive Design */
   @media (max-width: 1200px) {
-    nav.navbar,
-    .page-header,
-    .container {
+    nav.navbar, .page-header, .container {
       padding-left: 30px;
       padding-right: 30px;
     }
-
     .job-list {
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
@@ -565,39 +609,27 @@
       gap: 16px;
       padding: 16px 20px;
     }
-
     .navbar .right-section {
       width: 100%;
       justify-content: space-between;
     }
-
     .page-header {
       padding: 30px 20px;
     }
-
     .page-header h1 {
       font-size: 24px;
     }
-
     .container {
       padding: 0 20px;
       margin-top: -20px;
     }
-
-    .welcome-card h2 {
-      font-size: 22px;
-    }
-
     .job-list {
       grid-template-columns: 1fr;
     }
-
     .search-bar {
       flex-direction: column;
     }
-
-    .search-bar input,
-    .search-bar button {
+    .search-bar input, .search-bar button {
       width: 100%;
     }
   }
@@ -624,15 +656,9 @@
         <i class="fas fa-user-circle"></i> Account
       </button>
       <div class="dropdown-content">
-        <a href="{% url 'jobseeker_profile' %}">
-          <i class="fas fa-id-card"></i> Profile
-        </a>
-        <a href="{% url 'password_change' %}">
-          <i class="fas fa-key"></i> Change Password
-        </a>
-        <a href="{% url 'logout_view' %}">
-          <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
+        <a href="{% url 'jobseeker_profile' %}"><i class="fas fa-id-card"></i> Profile</a>
+        <a href="{% url 'password_change' %}"><i class="fas fa-key"></i> Change Password</a>
+        <a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </div>
     </div>
   </div>
@@ -686,19 +712,68 @@
           {{ app.job.employer.user.get_full_name|default:app.job.employer.user.username }}
         {% endif %}
       </p>
-      <p><strong>Category:</strong> {{ app.job.category }}</p>
-      <!-- ✅ NEW: Job Type Display -->
+      <p><strong>Location:</strong> {{ app.job.location }}</p>
       <p><strong>Job Type:</strong> {{ app.job.job_type|default:"Not specified" }}</p>
       <p><strong>Salary:</strong> {{ app.job.salary|default:"Negotiable" }}</p>
-      <p><strong>Status:</strong>
-        {% if app.status == "Hired" %}
-          <span class="status-badge status-hired">Hired</span>
-        {% elif app.status == "Rejected" %}
-          <span class="status-badge status-rejected">Rejected</span>
-        {% else %}
-          <span class="status-badge status-pending">Pending</span>
+
+      <div class="job-stats">
+        <div class="stat-item applicants">
+          <i class="fas fa-users"></i>
+          <strong>{{ app.job.total_applicants }}</strong> applicant{{ app.job.total_applicants|pluralize }}
+        </div>
+        {% if app.job.hired_count > 0 %}
+        <div class="stat-item hired">
+          <i class="fas fa-check-circle"></i>
+          <strong>{{ app.job.hired_count }}/{{ app.job.hiring_quota }}</strong> hired
+        </div>
         {% endif %}
-      </p>
+        {% if app.job.application_deadline %}
+          {% if app.job.is_past_deadline %}
+          <div class="stat-item deadline expired">
+            <i class="fas fa-hourglass-end"></i>
+            <strong>Expired</strong>
+          </div>
+          {% else %}
+            {% with deadline=app.job.get_deadline_status %}
+              {% if 'hour' in deadline or 'Less' in deadline %}
+              <div class="stat-item deadline soon">
+                <i class="fas fa-clock"></i>
+                <strong>{{ deadline }}</strong>
+              </div>
+              {% else %}
+              <div class="stat-item deadline">
+                <i class="fas fa-calendar-check"></i>
+                <strong>{{ deadline }}</strong>
+              </div>
+              {% endif %}
+            {% endwith %}
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="job-tags">
+        <span class="job-tag">{{ app.job.category }}</span>
+        {% if app.job.job_type %}
+          <span class="job-tag">{{ app.job.job_type }}</span>
+        {% endif %}
+        <span class="job-tag applied">
+          <i class="fas fa-check"></i> 1 applied
+        </span>
+      </div>
+
+      {% if app.status == "Hired" %}
+        <span class="status-badge status-hired">
+          <i class="fas fa-check-circle"></i> HIRED
+        </span>
+      {% elif app.status == "Rejected" %}
+        <span class="status-badge status-rejected">
+          <i class="fas fa-times-circle"></i> REJECTED
+        </span>
+      {% else %}
+        <span class="status-badge status-pending">
+          <i class="fas fa-clock"></i> PENDING
+        </span>
+      {% endif %}
     </div>
     {% endfor %}
   </div>
@@ -719,30 +794,81 @@
           {{ job.employer.user.get_full_name|default:job.employer.user.username }}
         {% endif %}
       </p>
-      <p><strong>Category:</strong> {{ job.category }}</p>
-      <!-- ✅ NEW: Job Type Display -->
+      <p><strong>Location:</strong> {{ job.location }}</p>
       <p><strong>Job Type:</strong> {{ job.job_type|default:"Not specified" }}</p>
       <p><strong>Salary:</strong> {{ job.salary|default:"Negotiable" }}</p>
-      <p><strong>Status:</strong>
-        {% if job.is_available %}
-          <span class="status-badge status-available">Available</span>
-        {% else %}
-          <span class="status-badge status-unavailable">Unavailable</span>
+
+      <div class="job-stats">
+        <div class="stat-item applicants">
+          <i class="fas fa-users"></i>
+          <strong>{{ job.total_applicants }}</strong> applicant{{ job.total_applicants|pluralize }}
+        </div>
+        {% if job.hired_count > 0 %}
+        <div class="stat-item hired">
+          <i class="fas fa-check-circle"></i>
+          <strong>{{ job.hired_count }}/{{ job.hiring_quota }}</strong> hired
+        </div>
         {% endif %}
-      </p>
+        {% if job.application_deadline %}
+          {% if job.is_past_deadline %}
+          <div class="stat-item deadline expired">
+            <i class="fas fa-hourglass-end"></i>
+            <strong>Expired</strong>
+          </div>
+          {% else %}
+            {% with deadline=job.get_deadline_status %}
+              {% if 'hour' in deadline or 'Less' in deadline %}
+              <div class="stat-item deadline soon">
+                <i class="fas fa-clock"></i>
+                <strong>{{ deadline }}</strong>
+              </div>
+              {% else %}
+              <div class="stat-item deadline">
+                <i class="fas fa-calendar-check"></i>
+                <strong>{{ deadline }}</strong>
+              </div>
+              {% endif %}
+            {% endwith %}
+          {% endif %}
+        {% endif %}
+      </div>
+
       <p style="margin-top: 12px;">{{ job.description|truncatechars:120 }}</p>
+
+      <div class="job-tags">
+        <span class="job-tag">{{ job.category }}</span>
+        {% if job.job_type %}
+          <span class="job-tag">{{ job.job_type }}</span>
+        {% endif %}
+        {% if job.id in applied_job_ids %}
+          <span class="job-tag applied">
+            <i class="fas fa-check"></i> 1 applied
+          </span>
+        {% endif %}
+      </div>
+
       {% if not job.is_available %}
-        <button class="apply-btn btn-applied" disabled>Unavailable</button>
+        <button class="apply-btn btn-applied" disabled>
+          <i class="fas fa-ban"></i> Unavailable
+        </button>
       {% elif job.id in applied_job_ids %}
         {% if applied_job_statuses|get_item:job.id == "Hired" %}
-          <button class="apply-btn btn-hired" disabled>Hired</button>
+          <button class="apply-btn btn-hired" disabled>
+            <i class="fas fa-check-circle"></i> Hired
+          </button>
         {% else %}
-          <button class="apply-btn btn-applied" disabled>Applied</button>
+          <button class="apply-btn btn-applied" disabled>
+            <i class="fas fa-check"></i> Applied
+          </button>
         {% endif %}
       {% elif missing_docs %}
-        <button class="apply-btn btn-applied" disabled>Upload Documents First</button>
+        <button class="apply-btn btn-applied" disabled>
+          <i class="fas fa-file-upload"></i> Upload Documents First
+        </button>
       {% else %}
-        <a href="{% url 'apply_job' job.id %}" class="apply-btn">Apply Now</a>
+        <a href="{% url 'apply_job' job.id %}" class="apply-btn">
+          <i class="fas fa-paper-plane"></i> Apply Now
+        </a>
       {% endif %}
     </div>
     {% endfor %}
@@ -767,7 +893,6 @@ document.addEventListener("DOMContentLoaded", function() {
     countBadge.style.display = "none";
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener("click", (e) => {
     if (!bell.contains(e.target)) {
       dropdown.classList.remove("active");

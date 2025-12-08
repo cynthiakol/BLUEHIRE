@@ -786,6 +786,8 @@ def update_jobseeker_progress(seeker):
 # ====================================================
 # 🔹 JOB SEEKER DASHBOARD
 # ====================================================
+# Replace the jobseeker_dashboard function in accounts/views.py
+
 @login_required
 def jobseeker_dashboard(request):
     user = request.user
@@ -816,11 +818,9 @@ def jobseeker_dashboard(request):
     # ✅ Filter jobs (only approved) with STATS ANNOTATION
     from django.db.models import Count, Q
     
-    jobs = Job.objects.filter(is_approved=True).annotate(
-        hired_count=Count('job_applications', filter=Q(job_applications__status='Hired')),
-        rejected_count=Count('job_applications', filter=Q(job_applications__status='Rejected')),
-        total_applicants=Count('job_applications')
-    ).select_related('employer', 'employer__user').order_by("-created_at")
+    jobs = Job.objects.filter(is_approved=True).select_related(
+        'employer', 'employer__user'
+    ).order_by("-created_at")
     
     # ✅ Exclude hired jobs
     if hired_job_ids:
@@ -837,26 +837,40 @@ def jobseeker_dashboard(request):
     if company:
         jobs = jobs.filter(employer__company_name__icontains=company)
 
+    # ✅ MANUALLY CALCULATE STATS FOR EACH JOB (FIXES 0 APPLICANTS BUG)
+    jobs_list = list(jobs)
+    for job in jobs_list:
+        # Count all applications for this job
+        job.total_applicants = Application.objects.filter(job=job).count()
+        job.hired_count = Application.objects.filter(job=job, status='Hired').count()
+        job.rejected_count = Application.objects.filter(job=job, status='Rejected').count()
+        job.pending_count = Application.objects.filter(job=job, status='Pending').count()
+
     # ✅ AI-powered job recommendations
     recommended_jobs = []
     if seeker and seeker.skills:
         try:
-            available_for_recommendation = Job.objects.filter(is_approved=True).annotate(
-                hired_count=Count('job_applications', filter=Q(job_applications__status='Hired')),
-                rejected_count=Count('job_applications', filter=Q(job_applications__status='Rejected')),
-                total_applicants=Count('job_applications')
+            available_for_recommendation = Job.objects.filter(
+                is_approved=True
             ).select_related('employer', 'employer__user')
             
             if hired_job_ids:
                 available_for_recommendation = available_for_recommendation.exclude(id__in=hired_job_ids)
             
-            ranked = recommend_jobs_for_seeker(seeker, available_for_recommendation)
+            # Calculate stats for recommended jobs too
+            available_list = list(available_for_recommendation)
+            for job in available_list:
+                job.total_applicants = Application.objects.filter(job=job).count()
+                job.hired_count = Application.objects.filter(job=job, status='Hired').count()
+                job.rejected_count = Application.objects.filter(job=job, status='Rejected').count()
+            
+            ranked = recommend_jobs_for_seeker(seeker, available_list)
             recommended_jobs = [job for job, _ in ranked[:5]]
         except Exception as e:
             print("AI recommendation error:", e)
-            recommended_jobs = jobs.order_by("?")[:5]
+            recommended_jobs = jobs_list[:5]
     else:
-        recommended_jobs = jobs.order_by("?")[:5]
+        recommended_jobs = jobs_list[:5]
 
     # ✅ Application tracking (status + recent) WITH STATS
     applications = Application.objects.filter(
@@ -865,23 +879,21 @@ def jobseeker_dashboard(request):
         "job", 
         "job__employer",
         "job__employer__user"
-    ).prefetch_related(
-        "job__job_applications"
     ) if seeker else []
     
     applied_job_ids = [app.job_id for app in applications] if applications else []
     applied_job_statuses = {app.job_id: app.status for app in applications} if applications else {}
 
-    # ✅ Recently applied jobs (latest 5) - ANNOTATE WITH STATS
+    # ✅ Recently applied jobs (latest 5) - MANUALLY ADD STATS
     recent_applications = []
     if applications:
         recent_apps = applications.order_by("-applied_date")[:5]
         for app in recent_apps:
             # Manually add stats to each job
             job = app.job
-            job.hired_count = job.job_applications.filter(status='Hired').count()
-            job.rejected_count = job.job_applications.filter(status='Rejected').count()
-            job.total_applicants = job.job_applications.count()
+            job.total_applicants = Application.objects.filter(job=job).count()
+            job.hired_count = Application.objects.filter(job=job, status='Hired').count()
+            job.rejected_count = Application.objects.filter(job=job, status='Rejected').count()
             recent_applications.append(app)
 
     # ✅ Categories
@@ -901,12 +913,12 @@ def jobseeker_dashboard(request):
     context = {
         "user_name": user_name,
         "seeker": seeker,
-        "jobs": jobs,
+        "jobs": jobs_list,  # ✅ Pass list with calculated stats
         "recommended_jobs": recommended_jobs,
         "employers": employers,
         "applied_job_ids": applied_job_ids,
         "applied_job_statuses": applied_job_statuses,
-        "recent_applications": recent_applications,
+        "recent_applications": recent_applications,  # ✅ Now has stats
         "categories": categories,
         "missing_docs": missing_docs,
         "progress_percent": progress_percent,

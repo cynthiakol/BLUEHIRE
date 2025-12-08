@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -405,6 +406,52 @@
       font-size: 0.9rem;
     }
 
+    /* ✅ NEW: Stats Bar - Same as Dashboard */
+    .job-stats {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .stat-item i {
+      font-size: 0.9rem;
+    }
+
+    .stat-item.applicants i {
+      color: #3b82f6;
+    }
+
+    .stat-item.hired i {
+      color: #10b981;
+    }
+
+    .stat-item.deadline i {
+      color: #ef4444;
+    }
+
+    .stat-item.deadline.expired {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    .stat-item.deadline.soon {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
     .job-footer {
       display: flex;
       flex-direction: column;
@@ -425,6 +472,15 @@
       border-radius: 16px;
       font-size: 0.75rem;
       font-weight: 600;
+    }
+
+    /* ✅ NEW: Applied Badge - Same as Dashboard */
+    .tag.applied {
+      background: #fef3c7;
+      color: #d97706;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
     }
 
     .applicant-count {
@@ -470,6 +526,39 @@
       justify-content: center;
       gap: 0.5rem;
       width: 100%;
+    }
+
+    /* ✅ NEW: Status Badges - Same as Dashboard */
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .status-badge.pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .status-badge.hired {
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    .status-badge.rejected {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .status-badge.approved {
+      background: #dbeafe;
+      color: #2563eb;
     }
 
     .no-results {
@@ -621,6 +710,10 @@
       }
 
       .applied-badge {
+        width: auto;
+      }
+
+      .status-badge {
         width: auto;
       }
 
@@ -812,7 +905,6 @@
                 {{ job.location }}
               </div>
               
-              <!-- ✅ NEW: Job Type Display -->
               {% if job.job_type %}
               <div class="meta-item">
                 <i class="fas fa-clock"></i>
@@ -831,17 +923,51 @@
                 <i class="fas fa-calendar-alt"></i>
                 {{ job.created_at|timesince }} ago
               </div>
+            </div>
 
-              <div class="meta-item">
+            <!-- ✅ NEW: Stats Bar (Applicants, Hired, Deadline) -->
+            <div class="job-stats">
+              <!-- Applicants Count -->
+              <div class="stat-item applicants">
                 <i class="fas fa-users"></i>
                 <strong>{{ job.total_applicants }}</strong> applicant{{ job.total_applicants|pluralize }}
               </div>
 
+              <!-- Hired Count -->
               {% if job.hired_count > 0 %}
-              <div class="meta-item" style="color: #16a34a;">
+              <div class="stat-item hired">
                 <i class="fas fa-check-circle"></i>
-                <strong>{{ job.hired_count }}</strong> hired
+                <strong>{{ job.hired_count }}/{{ job.hiring_quota }}</strong> hired
               </div>
+              {% else %}
+              <div class="stat-item hired">
+                <i class="fas fa-briefcase"></i>
+                <strong>0/{{ job.hiring_quota }}</strong> hired
+              </div>
+              {% endif %}
+
+              <!-- Deadline Countdown -->
+              {% if job.application_deadline %}
+                {% if job.is_past_deadline %}
+                <div class="stat-item deadline expired">
+                  <i class="fas fa-hourglass-end"></i>
+                  <strong>Expired</strong>
+                </div>
+                {% else %}
+                  {% with deadline=job.get_deadline_status %}
+                    {% if 'hour' in deadline or 'Less' in deadline %}
+                    <div class="stat-item deadline soon">
+                      <i class="fas fa-clock"></i>
+                      <strong>{{ deadline }}</strong>
+                    </div>
+                    {% else %}
+                    <div class="stat-item deadline">
+                      <i class="fas fa-calendar-check"></i>
+                      <strong>{{ deadline }}</strong>
+                    </div>
+                    {% endif %}
+                  {% endwith %}
+                {% endif %}
               {% endif %}
             </div>
 
@@ -853,18 +979,37 @@
                 {% if job.job_type %}
                   <span class="tag">{{ job.job_type }}</span>
                 {% endif %}
-                {% if job.total_applicants > 0 %}
-                  <span class="applicant-count">
-                    👥 {{ job.total_applicants }} applied
+                
+                <!-- ✅ NEW: "1 applied" badge if user applied -->
+                {% if job.id in applied_job_ids %}
+                  <span class="tag applied">
+                    <i class="fas fa-check"></i> 1 applied
                   </span>
                 {% endif %}
               </div>
 
               {% if user.is_authenticated %}
                 {% if job.id in applied_job_ids %}
-                  <span class="applied-badge">
-                    <i class="fas fa-check-circle"></i> Applied
-                  </span>
+                  <!-- ✅ Show status badge based on application status -->
+                  {% with status=applied_job_statuses|get_item:job.id %}
+                    {% if status == 'Pending' %}
+                      <span class="status-badge pending">
+                        <i class="fas fa-clock"></i> PENDING
+                      </span>
+                    {% elif status == 'Hired' %}
+                      <span class="status-badge hired">
+                        <i class="fas fa-check-circle"></i> HIRED
+                      </span>
+                    {% elif status == 'Rejected' %}
+                      <span class="status-badge rejected">
+                        <i class="fas fa-times-circle"></i> REJECTED
+                      </span>
+                    {% elif status == 'Approved' %}
+                      <span class="status-badge approved">
+                        <i class="fas fa-thumbs-up"></i> APPROVED
+                      </span>
+                    {% endif %}
+                  {% endwith %}
                 {% else %}
                   <a href="{% url 'apply_job' job.id %}" class="apply-btn">
                     Apply Now <i class="fas fa-arrow-right"></i>
