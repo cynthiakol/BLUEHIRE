@@ -1,39 +1,321 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ job.title }} | BlueHire</title>
-  <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    body { font-family:'Segoe UI',sans-serif;background:#f4f6f9;margin:0 }
-    .container { width:80%;margin:40px auto;background:white;padding:30px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1) }
-    h2 { color:#007bff;margin-top:0 }
-    p { margin:10px 0;line-height:1.6 }
-    a.back { display:inline-block;margin-top:20px;background:#007bff;color:white;padding:10px 20px;border-radius:8px;text-decoration:none }
-    a.back:hover { background:#0056b3 }
+    :root {
+      --bg: #f0ede8;
+      --white: #ffffff;
+      --ink: #111118;
+      --ink-2: #444450;
+      --ink-3: #888896;
+      --blue: #2b5ce6;
+      --blue-light: #eef1fd;
+      --green: #1a9e6e;
+      --green-light: #e6f7f1;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --red: #dc2626;
+      --red-light: #fee2e2;
+      --slate: #64748b;
+      --border: #e2ddd8;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); min-height: 100vh; color: var(--ink); }
+
+    /* NAV */
+    nav.navbar {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 0 56px; height: 64px; display: flex;
+      justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .navbar .logo { display: flex; align-items: center; gap: 10px; }
+    .navbar .logo img { width: 36px; height: 36px; border-radius: 8px; }
+    .navbar .logo span { font-size: 20px; font-weight: 700; color: var(--ink); letter-spacing: -0.3px; }
+    .navbar .logo span b { color: var(--blue); font-weight: 800; }
+    nav.navbar a.back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ink); color: var(--white); padding: 9px 20px;
+      border-radius: 50px; text-decoration: none; font-size: 14px; font-weight: 600; transition: background 0.2s;
+    }
+    nav.navbar a.back-btn:hover { background: var(--blue); }
+
+    /* LAYOUT */
+    .container { max-width: 860px; margin: 40px auto; padding: 0 24px 64px; }
+
+    .job-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 40px;
+      animation: fadeUp 0.35s ease both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+    /* HEADER */
+    .job-header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 28px; }
+    .job-header h1 { font-size: 28px; font-weight: 800; color: var(--ink); letter-spacing: -0.7px; margin-bottom: 16px; line-height: 1.2; }
+    .job-meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+    .meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; color: var(--ink-2); font-weight: 500; }
+    .meta-item i { color: var(--blue); font-size: 14px; }
+
+    .status-badge {
+      padding: 5px 14px; border-radius: 50px; font-size: 11px;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .status-available   { background: var(--green-light); color: var(--green); }
+    .status-unavailable { background: #f1f1f3; color: var(--slate); }
+    .status-hired       { background: var(--green-light); color: var(--green); }
+
+    /* EMPLOYER SECTION */
+    .employer-section {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 20px; margin-bottom: 28px;
+    }
+    .employer-section .section-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--ink-3); margin-bottom: 10px;
+    }
+    .employer-info { display: flex; align-items: center; gap: 12px; }
+    .employer-name {
+      font-size: 20px; font-weight: 700; color: var(--blue);
+      text-decoration: none; transition: color 0.2s; letter-spacing: -0.3px;
+    }
+    .employer-name:hover { color: var(--ink); }
+    .employer-badge { padding: 3px 11px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-company  { background: var(--blue-light); color: var(--blue); }
+    .badge-personal { background: var(--green-light); color: var(--green); }
+
+    /* STATS */
+    .stats-section { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+    .stat-card {
+      flex: 1; min-width: 160px; padding: 20px;
+      background: var(--ink); border-radius: var(--radius-sm);
+      color: var(--white); text-align: center;
+    }
+    .stat-number { font-size: 28px; font-weight: 800; margin-bottom: 4px; letter-spacing: -1px; }
+    .stat-label { font-size: 12px; font-weight: 500; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* DEADLINE ALERTS */
+    .deadline-warning {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; border-radius: var(--radius-sm);
+      margin-bottom: 24px; border-left: 3px solid var(--amber);
+      background: var(--amber-light);
+    }
+    .deadline-warning i { color: var(--amber); font-size: 16px; flex-shrink: 0; }
+    .deadline-warning p { color: #92400e; font-weight: 600; font-size: 14px; }
+    .deadline-expired { border-left-color: var(--red); background: var(--red-light); }
+    .deadline-expired i { color: var(--red); }
+    .deadline-expired p { color: #7f1d1d; }
+
+    /* DETAILS GRID */
+    .details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 28px; }
+    .detail-item {
+      padding: 16px 18px; background: var(--bg);
+      border-radius: var(--radius-sm); border-left: 3px solid var(--blue);
+    }
+    .detail-label { font-size: 11px; color: var(--ink-3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.7px; font-weight: 700; }
+    .detail-value { font-size: 16px; color: var(--ink); font-weight: 700; letter-spacing: -0.2px; }
+
+    /* DESCRIPTION */
+    .description-section { margin-bottom: 28px; }
+    .description-section h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; letter-spacing: -0.2px; }
+    .description-section h3 i { color: var(--blue); }
+    .description-content {
+      background: var(--bg); padding: 20px; border-radius: var(--radius-sm);
+      line-height: 1.8; color: var(--ink-2); font-size: 15px;
+    }
+
+    /* ACTIONS */
+    .action-section { display: flex; gap: 12px; padding-top: 28px; border-top: 1px solid var(--border); }
+    .btn {
+      flex: 1; padding: 14px 24px; border-radius: 50px;
+      text-decoration: none; text-align: center; font-weight: 700;
+      font-size: 15px; border: none; cursor: pointer; transition: all 0.2s ease;
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      letter-spacing: -0.1px;
+    }
+    .btn-primary { background: var(--ink); color: var(--white); }
+    .btn-primary:hover { background: var(--blue); }
+    .btn-primary:disabled { cursor: not-allowed; opacity: 0.8; }
+    .btn-secondary { background: transparent; color: var(--ink); border: 1.5px solid var(--border); }
+    .btn-secondary:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+
+    @media (max-width: 768px) {
+      nav.navbar { padding: 0 20px; }
+      .container { padding: 0 16px 48px; }
+      .job-card { padding: 24px; }
+      .job-header h1 { font-size: 22px; }
+      .details-grid { grid-template-columns: 1fr 1fr; }
+      .action-section { flex-direction: column; }
+      .stats-section { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>{{ job.title }}</h2>
-    <p><strong>Category:</strong> {{ job.category|default:"N/A" }}</p>
-    <p><strong>Job Type:</strong> {{ job.job_type|default:"N/A" }}</p>
-    <p><strong>Description:</strong><br>{{ job.description|default:"No description provided." }}</p>
-    <p><strong>Employer:</strong>
-      {% if job.employer %}
-        {% if job.employer.employer_type == "Company" %}
-          {{ job.employer.company_name }}
-        {% elif job.employer.employer_type == "Personal" %}
-          {{ job.employer.first_name }} {{ job.employer.last_name }}
-        {% else %}
-          Unassigned
-        {% endif %}
-      {% else %}
-        Unassigned
-      {% endif %}
-    </p>
-    <a href="{% url 'jobseeker_recommendations' %}" class="back">← Back</a>
+
+<nav class="navbar">
+  <div class="logo">
+    <img src="{% static 'core/image/logo.png' %}" alt="BlueHire">
+    <span>Blue<b>Hire</b></span>
   </div>
+  <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+</nav>
+
+<div class="container">
+  <div class="job-card">
+
+    <!-- HEADER -->
+    <div class="job-header">
+      <h1>{{ job.title|default:"Untitled Job" }}</h1>
+      <div class="job-meta">
+        <div class="meta-item"><i class="fas fa-map-marker-alt"></i><span>{{ job.location|default:"Location not specified" }}</span></div>
+        <div class="meta-item"><i class="fas fa-briefcase"></i><span>{{ job.job_type|default:"Not specified" }}</span></div>
+        <div class="meta-item"><i class="fas fa-calendar-alt"></i><span>Posted {{ job.date_posted|date:"M d, Y" }}</span></div>
+        {% if has_applied and application_status == "Hired" %}
+          <span class="status-badge status-hired"><i class="fas fa-check-circle"></i> Hired</span>
+        {% elif job.is_available %}
+          <span class="status-badge status-available"><i class="fas fa-check-circle"></i> Available</span>
+        {% else %}
+          <span class="status-badge status-unavailable"><i class="fas fa-times-circle"></i> Unavailable</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- EMPLOYER -->
+    {% if job.employer %}
+    <div class="employer-section">
+      <div class="section-label">Posted By</div>
+      <div class="employer-info">
+        <a href="{% url 'employer_public_profile' job.employer.employer_id %}" class="employer-name">
+          {% if job.employer.employer_type == "Company" %}{{ job.employer.company_name|default:job.employer.user.username }}
+          {% else %}{{ job.employer.user.first_name }} {{ job.employer.user.last_name }}{% endif %}
+        </a>
+        {% if job.employer.employer_type == "Company" %}
+          <span class="employer-badge badge-company"><i class="fas fa-building"></i> Company</span>
+        {% else %}
+          <span class="employer-badge badge-personal"><i class="fas fa-user"></i> Personal</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- STATS -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-number">{{ job.total_applicants|default:0 }}</div>
+        <div class="stat-label">Total Applicants</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ job.hired_count|default:0 }}/{{ job.hiring_quota|default:"N/A" }}</div>
+        <div class="stat-label">Hired / Quota</div>
+      </div>
+      {% if job.application_deadline %}
+      <div class="stat-card">
+        <div class="stat-number" style="font-size:20px;"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-label">Deadline: {{ job.application_deadline|date:"M d, Y" }}</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- DEADLINE ALERTS -->
+    {% if job.application_deadline and not job.is_past_deadline %}
+      {% with deadline=job.get_deadline_status %}
+        {% if 'hour' in deadline or 'Less' in deadline %}
+        <div class="deadline-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Deadline closing soon — {{ deadline }}</p>
+        </div>
+        {% endif %}
+      {% endwith %}
+    {% elif job.is_past_deadline %}
+    <div class="deadline-warning deadline-expired">
+      <i class="fas fa-times-circle"></i>
+      <p>Application deadline has passed</p>
+    </div>
+    {% endif %}
+
+    <!-- DETAILS -->
+    <div class="details-grid">
+      <div class="detail-item">
+        <div class="detail-label">Category</div>
+        <div class="detail-value">{{ job.category|default:"N/A" }}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Job Type</div>
+        <div class="detail-value">{{ job.job_type|default:"Not specified" }}</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Salary</div>
+        <div class="detail-value">{{ job.salary|default:"Negotiable" }}</div>
+      </div>
+      {% if job.hiring_quota %}
+      <div class="detail-item">
+        <div class="detail-label">Hiring Quota</div>
+        <div class="detail-value">{{ job.hiring_quota }} position{{ job.hiring_quota|pluralize }}</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- DESCRIPTION -->
+    {% if job.description %}
+    <div class="description-section">
+      <h3><i class="fas fa-align-left"></i> Job Description</h3>
+      <div class="description-content">{{ job.description|linebreaks }}</div>
+    </div>
+    {% endif %}
+
+    {% if job.requirements %}
+    <div class="description-section">
+      <h3><i class="fas fa-tasks"></i> Requirements</h3>
+      <div class="description-content">{{ job.requirements|linebreaks }}</div>
+    </div>
+    {% endif %}
+
+    <!-- ACTIONS -->
+    <div class="action-section">
+      {% if has_applied and application_status == "Hired" %}
+        <button class="btn btn-primary" disabled style="background:#1a9e6e;opacity:1;cursor:default;">
+          <i class="fas fa-check-circle"></i> Congratulations — You Got the Job!
+        </button>
+      {% elif has_applied and application_status == "Rejected" %}
+        <button class="btn btn-primary" disabled style="background:#dc2626;">
+          <i class="fas fa-times-circle"></i> Application Rejected
+        </button>
+      {% elif has_applied %}
+        <button class="btn btn-primary" disabled style="background:#d97706;">
+          <i class="fas fa-clock"></i> Application Pending
+        </button>
+      {% elif not job.is_available %}
+        <button class="btn btn-primary" disabled style="background:#64748b;">
+          <i class="fas fa-ban"></i> Position Unavailable
+        </button>
+      {% elif missing_docs %}
+        <button class="btn btn-primary" disabled style="background:#64748b;">
+          <i class="fas fa-file-upload"></i> Upload Required Documents First
+        </button>
+        <a href="{% url 'jobseeker_profile' %}" class="btn btn-secondary">
+          <i class="fas fa-user-edit"></i> Go to Profile
+        </a>
+      {% else %}
+        <a href="{% url 'apply_job' job.id %}" class="btn btn-primary">
+          <i class="fas fa-paper-plane"></i> Apply for this Job
+        </a>
+        <a href="{% url 'employer_public_profile' job.employer.employer_id %}" class="btn btn-secondary">
+          <i class="fas fa-building"></i> View Employer
+        </a>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
 </body>
 </html>

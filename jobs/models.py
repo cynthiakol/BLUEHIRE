@@ -26,10 +26,11 @@ class Job(models.Model):
         ("Other", "Other"),
     ]
     
-    # ✅ UPDATED: Simplified for Philippine context
+    # ✅ UPDATED: Added Contract type for Philippine context
     JOB_TYPE_CHOICES = [
         ('Full-time', 'Full-time'),      # Regular employment
         ('Part-time', 'Part-time'),      # Part-time work
+        ('Contract', 'Contract'),        # Contract-based (project-based, fixed-term)
         ('Commission', 'Commission'),    # Commission-based (sales, agents, etc.)
     ]
 
@@ -40,13 +41,13 @@ class Job(models.Model):
     location = models.CharField(max_length=255, default="Surigao City")
     salary = models.CharField(max_length=100, blank=True, null=True)
     
-    # ✅ UPDATED: Job Type with Philippine-relevant choices
+    # ✅ UPDATED: Job Type now includes Contract
     job_type = models.CharField(
         max_length=50,
         choices=JOB_TYPE_CHOICES,
         blank=True,
         null=True,
-        help_text="Employment type (Full-time, Part-time, or Commission-based)"
+        help_text="Employment type (Full-time, Part-time, Contract, or Commission-based)"
     )
     
     created_at = models.DateTimeField(default=timezone.now)
@@ -135,12 +136,14 @@ class Application(models.Model):
         ("Approved", "Approved"),
         ("Hired", "Hired"),
         ("Rejected", "Rejected"),
+        ("Completed", "Completed"),
+        ("Not Completed", "Not Completed"),
     ]
 
     application_id = models.AutoField(primary_key=True)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="job_applications")
     applicant = models.ForeignKey(JobSeeker, on_delete=models.CASCADE, related_name="jobseeker_applications")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default="Pending")
     applied_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

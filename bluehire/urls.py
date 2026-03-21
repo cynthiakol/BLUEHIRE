@@ -67,6 +67,8 @@ urlpatterns = [
     
     # ✅ OAUTH URLS - MUST COME LAST
     path('accounts/', include('allauth.urls')),
+    
+    path('', include('ratings.urls')),   # ← add this after path("jobs/", include("jobs.urls"))
 ]
 
 # --- MEDIA SERVING ---

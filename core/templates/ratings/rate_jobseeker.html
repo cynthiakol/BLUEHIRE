@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rate Worker | BlueHire</title>
+  <link rel="icon" href="{% static 'core/image/logo.png' %}" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom, #f1f5f9, #e2e8f0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .card { background: white; border-radius: 20px; padding: 2.5rem; max-width: 520px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    h4 { font-size: 1.5rem; font-weight: 800; color: #1e3a8a; margin-bottom: 0.5rem; }
+    .subtitle { color: #64748b; margin-bottom: 2rem; font-size: 0.95rem; }
+    .alert { padding: 1rem; border-radius: 10px; margin-bottom: 1rem; font-size: 0.9rem; }
+    .alert-info { background: #dbeafe; color: #1e40af; }
+    .alert-warning { background: #fef3c7; color: #92400e; }
+    .alert-danger { background: #fee2e2; color: #991b1b; }
+    .alert-success { background: #d1fae5; color: #065f46; }
+    .label { font-weight: 700; color: #374151; margin-bottom: 0.5rem; display: block; }
+    .star-row { display: flex; gap: 10px; margin-bottom: 0.5rem; }
+    .star-btn { font-size: 2.5rem; cursor: pointer; color: #ccc; transition: color 0.15s; user-select: none; }
+    .error-text { color: #dc2626; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
+    textarea { width: 100%; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; font-family: 'Segoe UI', sans-serif; resize: vertical; outline: none; transition: border-color 0.2s; }
+    textarea:focus { border-color: #3b82f6; }
+    .btn-row { display: flex; gap: 12px; margin-top: 1.5rem; }
+    .btn-submit { padding: 0.8rem 2rem; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.4); }
+    .btn-cancel { padding: 0.8rem 2rem; background: #f1f5f9; color: #64748b; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+    .btn-cancel:hover { background: #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    {% if is_no_show %}
+      <h4 style="color:#d97706;">⚠️ Rate this No-Show Worker</h4>
+      <p class="subtitle">
+        <strong>{{ jobseeker.user.get_full_name|default:jobseeker.user.username }}</strong>
+        was marked as <span style="color:#d97706;font-weight:700;">No Show / Not Completed</span>
+        for <strong>{{ job.title }}</strong>. Leave a warning for other employers.
+      </p>
+    {% else %}
+      <h4>⭐ Rate this Worker</h4>
+      <p class="subtitle">
+        You hired <strong>{{ jobseeker.user.get_full_name|default:jobseeker.user.username }}</strong>
+        for <strong>{{ job.title }}</strong>. Share your experience.
+      </p>
+    {% endif %}
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    {% if already_rated %}
+      <div class="alert alert-info">You already rated this worker for this job.</div>
+      <a href="{% url 'employer_dashboard' %}" class="btn-cancel">← Back to Dashboard</a>
+    {% else %}
+      <form method="POST">
+        {% csrf_token %}
+        <div style="margin-bottom:1.5rem;">
+          <span class="label">Your Rating</span>
+          <div class="star-row" id="starPicker">
+            {% for i in "12345" %}
+              <span class="star-btn" data-value="{{ forloop.counter }}">&#9733;</span>
+            {% endfor %}
+          </div>
+          <input type="hidden" name="score" id="scoreInput" required>
+          <div class="error-text" id="starError">Please select a star rating.</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <span class="label">Comment <span style="font-weight:400;color:#94a3b8;">(optional)</span></span>
+          {% if is_no_show %}
+            <textarea name="comment" rows="4" placeholder="e.g. Worker did not show up on the agreed date. Avoid hiring this person…"></textarea>
+          {% else %}
+            <textarea name="comment" rows="4" placeholder="Describe your experience with this worker…"></textarea>
+          {% endif %}
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn-submit">Submit Rating</button>
+          <a href="{% url 'employer_dashboard' %}" class="btn-cancel">Cancel</a>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+
+  <script>
+  (function(){
+    const stars = document.querySelectorAll('.star-btn');
+    const input = document.getElementById('scoreInput');
+    const err   = document.getElementById('starError');
+    let sel = 0;
+    function paint(n){ stars.forEach((s,i) => s.style.color = i < n ? '#f59e0b' : '#ccc'); }
+    stars.forEach(s => {
+      s.addEventListener('mouseenter', () => paint(+s.dataset.value));
+      s.addEventListener('mouseleave', () => paint(sel));
+      s.addEventListener('click', () => { sel = +s.dataset.value; input.value = sel; paint(sel); err.style.display='none'; });
+    });
+    document.querySelector('form').addEventListener('submit', e => {
+      if(!sel){ e.preventDefault(); err.style.display='block'; }
+    });
+  })();
+  </script>
+</body>
+</html>

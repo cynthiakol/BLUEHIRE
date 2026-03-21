@@ -5,636 +5,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlueHire | Sign in or Register</title>
+  <title>BlueHire — Sign In or Register</title>
   <link rel="icon" href="{% static 'core/image/logo.png' %}" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'core/css/auth.css' %}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" defer></script>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg:         #f0ede8;
+      --white:      #ffffff;
+      --ink:        #0f0f14;
+      --ink-2:      #3c3c48;
+      --ink-3:      #7a7a8a;
+      --ink-4:      #b0b0be;
+      --blue:       #2347d6;
+      --blue-light: #ebeffc;
+      --blue-mid:   #c7d2f8;
+      --green:      #16936a;
+      --green-light:#e3f5ef;
+      --red:        #c92626;
+      --red-light:  #fee2e2;
+      --amber:      #c47d06;
+      --amber-light:#fef3c7;
+      --border:     #dcd8d2;
+      --border-2:   #ccc8c2;
+      --shadow-lg:  0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+      --radius:     14px;
+      --radius-sm:  8px;
     }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Outfit', sans-serif;
+      background: var(--ink);
       min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 20px;
-      position: relative;
-      overflow-x: hidden;
-      background-attachment: fixed;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; position: relative; overflow-x: hidden;
+      /* dot grid */
+      background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
-
-    /* Animated background particles */
+    /* blue glow */
     body::before {
       content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
-      background-size: cover;
-      animation: wave 15s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes wave {
-      0% { transform: translateX(0) translateY(0); }
-      50% { transform: translateX(-25%) translateY(-5%); }
-      100% { transform: translateX(0) translateY(0); }
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(35,71,214,0.2) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
     }
 
     .home-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #667eea;
-      font-size: 20px;
-      text-decoration: none;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s ease;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
+      position: fixed; top: 20px; left: 20px;
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.6); font-size: 15px;
+      text-decoration: none; transition: all 0.15s; z-index: 1000;
     }
+    .home-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
-    .home-btn:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-      background: white;
-    }
-
-    .home-btn .tooltip {
-      display: none;
-    }
-
+    /* AUTH LAYOUT */
     .auth-layout {
       display: grid;
       grid-template-columns: 1fr;
-      max-width: 450px;
-      width: 100%;
-      gap: 0;
-      position: relative;
-      z-index: 1;
-      animation: fadeInUp 0.6s ease;
+      max-width: 460px; width: 100%;
+      position: relative; z-index: 1;
+      animation: fadeInUp 0.5s ease both;
       margin: 40px 0;
     }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
     @media (min-width: 1024px) {
-      .auth-layout {
-        grid-template-columns: 1fr 1.2fr;
-        max-width: 1100px;
-        gap: 0;
-      }
+      .auth-layout { grid-template-columns: 340px 1fr; max-width: 940px; gap: 0; }
     }
 
-    /* LEFT BRAND SECTION */
+    /* LEFT BRAND */
     .auth-brand {
-      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
-      backdrop-filter: blur(20px);
-      padding: 60px 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      border-radius: 20px 20px 0 0;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-bottom: none;
-      position: relative;
-      overflow: hidden;
+      background: var(--blue);
+      padding: 52px 40px;
+      display: flex; flex-direction: column; align-items: flex-start;
+      justify-content: space-between;
+      border-radius: var(--radius) var(--radius) 0 0;
+      position: relative; overflow: hidden;
     }
-
     .auth-brand::before {
       content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      animation: rotate 20s linear infinite;
+      position: absolute; bottom: -80px; right: -80px;
+      width: 280px; height: 280px;
+      background: rgba(255,255,255,0.08); border-radius: 50%;
+      pointer-events: none;
     }
-
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    .auth-brand::after {
+      content: '';
+      position: absolute; top: -40px; left: -40px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,0.06); border-radius: 50%;
+      pointer-events: none;
     }
-
     @media (min-width: 1024px) {
-      .auth-brand {
-        border-radius: 20px 0 0 20px;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.2);
-      }
+      .auth-brand { border-radius: var(--radius) 0 0 var(--radius); }
     }
-
+    .brand-top { position: relative; z-index: 1; }
     .brand-logo {
-      width: 100px;
-      height: 100px;
-      margin-bottom: 20px;
-      animation: float 3s ease-in-out infinite;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
-      position: relative;
-      z-index: 1;
+      width: 52px; height: 52px; border-radius: 12px;
+      margin-bottom: 24px; display: block;
     }
+    .auth-brand h1 { font-size: 32px; color: #fff; font-weight: 900; letter-spacing: -0.8px; margin-bottom: 10px; line-height: 1.1; }
+    .auth-brand p { color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.6; max-width: 260px; }
+    .brand-features { position: relative; z-index: 1; margin-top: 40px; }
+    .brand-feature { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .brand-feature i { width: 28px; height: 28px; background: rgba(255,255,255,0.15); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; flex-shrink: 0; }
+    .brand-feature span { font-size: 13px; color: rgba(255,255,255,0.8); font-weight: 500; }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .auth-brand h1 {
-      font-size: 42px;
-      color: white;
-      margin-bottom: 12px;
-      font-weight: 700;
-      text-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      position: relative;
-      z-index: 1;
-    }
-
-    .auth-brand p {
-      color: rgba(255,255,255,0.95);
-      font-size: 16px;
-      line-height: 1.6;
-      max-width: 300px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* RIGHT FORM SECTION */
+    /* RIGHT FORM */
     .auth-form-card {
-      background: white;
-      padding: 40px;
-      border-radius: 0 0 20px 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      position: relative;
-      max-height: 80vh;
-      overflow-y: auto;
+      background: var(--white);
+      padding: 36px 40px;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow-lg);
+      max-height: 82vh; overflow-y: auto;
     }
-
     @media (min-width: 1024px) {
-      .auth-form-card {
-        border-radius: 0 20px 20px 0;
-        padding: 50px;
-        max-height: none;
-        overflow-y: visible;
-      }
+      .auth-form-card { border-radius: 0 var(--radius) var(--radius) 0; max-height: none; overflow-y: visible; padding: 44px 48px; }
     }
 
-    /* Messages */
-    .message-container {
-      width: 100%;
-      margin: 0 0 20px 0;
-      animation: fadeIn 0.5s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
+    /* MESSAGES */
+    .message-container { width: 100%; margin-bottom: 18px; }
     .alert {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 10px;
-      padding: 12px 16px;
-      margin: 8px 0;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      animation: slideIn 0.4s ease;
-      border-left: 4px solid;
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px; margin-bottom: 8px;
+      border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
+      border-left: 3px solid;
     }
+    .alert-success { background: var(--green-light); color: #065f46; border-color: var(--green); }
+    .alert-error, .alert-danger { background: var(--red-light); color: #7f1d1d; border-color: var(--red); }
+    .alert-warning { background: var(--amber-light); color: #78350f; border-color: var(--amber); }
+    .alert-info { background: var(--blue-light); color: #1e3a8a; border-color: var(--blue); }
 
-    @keyframes slideIn {
-      from {
-        transform: translateX(-20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    .alert-success {
-      background: #d4edda;
-      color: #155724;
-      border-color: #28a745;
-    }
-
-    .alert-error, .alert-danger {
-      background: #f8d7da;
-      color: #721c24;
-      border-color: #dc3545;
-    }
-
-    .alert-warning {
-      background: #fff3cd;
-      color: #856404;
-      border-color: #ffc107;
-    }
-
-    .alert-info {
-      background: #d1ecf1;
-      color: #0c5460;
-      border-color: #17a2b8;
-    }
-
-    /* Tabs */
+    /* TABS */
     .form-tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 30px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 2px solid #e9ecef;
+      display: flex; gap: 0; margin-bottom: 28px;
+      background: var(--bg); border-radius: var(--radius-sm);
+      padding: 4px; border: 1px solid var(--border);
     }
-
     .tab {
-      flex: 1;
-      padding: 14px 20px;
-      background: white;
-      border: none;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      color: #6c757d;
-      position: relative;
+      flex: 1; padding: 10px 16px;
+      background: transparent; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s; color: var(--ink-3);
+      border-radius: 6px; font-family: 'Outfit', sans-serif;
     }
+    .tab:hover { color: var(--ink); }
+    .tab.active { background: var(--white); color: var(--ink); box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.08)); }
 
-    .tab:hover {
-      background: #f8f9fa;
+    /* FORMS */
+    .form { display: none; }
+    .form.active { display: block; animation: fadeInForm 0.3s ease; }
+    @keyframes fadeInForm { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--ink-2); font-size: 13px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      font-size: 14px; font-family: 'Outfit', sans-serif; color: var(--ink);
+      background: var(--bg); transition: border-color 0.15s;
     }
-
-    .tab.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+    .form-group input:focus, .form-group select:focus {
+      outline: none; border-color: var(--blue);
+      background: var(--white); box-shadow: 0 0 0 3px rgba(35,71,214,0.08);
     }
+    .form-group select option { background: var(--white); }
 
-    .tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: white;
-    }
-
-    /* Forms */
-    .form {
-      display: none;
-    }
-
-    .form.active {
-      display: block;
-      animation: fadeInForm 0.4s ease;
-    }
-
-    @keyframes fadeInForm {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #333;
-      font-size: 14px;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e9ecef;
-      border-radius: 10px;
-      font-size: 14px;
-      transition: all 0.3s ease;
-      background: #f8f9fa;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #667eea;
-      background: white;
-      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    }
-
-    /* OTP Row */
-    .otp-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .otp-row input {
-      flex: 1;
-    }
-
+    /* OTP */
+    .otp-row { display: flex; gap: 8px; }
+    .otp-row input { flex: 1; }
     .otp-btn {
-      padding: 12px 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 14px;
-      white-space: nowrap;
+      padding: 11px 16px; background: var(--blue); color: var(--white);
+      border: none; border-radius: var(--radius-sm); font-weight: 700;
+      cursor: pointer; transition: background 0.15s; font-size: 13px;
+      white-space: nowrap; font-family: 'Outfit', sans-serif;
     }
+    .otp-btn:hover { background: #1a38b8; }
+    .otp-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .otp-group { display: flex; gap: 8px; align-items: flex-end; }
+    .otp-group input { flex: 1; }
+    .otp-group .otp-btn.verify { background: var(--green); }
+    .otp-group .otp-btn.verify:hover { background: #0f7055; }
+    .hidden { display: none !important; }
 
-    .otp-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    .otp-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .otp-group {
-      display: flex;
-      gap: 10px;
-      align-items: flex-end;
-    }
-
-    .otp-group input {
-      flex: 1;
-    }
-
-    .otp-group .otp-btn.verify {
-      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Forgot Link */
+    /* FORGOT */
     .forgot-link {
-      display: inline-block;
-      margin-top: -10px;
-      margin-bottom: 15px;
-      font-size: 14px;
-      color: #667eea;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s ease;
+      display: inline-block; margin: -8px 0 14px;
+      font-size: 13px; color: var(--blue); font-weight: 600;
+      text-decoration: none; transition: color 0.15s;
     }
+    .forgot-link:hover { color: var(--ink); }
 
-    .forgot-link:hover {
-      color: #764ba2;
-      transform: translateX(3px);
-    }
-
-    /* Social Login */
-    .social-login {
-      margin: 25px 0;
-    }
-
+    /* SOCIAL */
+    .social-login { margin: 20px 0; }
     .social-text {
-      text-align: center;
-      color: #6c757d;
-      font-size: 13px;
-      margin-bottom: 15px;
-      position: relative;
+      text-align: center; color: var(--ink-4); font-size: 12px;
+      margin-bottom: 14px; position: relative;
+      display: flex; align-items: center; gap: 12px;
     }
-
-    .social-text::before,
-    .social-text::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      width: 35%;
-      height: 1px;
-      background: #e9ecef;
-    }
-
-    .social-text::before {
-      left: 0;
-    }
-
-    .social-text::after {
-      right: 0;
-    }
-
-    .social-buttons {
-      display: flex;
-      gap: 12px;
-    }
-
+    .social-text::before, .social-text::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .social-buttons { display: flex; gap: 10px; }
     .social-buttons a {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      border: 2px solid;
-      position: relative;
-      overflow: hidden;
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 11px 16px; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: 14px; text-decoration: none;
+      transition: all 0.15s; border: 1.5px solid;
     }
+    .btn-google { background: var(--white); color: var(--ink-2); border-color: var(--border); }
+    .btn-google:hover { border-color: var(--blue-mid); box-shadow: var(--shadow-sm, 0 2px 6px rgba(0,0,0,0.06)); }
+    .btn-google i { font-size: 14px; background: linear-gradient(to right,#4285f4,#34a853,#fbbc05,#ea4335); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-facebook { background: #1877f2; color: #fff; border-color: #1877f2; }
+    .btn-facebook:hover { background: #166fe5; border-color: #166fe5; }
 
-    .social-buttons a::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.2);
-      transition: left 0.3s ease;
-    }
-
-    .social-buttons a:hover::before {
-      left: 100%;
-    }
-
-    /* Google Button */
-    .btn-google {
-      background: #fff;
-      color: #3c4043;
-      border-color: #dadce0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-google:hover {
-      background: #f8f9fa;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transform: translateY(-2px);
-    }
-
-    .btn-google i {
-      font-size: 16px;
-      background: linear-gradient(to right, #4285f4, #34a853, #fbbc05, #ea4335);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* Facebook Button */
-    .btn-facebook {
-      background: #1877f2;
-      color: #fff;
-      border-color: #1877f2;
-      box-shadow: 0 2px 8px rgba(24, 119, 242, 0.3);
-    }
-
-    .btn-facebook:hover {
-      background: #166fe5;
-      border-color: #166fe5;
-      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4);
-      transform: translateY(-2px);
-    }
-
-    .btn-facebook i {
-      font-size: 16px;
-    }
-
-    /* Primary Button */
+    /* PRIMARY BTN */
     .btn.primary {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 20px;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      width: 100%; padding: 13px;
+      background: var(--ink); color: var(--white);
+      border: none; border-radius: var(--radius-sm);
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      transition: background 0.15s; margin-top: 16px;
+      font-family: 'Outfit', sans-serif;
     }
+    .btn.primary:hover { background: var(--blue); }
 
-    .btn.primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    /* SWITCH */
+    .switch { text-align: center; margin-top: 16px; color: var(--ink-3); font-size: 13px; }
+    .switch a { color: var(--blue); font-weight: 600; text-decoration: none; }
+    .switch a:hover { text-decoration: underline; }
+
+    /* SOCIAL HELPER */
+    .social-helper { text-align: center; margin-top: 8px; font-size: 12px; color: var(--ink-4); }
+    .social-helper a { color: var(--blue); text-decoration: none; }
+
+    /* LEGAL */
+    .legal-links {
+      text-align: center; margin-top: 24px; padding-top: 18px;
+      border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-4);
     }
+    .legal-links a { color: var(--ink-3); text-decoration: none; font-weight: 500; }
+    .legal-links a:hover { color: var(--blue); }
+    .legal-links .separator { margin: 0 8px; color: var(--border-2); }
 
-    .btn.primary:active {
-      transform: translateY(0);
-    }
-
-    /* Switch Text */
-    .switch {
-      text-align: center;
-      margin-top: 20px;
-      color: #6c757d;
-      font-size: 14px;
-    }
-
-    .switch a {
-      color: #667eea;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .switch a:hover {
-      color: #764ba2;
-      text-decoration: underline;
-    }
-
-    /* Facebook Switch Account Helper */
-    .social-helper {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 12px;
-      color: #6c757d;
-    }
-
-    .social-helper a {
-      color: #667eea;
-      text-decoration: none;
-    }
-
-    .social-helper a:hover {
-      text-decoration: underline;
-    }
-
-    /* Responsive */
     @media (max-width: 768px) {
-      .auth-brand {
-        padding: 40px 30px;
-      }
-
-      .auth-brand h1 {
-        font-size: 32px;
-      }
-
-      .auth-form-card {
-        padding: 30px 25px;
-      }
-
-      .social-buttons {
-        flex-direction: column;
-      }
+      .auth-brand { padding: 36px 28px; }
+      .auth-form-card { padding: 28px 24px; }
+      .social-buttons { flex-direction: column; }
+      .brand-features { display: none; }
     }
   </style>
 </head>
 <body>
 
-<a href="{% url 'homepage' %}" class="home-btn" title="Go back to home">
+<a href="{% url 'homepage' %}" class="home-btn" title="Back to home">
   <i class="fa-solid fa-house"></i>
-  <span class="tooltip">Go back to home</span>
 </a>
 
 <div class="auth-layout">
+
   <!-- LEFT -->
   <section class="auth-brand">
-    <a href="{% url 'homepage' %}">
-      <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
-    </a>
-    <h1>BlueHire</h1>
-    <p>Connecting skills with verified opportunities through AI-driven matching</p>
+    <div class="brand-top">
+      <a href="{% url 'homepage' %}">
+        <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+      </a>
+      <h1>Blue<br>Hire</h1>
+      <p>Connecting skills with verified opportunities through AI-driven matching.</p>
+    </div>
+    <div class="brand-features">
+      <div class="brand-feature"><i class="fas fa-check"></i><span>Verified worker profiles</span></div>
+      <div class="brand-feature"><i class="fas fa-robot"></i><span>AI-powered job matching</span></div>
+      <div class="brand-feature"><i class="fas fa-bolt"></i><span>Fast, direct hiring</span></div>
+    </div>
   </section>
 
   <!-- RIGHT -->
@@ -644,12 +292,12 @@
       <div class="message-container">
         {% for message in messages %}
           <div class="alert alert-{{ message.tags }}">
-            <i class="fa-solid 
+            <i class="fa-solid
               {% if 'error' in message.tags or 'danger' in message.tags %}fa-circle-xmark
               {% elif 'success' in message.tags %}fa-circle-check
               {% elif 'warning' in message.tags %}fa-triangle-exclamation
               {% else %}fa-circle-info{% endif %}"></i>
-            <span class="alert-text">{{ message|safe }}</span>
+            <span>{{ message|safe }}</span>
           </div>
         {% endfor %}
       </div>
@@ -660,94 +308,73 @@
       <button id="register-tab" class="tab">Register</button>
     </div>
 
-    <!-- SIGN IN FORM -->
+    <!-- SIGN IN -->
     <form id="signin-form" class="form active" method="post" action="{% url 'signin_register' %}">
       {% csrf_token %}
       <input type="hidden" name="action" value="signin">
-
       <div class="form-group">
         <label>Username</label>
         <input type="text" name="username" placeholder="Enter username" required>
       </div>
-
       <div class="form-group">
         <label>Password</label>
         <input type="password" name="password" placeholder="Enter password" required>
       </div>
-
       <a href="{% url 'password_reset' %}" class="forgot-link">Forgot Password?</a>
-
       <div class="social-login">
         <p class="social-text">or continue with</p>
         <div class="social-buttons">
-          <a href="{% provider_login_url 'google' %}" class="btn-google">
-            <i class="fab fa-google"></i>
-            Google
-          </a>
-          <a href="{% provider_login_url 'facebook' %}" class="btn-facebook">
-            <i class="fa-brands fa-facebook-f"></i>
-            Facebook
-          </a>
+          <a href="{% provider_login_url 'google' %}" class="btn-google"><i class="fab fa-google"></i> Google</a>
+          <a href="{% provider_login_url 'facebook' %}" class="btn-facebook"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
         </div>
-        <p class="social-helper">
-          Using Facebook? <a href="https://www.facebook.com/logout.php" target="_blank">Log out first</a> to choose a different account.
-        </p>
+        <p class="social-helper">Using Facebook? <a href="https://www.facebook.com/logout.php" target="_blank">Log out first</a> to choose a different account.</p>
       </div>
-
       <button type="submit" class="btn primary">Sign In</button>
       <p class="switch">New to BlueHire? <a href="#" id="go-register">Create account</a></p>
     </form>
 
-    <!-- REGISTER FORM -->
+    <!-- REGISTER -->
     <form id="register-form" class="form" method="post" enctype="multipart/form-data" action="{% url 'signin_register' %}">
       {% csrf_token %}
       <input type="hidden" name="action" value="register">
-
       <div class="form-group">
         <label>Username</label>
         <input type="text" name="username" placeholder="Enter username" required>
       </div>
-
       <div class="form-group">
         <label>First Name</label>
         <input type="text" name="first_name" placeholder="First Name" required>
       </div>
-
       <div class="form-group">
         <label>Last Name</label>
         <input type="text" name="last_name" placeholder="Last Name" required>
       </div>
-
       <div class="form-group">
         <label>Password</label>
         <input type="password" name="password" placeholder="Create password" required>
       </div>
-
       <div class="form-group">
         <label>Email</label>
         <input type="email" name="email" placeholder="Enter email" required>
       </div>
-
       <div class="form-group">
-  <label>Phone Number</label>
-  <div class="otp-row">
-    <input type="tel" id="phone_number" name="phone_number" placeholder="09XXXXXXXXX" required style="flex: 2;">
-    <select id="carrier" name="carrier" required style="flex: 1; padding: 12px 16px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 14px; background: #f8f9fa;">
-      <option value="globe">Globe</option>
-      <option value="smart">Smart</option>
-      <option value="sun">Sun</option>
-      <option value="tnt">TNT</option>
-    </select>
-    <button id="sendOtpBtn" type="button" class="otp-btn">Send OTP</button>
-  </div>
-</div>
-
+        <label>Phone Number</label>
+        <div class="otp-row">
+          <input type="tel" id="phone_number" name="phone_number" placeholder="09XXXXXXXXX" required style="flex:2;">
+          <select id="carrier" name="carrier" required style="flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--bg);font-family:'Outfit',sans-serif;color:var(--ink);">
+            <option value="globe">Globe</option>
+            <option value="smart">Smart</option>
+            <option value="sun">Sun</option>
+            <option value="tnt">TNT</option>
+          </select>
+          <button id="sendOtpBtn" type="button" class="otp-btn">Send OTP</button>
+        </div>
+      </div>
       <div class="form-group otp-group hidden">
         <label>Enter OTP</label>
         <input type="text" id="otpInput" placeholder="6-digit code">
         <button type="button" id="verifyOtpBtn" class="otp-btn verify">Verify</button>
       </div>
-
       <div class="form-group">
         <label>Register As</label>
         <select id="role-select" name="role" required>
@@ -756,7 +383,6 @@
           <option value="Employer">Employer</option>
         </select>
       </div>
-
       <div id="employer-type-wrap" class="form-group hidden">
         <label>Employer Type</label>
         <select id="employer-type-select" name="employer_type">
@@ -765,19 +391,22 @@
           <option value="Personal">Homeowner / Personal</option>
         </select>
       </div>
-
       <button type="submit" class="btn primary">Create Account</button>
       <p class="switch">Already have an account? <a href="#" id="go-signin">Sign In</a></p>
     </form>
+
+    <div class="legal-links">
+      <a href="{% url 'terms' %}">Terms of Service</a>
+      <span class="separator">•</span>
+      <a href="{% url 'privacy' %}">Privacy Policy</a>
+    </div>
 
   </section>
 </div>
 
 <script>
-// Prevent auth.js from running by defining flag
 window.OTP_HANDLERS_LOADED = true;
 
-// ==================== CSRF TOKEN ====================
 function getCSRFToken() {
   const name = "csrftoken=";
   const cookies = document.cookie.split(";");
@@ -788,18 +417,13 @@ function getCSRFToken() {
   return "";
 }
 
-// ==================== OTP FUNCTIONALITY ====================
-// ✅ CLONE BUTTONS TO REMOVE ALL OLD EVENT LISTENERS
 const oldSendBtn = document.getElementById("sendOtpBtn");
 const oldVerifyBtn = document.getElementById("verifyOtpBtn");
-
 const newSendBtn = oldSendBtn.cloneNode(true);
 const newVerifyBtn = oldVerifyBtn.cloneNode(true);
-
 oldSendBtn.parentNode.replaceChild(newSendBtn, oldSendBtn);
 oldVerifyBtn.parentNode.replaceChild(newVerifyBtn, oldVerifyBtn);
 
-// ✅ GET FRESH BUTTONS (no old event listeners)
 const sendOtpBtn = document.getElementById("sendOtpBtn");
 const verifyOtpBtn = document.getElementById("verifyOtpBtn");
 const otpGroup = document.querySelector(".otp-group");
@@ -810,144 +434,71 @@ const otpInput = document.getElementById("otpInput");
 let otpLock = false;
 let verifyLock = false;
 
-// ==================== SEND OTP ====================
 sendOtpBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  e.stopImmediatePropagation();
-  
-  if (otpLock) {
-    console.log("🔒 OTP request already in progress");
-    return;
-  }
+  e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+  if (otpLock) return;
   otpLock = true;
-
   const phone = phoneInput.value.trim();
   const carrier = carrierSelect.value;
-
-  if (!phone) {
-    alert("⚠️ Please enter your phone number first");
-    otpLock = false;
-    return;
-  }
-
+  if (!phone) { alert("Please enter your phone number first"); otpLock = false; return; }
   sendOtpBtn.disabled = true;
   sendOtpBtn.textContent = "Sending...";
-
   try {
-    console.log("📤 Sending OTP request...");
-    console.log("Phone:", phone, "Carrier:", carrier);
-    
     const res = await fetch("/accounts/send-otp/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCSRFToken(),
-      },
-      body: JSON.stringify({ 
-        phone_number: phone,
-        carrier: carrier
-      }),
+      headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
+      body: JSON.stringify({ phone_number: phone, carrier: carrier }),
     });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
-    console.log("✅ OTP Response:", data);
-
     if (data.status === "ok") {
       otpGroup.classList.remove("hidden");
-      sendOtpBtn.textContent = "Sent ✓";
-      sendOtpBtn.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
-      
-      console.log("🔑 TEST OTP:", data.otp);
-      
-      alert(`✅ OTP sent to your ${carrier.toUpperCase()} number!\n\n` +
-            `📱 Check your phone for SMS (may take 1-5 minutes).\n\n` +
-            `🧪 Test OTP: ${data.otp || 'Check console'}`);
-      
-      // Auto-focus OTP input
+      sendOtpBtn.textContent = "Sent";
+      sendOtpBtn.style.background = "var(--green)";
+      alert(`OTP sent to your ${carrier.toUpperCase()} number!\n\nCheck your phone for SMS.\n\nTest OTP: ${data.otp || 'Check console'}`);
       setTimeout(() => otpInput.focus(), 300);
-    } else {
-      throw new Error(data.message || 'Failed to send OTP');
-    }
+    } else { throw new Error(data.message || 'Failed to send OTP'); }
   } catch (err) {
-    console.error("❌ Send OTP error:", err);
-    alert(`❌ Error: ${err.message}`);
+    alert(`Error: ${err.message}`);
     sendOtpBtn.disabled = false;
     sendOtpBtn.textContent = "Send OTP";
-    sendOtpBtn.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-  } finally {
-    otpLock = false;
-  }
+    sendOtpBtn.style.background = "";
+  } finally { otpLock = false; }
 });
 
-// ==================== VERIFY OTP ====================
 verifyOtpBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  e.stopImmediatePropagation();
-  
-  if (verifyLock) {
-    console.log("🔒 Verify request already in progress");
-    return;
-  }
+  e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+  if (verifyLock) return;
   verifyLock = true;
-
   const phone = phoneInput.value.trim();
   const otp = otpInput.value.trim();
-
-  if (!phone || !otp) {
-    alert("⚠️ Please enter both phone number and OTP");
-    verifyLock = false;
-    return;
-  }
-
+  if (!phone || !otp) { alert("Please enter both phone number and OTP"); verifyLock = false; return; }
   verifyOtpBtn.disabled = true;
   verifyOtpBtn.textContent = "Verifying...";
-
   try {
-    console.log("📤 Sending verify request...");
     const res = await fetch("/accounts/verify-otp/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-CSRFToken": getCSRFToken(),
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded", "X-CSRFToken": getCSRFToken() },
       body: `phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`,
     });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
-    console.log("✅ Verify Response:", data);
-
     if (data.status === "ok") {
-      alert("✅ Phone verified successfully!");
-      verifyOtpBtn.textContent = "Verified ✓";
-      verifyOtpBtn.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+      alert("Phone verified successfully!");
+      verifyOtpBtn.textContent = "Verified";
+      verifyOtpBtn.style.background = "var(--green)";
       otpInput.disabled = true;
-      phoneInput.readOnly = true;        // ✅ Use readOnly instead of disabled
+      phoneInput.readOnly = true;
       carrierSelect.disabled = true;
       sendOtpBtn.disabled = true;
-      } else {
-      throw new Error(data.message || 'Invalid OTP');
-    }
+    } else { throw new Error(data.message || 'Invalid OTP'); }
   } catch (err) {
-    console.error("❌ Verify OTP error:", err);
-    alert(`❌ ${err.message}`);
+    alert(err.message);
     verifyOtpBtn.disabled = false;
     verifyOtpBtn.textContent = "Verify";
-  } finally {
-    verifyLock = false;
-  }
+  } finally { verifyLock = false; }
 });
 </script>
-<!-- Load auth.js AFTER our handlers -->
 <script src="{% static 'core/js/auth.js' %}"></script>
 </body>
 </html>

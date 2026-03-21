@@ -255,7 +255,33 @@ from .models import Job
 @login_required
 def view_job_details(request, job_id):
     job = get_object_or_404(Job, id=job_id)
-    return render(request, "core/view_job_details.html", {"job": job})
+
+    # Fix stats — annotate counts directly on the job object
+    from applications.models import Application
+    from django.db.models import Count, Q
+
+    job.total_applicants = Application.objects.filter(job=job).count()
+    job.hired_count = Application.objects.filter(job=job, status="Hired").count()
+
+    has_applied = False
+    application_status = None
+
+    if hasattr(request.user, 'role') and request.user.role == 'JobSeeker':
+        try:
+            from accounts.models import JobSeeker
+            jobseeker = JobSeeker.objects.get(user=request.user)
+            application = Application.objects.filter(job=job, applicant=jobseeker).first()
+            if application:
+                has_applied = True
+                application_status = application.status
+        except Exception:
+            pass
+
+    return render(request, "core/view_job_details.html", {
+        "job": job,
+        "has_applied": has_applied,
+        "application_status": application_status,
+    })
 
 @login_required
 def employer_job_list(request):

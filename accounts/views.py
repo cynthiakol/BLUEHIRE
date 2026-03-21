@@ -59,6 +59,8 @@ from accounts.doc_verifier import run_ai_verification_for_user
 from django.db import models
 import json
 from jobs.ai_matcher import rank_applicants
+from django.db.models import Avg
+from ratings.models import Rating
 
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
@@ -929,9 +931,11 @@ def jobseeker_dashboard(request):
 
 @login_required
 def jobseeker_public_profile(request, jobseeker_id):
+    from ratings.models import Rating
+    from django.db.models import Count
+
     jobseeker = get_object_or_404(JobSeeker, pk=jobseeker_id)
 
-    # build readable location
     location_parts = [
         jobseeker.barangay or "",
         jobseeker.city or "",
@@ -940,7 +944,6 @@ def jobseeker_public_profile(request, jobseeker_id):
     ]
     location = ", ".join([part for part in location_parts if part])
 
-    # handle job types, skills, certificates, and clearances
     preferred_job_types = jobseeker.preferred_job_types or []
     skills = jobseeker.skills or []
     certifications = jobseeker.certifications or []
@@ -957,17 +960,32 @@ def jobseeker_public_profile(request, jobseeker_id):
         "Technician", "Electrician", "Mechanic", "Laborer", "Other"
     ]
 
+    ratings = Rating.objects.filter(
+        rated_jobseeker=jobseeker, is_visible=True
+    ).select_related('reviewer', 'application__job')
+    stats = ratings.aggregate(avg=Avg('score'), total=Count('id'))
+    avg_score = round(stats['avg'] or 0, 1)
+    avg_rating = avg_score if stats['total'] > 0 else None
+    total_ratings = stats['total']
+    distribution = {i: ratings.filter(score=i).count() for i in range(5, 0, -1)}
+
     return render(
         request,
         "core/jobseeker_public_profile.html",
         {
-            "jobseeker": jobseeker,  # ✅ match your template
+            "jobseeker": jobseeker,
             "job_types": job_types,
             "location": location or "N/A",
             "preferred_job_types": preferred_job_types,
             "skills": skills,
             "certifications": certifications,
             "clearances": clearances,
+            "ratings": ratings,
+            "avg_rating": avg_rating,
+            "total_ratings": total_ratings,
+            "distribution": distribution,
+            "filled_stars": range(1, round(avg_score) + 1),
+            "empty_stars": range(round(avg_score) + 1, 6),
         },
     )
 
@@ -1723,33 +1741,50 @@ def employer_dashboard(request):
         messages.error(request, "Employer profile not found.")
         return redirect("signin_register")
 
-    from django.db.models import Count, Q
+    from django.db.models import Count, Q, Avg
     from jobs.models import Job
     from applications.models import Application
+    from ratings.models import Rating
     
-    # ✅ GET ALL JOBS WITH PROPER STATS CALCULATION
     jobs = Job.objects.filter(employer=employer).order_by("-created_at")
     
-    # ✅ CALCULATE STATS FOR EACH JOB (SAME AS view_applications)
     jobs_with_stats = []
     for job in jobs:
-        # Manually calculate all stats using the actual database
         job.total_applicants = Application.objects.filter(job=job).count()
-        job.hired_count = Application.objects.filter(job=job, status="Hired").count()
+        job.hired_count = Application.objects.filter(
+            job=job, status__in=["Hired", "Completed", "Not Completed"]
+        ).count()
+
+        hired_apps = Application.objects.filter(
+            job=job, status__in=["Hired", "Completed", "Not Completed"]
+        ).select_related("applicant__user")
+
+        for app in hired_apps:
+            existing_rating = Rating.objects.filter(
+                reviewer=request.user,
+                application=app,
+                rated_jobseeker=app.applicant,
+            ).first()
+            app.existing_rating = existing_rating
+
+        job.hired_applications = hired_apps
         job.rejected_count = Application.objects.filter(job=job, status="Rejected").count()
         job.pending_count = Application.objects.filter(job=job, status="Pending").count()
         job.approved_count = Application.objects.filter(job=job, status="Approved").count()
-        
-        # ✅ Debug print to verify
-        print(f"[DASHBOARD] Job '{job.title}': hired={job.hired_count}, total={job.total_applicants}, quota={job.hiring_quota}")
-        
+
+        for app in job.application_set.all():
+            if app.applicant:
+                avg = Rating.objects.filter(
+                    rated_jobseeker=app.applicant, is_visible=True
+                ).aggregate(avg=Avg('score'))['avg']
+                app.applicant.avg_rating = round(avg, 1) if avg else None
+
         jobs_with_stats.append(job)
 
     total_jobs = len(jobs_with_stats)
     total_applicants = Application.objects.filter(job__employer=employer).count()
     pending_verifications = 0 if employer.is_verified else 1
 
-    # Profile completion
     fields = [
         employer.company_name,
         employer.company_description,
@@ -1759,14 +1794,24 @@ def employer_dashboard(request):
     completed = sum(1 for f in fields if f)
     profile_completion = int((completed / len(fields)) * 100) if fields else 0
 
-    # Recent hires
     recent_applicants = (
-        Application.objects.filter(job__employer=employer, status="Hired")
+        Application.objects.filter(
+            job__employer=employer,
+            status__in=["Hired", "Completed", "Not Completed"]
+        )
         .select_related("job", "applicant__user")
         .order_by("-applied_date")[:5]
     )
 
-    # Notifications
+    # Attach existing rating to recent applicants too
+    for app in recent_applicants:
+        existing_rating = Rating.objects.filter(
+            reviewer=request.user,
+            application=app,
+            rated_jobseeker=app.applicant,
+        ).first()
+        app.existing_rating = existing_rating
+
     notifications = Notification.objects.filter(
         receiver=employer.user
     ).order_by("-created_at")[:10]
@@ -1781,7 +1826,7 @@ def employer_dashboard(request):
         "core/employer_dashboard.html",
         {
             "employer": employer,
-            "jobs": jobs_with_stats,  # ✅ PASS THE JOBS WITH CALCULATED STATS
+            "jobs": jobs_with_stats,
             "total_jobs": total_jobs,
             "total_applicants": total_applicants,
             "pending_verifications": pending_verifications,
@@ -2016,20 +2061,53 @@ def update_employer_profile(request):
 
 
 
-@login_required
 def employer_public_profile(request, employer_id):
-    """Public view for seekers to see employer details + open jobs"""
-    employer = get_object_or_404(Employer, pk=employer_id, is_verified=True)
-    jobs = Job.objects.filter(
-        employer=employer,
-        is_active=True,
-        is_approved=True
-    ).order_by('-date_posted')
+    from ratings.models import Rating
+    from django.db.models import Count
 
-    return render(request, "core/employer_public_profile.html", {
-        "employer": employer,
-        "jobs": jobs,
-    })
+    employer = get_object_or_404(Employer, employer_id=employer_id)
+    posted_jobs = Job.objects.filter(employer=employer)
+
+    if employer.employer_type == "Company":
+        documents = {
+            "Business Permit": employer.business_permit,
+            "Company ID": employer.company_id_file,
+            "Barangay Clearance": employer.barangay_clearance,
+            "Police Clearance": employer.police_clearance,
+            "NBI Clearance": employer.nbi_clearance,
+        }
+    else:
+        documents = {
+            "Valid ID": employer.company_id_file,
+            "Barangay Clearance": employer.barangay_clearance,
+            "Police Clearance": employer.police_clearance,
+            "NBI Clearance": employer.nbi_clearance,
+        }
+
+    ratings = Rating.objects.filter(
+        rated_employer=employer, is_visible=True
+    ).select_related('reviewer', 'application__job')
+    stats = ratings.aggregate(avg=Avg('score'), total=Count('id'))
+    avg_score = round(stats['avg'] or 0, 1)
+    avg_rating = avg_score if stats['total'] > 0 else None
+    total_ratings = stats['total']
+    distribution = {i: ratings.filter(score=i).count() for i in range(5, 0, -1)}
+
+    return render(
+        request,
+        "core/employer_public_profile.html",
+        {
+            "employer": employer,
+            "documents": documents,
+            "jobs": posted_jobs,
+            "ratings": ratings,
+            "avg_rating": avg_rating,
+            "total_ratings": total_ratings,
+            "distribution": distribution,
+            "filled_stars": range(1, round(avg_score) + 1),
+            "empty_stars": range(round(avg_score) + 1, 6),
+        },
+    )
 
 
 @login_required
@@ -2088,9 +2166,6 @@ from applications.models import Application
 def view_applications(request):
     """
     Employer view to see all applications with AI-ranked applicants
-    ✅ REMOVED SKILLS MATCHING
-    ✅ Only ranks based on: Certificates (NC2), Preferred Job Types, Experience, About
-    ✅ Only shows applicants who APPLIED and are NOT hired
     """
     
     try:
@@ -2099,10 +2174,11 @@ def view_applications(request):
         messages.error(request, "Employer profile not found.")
         return redirect("signin_register")
 
-    from django.db.models import Count, Q
+    from django.db.models import Count, Q, Avg
     from jobs.models import Job
     from applications.models import Application
     from accounts.models import JobSeekerCertificate
+    from ratings.models import Rating
     
     # Get all jobs for this employer
     jobs = Job.objects.filter(employer=employer).prefetch_related(
@@ -2135,7 +2211,10 @@ def view_applications(request):
 
     # Recent hires
     recent_applicants = (
-        Application.objects.filter(job__employer=employer, status="Hired")
+        Application.objects.filter(
+            job__employer=employer,
+            status__in=["Hired", "Completed", "Not Completed"]
+        )
         .select_related("job", "applicant__user")
         .order_by("-applied_date")[:5]
     )
@@ -2150,8 +2229,21 @@ def view_applications(request):
         is_read=False
     ).count()
 
-    # ✅ AI RECOMMENDATIONS - ONLY APPLICANTS WHO APPLIED (NOT HIRED)
-    # ✅ REMOVED SKILLS - Only: Certificates, Preferred Job Types, Experience, About
+    # ✅ BUILD APPLICANT RATINGS MAP
+    applicant_ratings = {}
+    all_seeker_ids = []
+    for job in jobs_with_stats:
+        for app in job.job_applications.all():
+            if app.applicant:
+                all_seeker_ids.append(app.applicant.seeker_id)
+    for seeker_id in set(all_seeker_ids):
+        avg = Rating.objects.filter(
+            rated_jobseeker__seeker_id=seeker_id, is_visible=True
+        ).aggregate(avg=Avg('score'))['avg']
+        if avg:
+            applicant_ratings[seeker_id] = round(avg, 1)
+
+    # ✅ AI RECOMMENDATIONS
     ai_recommendations = {}
     
     print("\n🎯 RANKING APPLICANTS (NO SKILLS, ONLY CERTS + PREFERENCES + EXPERIENCE + ABOUT)")
@@ -2160,11 +2252,10 @@ def view_applications(request):
     for job in jobs_with_stats:
         print(f"\n📌 Job: {job.title} | Category: {job.category}")
         
-        # Get ONLY applicants who applied and are NOT hired
         applications = Application.objects.filter(
             job=job
         ).exclude(
-            status="Hired"  # ✅ EXCLUDE HIRED APPLICANTS
+            status="Hired"
         ).select_related('applicant', 'applicant__user')
         
         applicants = [app.applicant for app in applications if app.applicant]
@@ -2176,14 +2267,12 @@ def view_applications(request):
             ai_recommendations[job.id] = []
             continue
         
-        # ✅ SIMPLIFIED RANKING: Certificates (40%) + Preferences (40%) + Experience (20%)
         rankings = []
         
         for seeker in applicants:
             score = 0
             match_reason = []
             
-            # 1. ✅ CERTIFICATES (NC2) - 40 POINTS
             uploaded_certs = JobSeekerCertificate.objects.filter(jobseeker=seeker)
             has_uploaded_certificates = uploaded_certs.exists()
             
@@ -2192,7 +2281,6 @@ def view_applications(request):
                 match_reason.append(f"Has {uploaded_certs.count()} NC2/certificates (+30)")
                 print(f"      ✅ {seeker.user.username}: +30 pts ({uploaded_certs.count()} certificates)")
             
-            # Check certifications JSONField
             if hasattr(seeker, 'certifications') and seeker.certifications:
                 certs_list = seeker.certifications if isinstance(seeker.certifications, list) else []
                 if certs_list:
@@ -2200,7 +2288,6 @@ def view_applications(request):
                     match_reason.append("Additional certifications (+10)")
                     print(f"      ✅ {seeker.user.username}: +10 pts (certifications JSONField)")
             
-            # 2. ✅ PREFERRED JOB TYPES - 40 POINTS
             if seeker.preferred_job_types:
                 job_types_list = seeker.preferred_job_types if isinstance(seeker.preferred_job_types, list) else [str(seeker.preferred_job_types)]
                 
@@ -2218,11 +2305,9 @@ def view_applications(request):
                             print(f"      ✅ {seeker.user.username}: +25 pts (similar category)")
                             break
             
-            # 3. ✅ EXPERIENCE - 20 POINTS
             if hasattr(seeker, 'experience_years') and seeker.experience_years:
                 try:
                     years = int(seeker.experience_years)
-                    # Scale: 0 years = 0 pts, 5+ years = 20 pts
                     experience_score = min(years / 5.0, 1.0) * 20
                     score += experience_score
                     match_reason.append(f"{years} years experience (+{experience_score:.1f})")
@@ -2230,16 +2315,13 @@ def view_applications(request):
                 except:
                     pass
             
-            # 4. ✅ BONUS: Has "About Me" section (shows profile completeness) - 5 POINTS
             if hasattr(seeker, 'about') and seeker.about and len(seeker.about.strip()) > 20:
                 score += 5
                 match_reason.append("Complete profile with about (+5)")
                 print(f"      ✅ {seeker.user.username}: +5 pts (has about section)")
             
-            # Cap at 100
             score = min(100, round(score, 1))
             
-            # Determine match level
             if score >= 90:
                 match_level = "Excellent Match"
             elif score >= 70:
@@ -2256,15 +2338,13 @@ def view_applications(request):
                 "seeker": seeker,
                 "score": score,
                 "match_level": match_level,
-                "uploaded_certificates": uploaded_certs,  # ✅ ADD THIS
+                "uploaded_certificates": uploaded_certs,
             })
         
-        # Sort by score (highest first)
         rankings.sort(key=lambda x: x['score'], reverse=True)
         
         print(f"   ✅ Ranked {len(rankings)} applicants")
         
-        # Store top 10 recommendations
         ai_recommendations[job.id] = rankings[:10]
 
     print("\n" + "="*80)
@@ -2286,6 +2366,7 @@ def view_applications(request):
         "notifications": notifications,
         "unread_count": unread_count,
         "recent_applicants": recent_applicants,
+        "applicant_ratings": applicant_ratings,   # ← NEW
     }
     
     return render(request, "core/employer_applications.html", context)
@@ -2529,6 +2610,10 @@ def update_application_status(request, app_id):
                 message += " This position is now filled."
         elif status == "Rejected":
             message = f"❌ Your application for '{app.job.title}' was not successful. Don't give up – more jobs await!"
+        elif status == "Completed":
+            message = f"🏁 Your job '{app.job.title}' has been marked as completed. You can now rate your employer!"
+        elif status == "Not Completed":
+            message = f"⚠️ Your application for '{app.job.title}' was marked as Not Completed by the employer."
         else:
             message = f"Your application status for '{app.job.title}' was updated to {status}."
 

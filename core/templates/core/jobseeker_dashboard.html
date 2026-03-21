@@ -5,642 +5,365 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Job Seeker Dashboard | BlueHire</title>
+  <title>Dashboard | BlueHire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f3f5f9;
-    min-height: 100vh;
-  }
-
-  nav.navbar {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    color: white;
-    padding: 16px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-
-  .navbar .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .navbar .logo img {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-  }
-
-  .navbar .logo span {
-    font-size: 24px;
-    font-weight: 700;
-    color: white;
-    letter-spacing: 0.5px;
-  }
-
-  .navbar .right-section {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-  }
-
-  .notif-bell {
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-
-  .notif-bell i {
-    font-size: 22px;
-    color: white;
-    transition: 0.3s;
-  }
-
-  .notif-bell:hover i {
-    color: #dceeff;
-    transform: scale(1.1);
-  }
-
-  .notif-count {
-    position: absolute;
-    top: -6px;
-    right: -8px;
-    background: #dc3545;
-    color: white;
-    font-size: 11px;
-    font-weight: 700;
-    border-radius: 50%;
-    padding: 3px 6px;
-    line-height: 1;
-    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
-  }
-
-  .notif-dropdown {
-    display: none;
-    position: absolute;
-    top: 45px;
-    right: 0;
-    background: white;
-    color: #333;
-    width: 350px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    overflow: hidden;
-    transform: translateY(-10px);
-    opacity: 0;
-    transition: all 0.3s ease;
-  }
-
-  .notif-dropdown.active {
-    display: block;
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  .notif-dropdown h4 {
-    margin: 0;
-    padding: 16px 20px;
-    color: #007bff;
-    border-bottom: 2px solid #f3f5f9;
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  .notif-item {
-    padding: 14px 20px;
-    border-bottom: 1px solid #f3f5f9;
-    transition: background 0.2s;
-  }
-
-  .notif-item:hover {
-    background: #f8f9fa;
-  }
-
-  .notif-item:last-child {
-    border-bottom: none;
-  }
-
-  .notif-item strong {
-    color: #333;
-    font-size: 14px;
-    display: block;
-    margin-bottom: 4px;
-  }
-
-  .notif-item small {
-    color: #6c757d;
-    font-size: 12px;
-  }
-
-  .navbar .dropdown {
-    position: relative;
-  }
-
-  .navbar .dropbtn {
-    background: white;
-    color: #007bff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .navbar .dropbtn:hover {
-    background: #f8f9fa;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .navbar .dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background: white;
-    min-width: 200px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    z-index: 999;
-    overflow: hidden;
-    transform: translateY(-10px);
-    opacity: 0;
-    transition: all 0.3s ease;
-    margin-top: 8px;
-  }
-
-  .navbar .dropdown:hover .dropdown-content,
-  .navbar .dropdown-content:hover {
-    display: block;
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  .navbar .dropdown::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    height: 8px;
-  }
-
-  .navbar .dropdown-content a {
-    color: #333;
-    padding: 12px 20px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-    transition: all 0.2s;
-  }
-
-  .navbar .dropdown-content a i {
-    width: 20px;
-    text-align: center;
-    color: #007bff;
-  }
-
-  .navbar .dropdown-content a:hover {
-    background: #f8f9fa;
-    padding-left: 24px;
-  }
-
-  .page-header {
-    background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
-    color: white;
-    padding: 40px 60px;
-    text-align: center;
-  }
-
-  .page-header h1 {
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .page-header p {
-    font-size: 16px;
-    opacity: 0.95;
-  }
-
-  .container {
-    max-width: 1400px;
-    margin: -30px auto 40px auto;
-    padding: 0 60px;
-  }
-
-  .welcome-card {
-    background: white;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    margin-bottom: 30px;
-  }
-
-  .welcome-card h2 {
-    font-size: 28px;
-    color: #1a1a1a;
-    margin-bottom: 8px;
-    font-weight: 700;
-  }
-
-  .welcome-card p {
-    color: #6c757d;
-    font-size: 16px;
-  }
-
-  .quick-actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-  }
-
-  .action-card {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    border-radius: 12px;
-    padding: 24px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
-  }
-
-  .action-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.3);
-  }
-
-  .action-card h3 {
-    font-size: 20px;
-    margin-bottom: 8px;
-    font-weight: 700;
-  }
-
-  .action-card p {
-    font-size: 14px;
-    opacity: 0.95;
-    line-height: 1.5;
-  }
-
-  .alert-warning {
-    background: #fff3cd;
-    color: #856404;
-    padding: 16px 20px;
-    border-radius: 12px;
-    border-left: 4px solid #ffc107;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
-  }
-
-  .alert-warning i {
-    font-size: 20px;
-    color: #ffc107;
-  }
-
-  .alert-warning a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .alert-warning a:hover {
-    text-decoration: underline;
-  }
-
-  .search-bar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 35px;
-    flex-wrap: wrap;
-  }
-
-  .search-bar input {
-    flex: 1;
-    min-width: 250px;
-    padding: 14px 18px;
-    border: 2px solid #e0e8f0;
-    border-radius: 10px;
-    font-size: 15px;
-    transition: all 0.3s;
-  }
-
-  .search-bar input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
-  }
-
-  .search-bar button {
-    padding: 14px 28px;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
-  }
-
-  .search-bar button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-  }
-
-  .section-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin: 35px 0 20px 0;
-    padding-left: 16px;
-    border-left: 5px solid #007bff;
-  }
-
-  .job-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 24px;
-    margin-bottom: 40px;
-  }
-
-  .job-card {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    border-left: 4px solid #007bff;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .job-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.15);
-  }
-
-  .job-card h4 {
-    font-size: 20px;
-    color: #1a1a1a;
-    margin-bottom: 12px;
-    font-weight: 700;
-  }
-
-  .job-card p {
-    font-size: 14px;
-    color: #495057;
-    margin-bottom: 8px;
-    line-height: 1.6;
-  }
-
-  .job-card p strong {
-    color: #007bff;
-    font-weight: 600;
-  }
-
-  .company-link {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .company-link:hover {
-    color: #0056b3;
-    text-decoration: underline;
-  }
-
-  .job-stats {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.8rem;
-    background: #f8fafc;
-    border-radius: 8px;
-    margin: 12px 0;
-    flex-wrap: wrap;
-  }
-
-  .stat-item {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    color: #64748b;
-  }
-
-  .stat-item i {
-    font-size: 0.9rem;
-  }
-
-  .stat-item.applicants i {
-    color: #3b82f6;
-  }
-
-  .stat-item.hired i {
-    color: #10b981;
-  }
-
-  .stat-item.deadline i {
-    color: #ef4444;
-  }
-
-  .stat-item.deadline.expired {
-    color: #dc2626;
-    font-weight: 600;
-  }
-
-  .stat-item.deadline.soon {
-    color: #f59e0b;
-    font-weight: 600;
-  }
-
-  .job-tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin: 12px 0;
-  }
-
-  .job-tag {
-    background: #eff6ff;
-    color: #3b82f6;
-    padding: 0.3rem 0.8rem;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  .job-tag.applied {
-    background: #fef3c7;
-    color: #d97706;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-
-  .status-pending {
-    background: linear-gradient(135deg, #ffc107, #ffb300);
-    color: white;
-  }
-
-  .status-hired {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    color: white;
-  }
-
-  .status-rejected {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    color: white;
-  }
-
-  .apply-btn {
-    display: inline-block;
-    margin-top: auto;
-    padding: 12px 24px;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-  }
-
-  .apply-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-  }
-
-  .btn-applied {
-    background: #6c757d;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-
-  .btn-applied:hover {
-    transform: none;
-    box-shadow: none;
-  }
-
-  .btn-hired {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    cursor: not-allowed;
-    opacity: 0.9;
-  }
-
-  .btn-hired:hover {
-    transform: none;
-    box-shadow: none;
-  }
-
-  .no-jobs {
-    text-align: center;
-    padding: 60px 20px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  }
-
-  .no-jobs p {
-    font-size: 18px;
-    color: #6c757d;
-    margin-bottom: 20px;
-  }
-
-  @media (max-width: 1200px) {
-    nav.navbar, .page-header, .container {
-      padding-left: 30px;
-      padding-right: 30px;
+    :root {
+      --bg:          #f0ede8;
+      --bg-2:        #e8e4de;
+      --white:       #ffffff;
+      --ink:         #0f0f14;
+      --ink-2:       #3c3c48;
+      --ink-3:       #7a7a8a;
+      --ink-4:       #b0b0be;
+      --blue:        #2347d6;
+      --blue-light:  #ebeffc;
+      --blue-mid:    #c7d2f8;
+      --green:       #16936a;
+      --green-light: #e3f5ef;
+      --amber:       #c47d06;
+      --amber-light: #fef3c7;
+      --red:         #c92626;
+      --red-light:   #fee2e2;
+      --violet:      #5e3ec8;
+      --violet-light:#ede9fe;
+      --slate:       #5c6070;
+      --border:      #dcd8d2;
+      --border-2:    #ccc8c2;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md:   0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg:   0 12px 32px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.04);
+      --radius:      14px;
+      --radius-sm:   8px;
+      --radius-xs:   5px;
     }
-    .job-list {
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    }
-  }
 
-  @media (max-width: 768px) {
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
     nav.navbar {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 16px 20px;
-    }
-    .navbar .right-section {
-      width: 100%;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 52px;
+      height: 62px;
+      display: flex;
       justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
+    .navbar .logo { display: flex; align-items: center; gap: 10px; }
+    .navbar .logo img { width: 34px; height: 34px; border-radius: 8px; }
+    .navbar .logo span { font-size: 19px; font-weight: 800; color: var(--ink); letter-spacing: -0.4px; }
+    .navbar .logo span b { color: var(--blue); }
+
+    .navbar .right-section { display: flex; align-items: center; gap: 8px; }
+
+    .notif-bell {
+      position: relative; cursor: pointer;
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); background: var(--white);
+      transition: all 0.18s;
+    }
+    .notif-bell:hover { border-color: var(--blue); background: var(--blue-light); }
+    .notif-bell i { font-size: 15px; color: var(--ink-3); }
+    .notif-bell:hover i { color: var(--blue); }
+    .notif-count {
+      position: absolute; top: -4px; right: -4px;
+      background: var(--red); color: #fff; font-size: 10px;
+      font-weight: 700; border-radius: 50%; padding: 2px 5px; line-height: 1;
+    }
+    .notif-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--white); border: 1px solid var(--border);
+      width: 330px; border-radius: var(--radius);
+      box-shadow: var(--shadow-lg); z-index: 1000; overflow: hidden;
+    }
+    .notif-dropdown.active { display: block; }
+    .notif-dropdown h4 {
+      padding: 13px 18px; border-bottom: 1px solid var(--border);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; color: var(--ink-3);
+    }
+    .notif-item { padding: 12px 18px; border-bottom: 1px solid var(--bg); transition: background 0.15s; }
+    .notif-item:hover { background: var(--bg); }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item strong { font-size: 13px; font-weight: 500; color: var(--ink); display: block; margin-bottom: 3px; line-height: 1.4; }
+    .notif-item small { font-size: 11px; color: var(--ink-4); }
+
+    .navbar .dropdown { position: relative; }
+    .navbar .dropbtn {
+      background: var(--bg); color: var(--ink-2);
+      padding: 0 16px; height: 38px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 8px;
+      font-family: 'Outfit', sans-serif;
+    }
+    .navbar .dropbtn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .navbar .dropdown-content {
+      display: none; position: absolute; right: 0; top: calc(100% + 8px);
+      background: var(--white); min-width: 190px; border-radius: var(--radius);
+      box-shadow: var(--shadow-lg); z-index: 999; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .navbar .dropdown:hover .dropdown-content { display: block; }
+    .navbar .dropdown-content a {
+      color: var(--ink-2); padding: 11px 16px; text-decoration: none;
+      display: flex; align-items: center; gap: 10px; font-size: 13px;
+      font-weight: 500; transition: all 0.15s; border-bottom: 1px solid var(--bg);
+    }
+    .navbar .dropdown-content a:last-child { border-bottom: none; }
+    .navbar .dropdown-content a i { width: 15px; text-align: center; color: var(--ink-4); }
+    .navbar .dropdown-content a:hover { background: var(--blue-light); color: var(--blue); }
+    .navbar .dropdown-content a:hover i { color: var(--blue); }
+
+    /* ── HERO ── */
     .page-header {
-      padding: 30px 20px;
+      background: var(--ink);
+      padding: 36px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* decorative dots pattern */
+    .page-header::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 320px;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
     }
     .page-header h1 {
-      font-size: 24px;
+      font-size: 28px; font-weight: 800; letter-spacing: -0.6px;
+      color: #fff; margin-bottom: 5px; line-height: 1.15;
     }
-    .container {
-      padding: 0 20px;
-      margin-top: -20px;
+    .page-header h1 span { color: var(--blue-mid); }
+    .page-header p { font-size: 14px; color: rgba(255,255,255,0.5); }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 1360px; margin: 0 auto; padding: 32px 52px 72px; }
+
+    /* ── WELCOME + STATS ROW ── */
+    .welcome-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      margin-bottom: 24px;
+      align-items: start;
     }
-    .job-list {
-      grid-template-columns: 1fr;
+    .welcome-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 26px;
+      box-shadow: var(--shadow-sm);
     }
-    .search-bar {
-      flex-direction: column;
+    .welcome-card h2 { font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -0.3px; margin-bottom: 4px; }
+    .welcome-card p { font-size: 14px; color: var(--ink-3); }
+
+    /* ── QUICK ACTIONS ── */
+    .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .action-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      text-decoration: none; color: var(--ink);
+      transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 16px;
+      box-shadow: var(--shadow-sm);
     }
-    .search-bar input, .search-bar button {
-      width: 100%;
+    .action-card:hover { border-color: var(--blue-mid); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .action-icon {
+      width: 42px; height: 42px; border-radius: var(--radius-sm);
+      background: var(--blue-light); display: flex; align-items: center;
+      justify-content: center; font-size: 17px; color: var(--blue); flex-shrink: 0;
     }
-  }
+    .action-card h3 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 2px; letter-spacing: -0.1px; }
+    .action-card p { font-size: 12px; color: var(--ink-3); line-height: 1.4; }
+
+    /* ── ALERT ── */
+    .alert-warning {
+      background: var(--amber-light); color: #78350f;
+      padding: 13px 16px; border-radius: var(--radius-sm);
+      border: 1px solid #fcd34d; border-left: 3px solid var(--amber);
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 22px; font-size: 13px; line-height: 1.5;
+    }
+    .alert-warning i { color: var(--amber); flex-shrink: 0; margin-top: 1px; }
+    .alert-warning a { color: var(--blue); font-weight: 600; text-decoration: none; }
+    .alert-warning a:hover { text-decoration: underline; }
+
+    /* ── SEARCH ── */
+    .search-bar { display: flex; gap: 10px; margin-bottom: 28px; }
+    .search-bar input {
+      flex: 1; padding: 11px 16px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 14px; color: var(--ink);
+      font-family: 'Outfit', sans-serif; transition: border-color 0.15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-bar input::placeholder { color: var(--ink-4); }
+    .search-bar input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(35,71,214,0.08); }
+    .search-bar button {
+      padding: 11px 24px; background: var(--blue); color: #fff;
+      border: none; border-radius: var(--radius-sm); cursor: pointer;
+      font-weight: 700; font-size: 13px; font-family: 'Outfit', sans-serif;
+      transition: background 0.15s; display: flex; align-items: center; gap: 8px;
+      letter-spacing: 0.2px;
+    }
+    .search-bar button:hover { background: #1a38b8; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 13px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--ink-3);
+      margin: 28px 0 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::before { content: ''; width: 3px; height: 16px; background: var(--blue); border-radius: 3px; flex-shrink: 0; }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── JOB GRID ── */
+    .job-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; margin-bottom: 36px; }
+
+    /* ── JOB CARD ── */
+    .job-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      transition: all 0.2s ease;
+      display: flex; flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.35s ease both;
+    }
+    .job-card:nth-child(1){animation-delay:.03s}.job-card:nth-child(2){animation-delay:.06s}
+    .job-card:nth-child(3){animation-delay:.09s}.job-card:nth-child(4){animation-delay:.12s}
+    .job-card:nth-child(5){animation-delay:.15s}.job-card:nth-child(6){animation-delay:.18s}
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    .job-card:hover { border-color: var(--blue-mid); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+
+    /* colored top strip */
+    .job-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue); opacity: 0; transition: opacity 0.2s; }
+    .job-card:hover::before { opacity: 1; }
+
+    .job-card h4 { font-size: 16px; font-weight: 800; color: var(--ink); margin-bottom: 12px; letter-spacing: -0.2px; line-height: 1.3; }
+
+    .meta-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+    .meta-line { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+    .meta-line i { font-size: 11px; color: var(--ink-4); width: 13px; text-align: center; flex-shrink: 0; }
+    .meta-line strong { color: var(--blue); font-weight: 600; font-size: 12px; min-width: 58px; }
+    .company-link { color: var(--blue); text-decoration: none; font-weight: 600; transition: color 0.15s; }
+    .company-link:hover { color: var(--ink); }
+
+    /* stats */
+    .job-stats {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 9px 12px; background: var(--bg);
+      border-radius: var(--radius-xs); margin: 10px 0; border: 1px solid var(--border);
+    }
+    .stat-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--ink-3); font-weight: 500; }
+    .stat-item i { font-size: 11px; }
+    .stat-item strong { color: var(--ink-2); font-weight: 700; }
+    .stat-item.applicants i { color: var(--blue); }
+    .stat-item.hired i { color: var(--green); }
+    .stat-item.deadline i { color: var(--red); }
+    .stat-item.deadline.expired { color: var(--red); font-weight: 600; }
+    .stat-item.deadline.soon { color: var(--amber); font-weight: 600; }
+
+    /* desc */
+    .desc-snippet { font-size: 13px; color: var(--ink-3); line-height: 1.65; margin: 8px 0 10px; }
+
+    /* tags */
+    .job-tags { display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0 14px; }
+    .job-tag {
+      background: var(--bg); color: var(--ink-3);
+      padding: 3px 9px; border-radius: var(--radius-xs); font-size: 11px;
+      font-weight: 600; border: 1px solid var(--border); letter-spacing: 0.2px;
+    }
+    .job-tag.applied { background: var(--amber-light); color: var(--amber); border-color: #fcd34d; display: inline-flex; align-items: center; gap: 4px; }
+
+    /* status badges */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 11px; border-radius: var(--radius-xs); font-size: 11px;
+      font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .status-pending   { background: var(--amber-light); color: var(--amber); }
+    .status-hired     { background: var(--green-light); color: var(--green); }
+    .status-rejected  { background: var(--red-light); color: var(--red); }
+    .status-completed { background: var(--violet-light); color: var(--violet); }
+
+    /* actions */
+    .job-actions { display: flex; gap: 8px; margin-top: auto; }
+    .apply-btn, .btn-details {
+      display: inline-flex; flex: 1; padding: 10px 12px;
+      border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;
+      text-align: center; transition: all 0.15s;
+      cursor: pointer; align-items: center; justify-content: center; gap: 6px;
+      font-family: 'Outfit', sans-serif; text-decoration: none; border: none;
+    }
+    .apply-btn { background: var(--blue); color: #fff; }
+    .apply-btn:hover { background: #1a38b8; }
+    .btn-applied { background: var(--bg); color: var(--ink-4); border: 1px solid var(--border); cursor: not-allowed; }
+    .btn-applied:hover { background: var(--bg); color: var(--ink-4); }
+    .btn-hired { background: var(--green-light); color: var(--green); border: 1px solid #bbf7d0; cursor: not-allowed; }
+    .btn-hired:hover { background: var(--green-light); }
+    .btn-details { background: transparent; color: var(--ink-2); border: 1px solid var(--border); }
+    .btn-details:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+    .rate-link {
+      display: inline-flex; align-items: center; gap: 5px; margin-top: 8px;
+      padding: 8px 14px; background: var(--amber-light); color: var(--amber);
+      border-radius: var(--radius-sm); text-decoration: none;
+      font-size: 12px; font-weight: 700; border: 1px solid #fcd34d; transition: all 0.15s;
+    }
+    .rate-link:hover { background: var(--amber); color: #fff; border-color: var(--amber); }
+
+    /* no jobs */
+    .no-jobs {
+      text-align: center; padding: 56px 20px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    }
+    .no-jobs p { font-size: 15px; color: var(--ink-3); }
+
+    @media (max-width: 1200px) { nav.navbar,.page-header,.container { padding-left: 24px; padding-right: 24px; } }
+    @media (max-width: 768px) {
+      nav.navbar { padding: 0 16px; }
+      .page-header { padding: 24px 16px; }
+      .page-header h1 { font-size: 22px; }
+      .container { padding: 20px 16px 48px; }
+      .job-list { grid-template-columns: 1fr; }
+      .search-bar { flex-direction: column; }
+      .job-actions { flex-direction: column; }
+      .welcome-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
+<!-- ── NAV ── -->
 <nav class="navbar">
   <div class="logo">
-    <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo">
-    <span>BlueHire</span>
+    <img src="{% static 'core/image/logo.png' %}" alt="BlueHire">
+    <span>Blue<b>Hire</b></span>
   </div>
   <div class="right-section">
     <div class="notif-bell" id="notifBell">
@@ -652,9 +375,7 @@
       </div>
     </div>
     <div class="dropdown">
-      <button class="dropbtn">
-        <i class="fas fa-user-circle"></i> Account
-      </button>
+      <button class="dropbtn"><i class="fas fa-user-circle"></i> Account</button>
       <div class="dropdown-content">
         <a href="{% url 'jobseeker_profile' %}"><i class="fas fa-id-card"></i> Profile</a>
         <a href="{% url 'password_change' %}"><i class="fas fa-key"></i> Change Password</a>
@@ -664,27 +385,49 @@
   </div>
 </nav>
 
+<!-- ── HERO ── -->
 <div class="page-header">
-  <h1>Available Blue-Collar Jobs in Surigao City</h1>
-  <p>Find your perfect match and build your career with BlueHire</p>
+  <h1>Blue-Collar Jobs <span>in Surigao City</span></h1>
+  <p>Find your next opportunity and manage your applications all in one place.</p>
 </div>
 
+<!-- ── CONTENT ── -->
 <div class="container">
-  <div class="welcome-card">
-    <h2>Welcome back, {{ user_name }}! 👋</h2>
-    <p>Find your next opportunity and manage your job applications all in one place.</p>
+
+  <div class="welcome-row">
+    <div class="welcome-card">
+      <h2>Welcome back, {{ user_name }}.</h2>
+      <p>Here are the latest jobs available for you today.</p>
+    </div>
   </div>
 
   <div class="quick-actions">
     <a href="{% url 'jobseeker_recommendations' %}" class="action-card">
-      <h3>🎯 AI Recommended Jobs</h3>
-      <p>Discover jobs perfectly matched to your skills and experience</p>
+      <div class="action-icon"><i class="fas fa-robot"></i></div>
+      <div>
+        <h3>AI Recommendations</h3>
+        <p>Jobs matched to your skills</p>
+      </div>
+    </a>
+    <a href="{% url 'jobseeker_profile' %}" class="action-card">
+      <div class="action-icon"><i class="fas fa-id-card"></i></div>
+      <div>
+        <h3>My Profile</h3>
+        <p>Update info and documents</p>
+      </div>
+    </a>
+    <a href="{% url 'update_skills' %}" class="action-card">
+      <div class="action-icon"><i class="fas fa-tools"></i></div>
+      <div>
+        <h3>Update Skills</h3>
+        <p>Improve your match score</p>
+      </div>
     </a>
   </div>
 
   {% if missing_docs %}
   <div class="alert-warning">
-    <i class="fa-solid fa-triangle-exclamation"></i>
+    <i class="fas fa-exclamation-triangle"></i>
     <div>
       Please upload all required documents (Barangay Clearance, NBI, Police Clearance)
       in your <a href="{% url 'jobseeker_profile' %}">profile</a> before applying for jobs.
@@ -697,54 +440,51 @@
     <button type="submit"><i class="fas fa-search"></i> Search</button>
   </form>
 
+  <!-- ── RECENTLY APPLIED ── -->
   {% if recent_applications %}
-  <div class="section-title">Recently Applied Jobs</div>
+  <div class="section-title">Recently Applied</div>
   <div class="job-list">
     {% for app in recent_applications %}
     <div class="job-card">
       <h4>{{ app.job.title }}</h4>
-      <p><strong>Company:</strong>
-        {% if app.job.employer.employer_type == "Company" or app.job.employer.employer_type == "Personal" %}
-          <a href="{% url 'employer_public_profile' app.job.employer.employer_id %}" class="company-link">
-            {{ app.job.employer.company_name|default:app.job.employer.user.get_full_name|default:app.job.employer.user.username }}
-          </a>
-        {% else %}
-          {{ app.job.employer.user.get_full_name|default:app.job.employer.user.username }}
-        {% endif %}
-      </p>
-      <p><strong>Location:</strong> {{ app.job.location }}</p>
-      <p><strong>Job Type:</strong> {{ app.job.job_type|default:"Not specified" }}</p>
-      <p><strong>Salary:</strong> {{ app.job.salary|default:"Negotiable" }}</p>
+
+      <div class="meta-row">
+        <div class="meta-line">
+          <i class="fas fa-building"></i>
+          <strong>Company</strong>
+          {% if app.job.employer.employer_type == "Company" or app.job.employer.employer_type == "Personal" %}
+            <a href="{% url 'employer_public_profile' app.job.employer.employer_id %}" class="company-link">
+              {{ app.job.employer.company_name|default:app.job.employer.user.get_full_name|default:app.job.employer.user.username }}
+            </a>
+          {% else %}
+            {{ app.job.employer.user.get_full_name|default:app.job.employer.user.username }}
+          {% endif %}
+        </div>
+        <div class="meta-line"><i class="fas fa-map-marker-alt"></i><strong>Location</strong>{{ app.job.location }}</div>
+        <div class="meta-line"><i class="fas fa-briefcase"></i><strong>Type</strong>{{ app.job.job_type|default:"Not specified" }}</div>
+        <div class="meta-line"><i class="fas fa-coins"></i><strong>Salary</strong>{{ app.job.salary|default:"Negotiable" }}</div>
+      </div>
 
       <div class="job-stats">
         <div class="stat-item applicants">
           <i class="fas fa-users"></i>
-          <strong>{{ app.job.total_applicants }}</strong> applicant{{ app.job.total_applicants|pluralize }}
+          <strong>{{ app.job.total_applicants }}</strong>&nbsp;applicant{{ app.job.total_applicants|pluralize }}
         </div>
         {% if app.job.hired_count > 0 %}
         <div class="stat-item hired">
           <i class="fas fa-check-circle"></i>
-          <strong>{{ app.job.hired_count }}/{{ app.job.hiring_quota }}</strong> hired
+          <strong>{{ app.job.hired_count }}/{{ app.job.hiring_quota }}</strong>&nbsp;hired
         </div>
         {% endif %}
         {% if app.job.application_deadline %}
           {% if app.job.is_past_deadline %}
-          <div class="stat-item deadline expired">
-            <i class="fas fa-hourglass-end"></i>
-            <strong>Expired</strong>
-          </div>
+          <div class="stat-item deadline expired"><i class="fas fa-hourglass-end"></i><strong>Expired</strong></div>
           {% else %}
             {% with deadline=app.job.get_deadline_status %}
               {% if 'hour' in deadline or 'Less' in deadline %}
-              <div class="stat-item deadline soon">
-                <i class="fas fa-clock"></i>
-                <strong>{{ deadline }}</strong>
-              </div>
+              <div class="stat-item deadline soon"><i class="fas fa-clock"></i><strong>{{ deadline }}</strong></div>
               {% else %}
-              <div class="stat-item deadline">
-                <i class="fas fa-calendar-check"></i>
-                <strong>{{ deadline }}</strong>
-              </div>
+              <div class="stat-item deadline"><i class="fas fa-calendar-check"></i><strong>{{ deadline }}</strong></div>
               {% endif %}
             {% endwith %}
           {% endif %}
@@ -753,131 +493,121 @@
 
       <div class="job-tags">
         <span class="job-tag">{{ app.job.category }}</span>
-        {% if app.job.job_type %}
-          <span class="job-tag">{{ app.job.job_type }}</span>
-        {% endif %}
-        <span class="job-tag applied">
-          <i class="fas fa-check"></i> 1 applied
-        </span>
+        {% if app.job.job_type %}<span class="job-tag">{{ app.job.job_type }}</span>{% endif %}
+        <span class="job-tag applied"><i class="fas fa-check"></i> Applied</span>
       </div>
 
-      {% if app.status == "Hired" %}
-        <span class="status-badge status-hired">
-          <i class="fas fa-check-circle"></i> HIRED
-        </span>
+      {% if app.status == "Completed" %}
+        <span class="status-badge status-completed"><i class="fas fa-flag-checkered"></i> Completed</span>
+      {% elif app.status == "Hired" %}
+        <span class="status-badge status-hired"><i class="fas fa-check-circle"></i> Hired</span>
       {% elif app.status == "Rejected" %}
-        <span class="status-badge status-rejected">
-          <i class="fas fa-times-circle"></i> REJECTED
-        </span>
+        <span class="status-badge status-rejected"><i class="fas fa-times-circle"></i> Rejected</span>
       {% else %}
-        <span class="status-badge status-pending">
-          <i class="fas fa-clock"></i> PENDING
-        </span>
+        <span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending</span>
       {% endif %}
+
+      <div class="job-actions" style="margin-top: 12px;">
+        <a href="{% url 'view_job_details' app.job.id %}" class="btn-details">
+          <i class="fas fa-info-circle"></i> View Details
+        </a>
+        {% if app.status == "Completed" %}
+          <a href="{% url 'rate_employer' app.application_id %}" class="rate-link">
+            <i class="fas fa-star"></i> Rate Employer
+          </a>
+        {% endif %}
+      </div>
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
+  <!-- ── ALL JOBS ── -->
   <div class="section-title">All Available Jobs</div>
   {% if jobs %}
   <div class="job-list">
     {% for job in jobs %}
     <div class="job-card">
       <h4>{{ job.title }}</h4>
-      <p><strong>Posted by:</strong>
-        {% if job.employer.employer_type == "Company" or job.employer.employer_type == "Personal" %}
-          <a href="{% url 'employer_public_profile' job.employer.employer_id %}" class="company-link">
-            {{ job.employer.company_name|default:job.employer.user.get_full_name|default:job.employer.user.username }}
-          </a>
-        {% else %}
-          {{ job.employer.user.get_full_name|default:job.employer.user.username }}
-        {% endif %}
-      </p>
-      <p><strong>Location:</strong> {{ job.location }}</p>
-      <p><strong>Job Type:</strong> {{ job.job_type|default:"Not specified" }}</p>
-      <p><strong>Salary:</strong> {{ job.salary|default:"Negotiable" }}</p>
+
+      <div class="meta-row">
+        <div class="meta-line">
+          <i class="fas fa-building"></i>
+          <strong>Posted by</strong>
+          {% if job.employer.employer_type == "Company" or job.employer.employer_type == "Personal" %}
+            <a href="{% url 'employer_public_profile' job.employer.employer_id %}" class="company-link">
+              {{ job.employer.company_name|default:job.employer.user.get_full_name|default:job.employer.user.username }}
+            </a>
+          {% else %}
+            {{ job.employer.user.get_full_name|default:job.employer.user.username }}
+          {% endif %}
+        </div>
+        <div class="meta-line"><i class="fas fa-map-marker-alt"></i><strong>Location</strong>{{ job.location }}</div>
+        <div class="meta-line"><i class="fas fa-briefcase"></i><strong>Type</strong>{{ job.job_type|default:"Not specified" }}</div>
+        <div class="meta-line"><i class="fas fa-coins"></i><strong>Salary</strong>{{ job.salary|default:"Negotiable" }}</div>
+      </div>
 
       <div class="job-stats">
         <div class="stat-item applicants">
           <i class="fas fa-users"></i>
-          <strong>{{ job.total_applicants }}</strong> applicant{{ job.total_applicants|pluralize }}
+          <strong>{{ job.total_applicants }}</strong>&nbsp;applicant{{ job.total_applicants|pluralize }}
         </div>
         {% if job.hired_count > 0 %}
         <div class="stat-item hired">
           <i class="fas fa-check-circle"></i>
-          <strong>{{ job.hired_count }}/{{ job.hiring_quota }}</strong> hired
+          <strong>{{ job.hired_count }}/{{ job.hiring_quota }}</strong>&nbsp;hired
         </div>
         {% endif %}
         {% if job.application_deadline %}
           {% if job.is_past_deadline %}
-          <div class="stat-item deadline expired">
-            <i class="fas fa-hourglass-end"></i>
-            <strong>Expired</strong>
-          </div>
+          <div class="stat-item deadline expired"><i class="fas fa-hourglass-end"></i><strong>Expired</strong></div>
           {% else %}
             {% with deadline=job.get_deadline_status %}
               {% if 'hour' in deadline or 'Less' in deadline %}
-              <div class="stat-item deadline soon">
-                <i class="fas fa-clock"></i>
-                <strong>{{ deadline }}</strong>
-              </div>
+              <div class="stat-item deadline soon"><i class="fas fa-clock"></i><strong>{{ deadline }}</strong></div>
               {% else %}
-              <div class="stat-item deadline">
-                <i class="fas fa-calendar-check"></i>
-                <strong>{{ deadline }}</strong>
-              </div>
+              <div class="stat-item deadline"><i class="fas fa-calendar-check"></i><strong>{{ deadline }}</strong></div>
               {% endif %}
             {% endwith %}
           {% endif %}
         {% endif %}
       </div>
 
-      <p style="margin-top: 12px;">{{ job.description|truncatechars:120 }}</p>
+      <p class="desc-snippet">{{ job.description|truncatechars:120 }}</p>
 
       <div class="job-tags">
         <span class="job-tag">{{ job.category }}</span>
-        {% if job.job_type %}
-          <span class="job-tag">{{ job.job_type }}</span>
-        {% endif %}
+        {% if job.job_type %}<span class="job-tag">{{ job.job_type }}</span>{% endif %}
         {% if job.id in applied_job_ids %}
-          <span class="job-tag applied">
-            <i class="fas fa-check"></i> 1 applied
-          </span>
+          <span class="job-tag applied"><i class="fas fa-check"></i> Applied</span>
         {% endif %}
       </div>
 
-      {% if not job.is_available %}
-        <button class="apply-btn btn-applied" disabled>
-          <i class="fas fa-ban"></i> Unavailable
-        </button>
-      {% elif job.id in applied_job_ids %}
-        {% if applied_job_statuses|get_item:job.id == "Hired" %}
-          <button class="apply-btn btn-hired" disabled>
-            <i class="fas fa-check-circle"></i> Hired
-          </button>
-        {% else %}
-          <button class="apply-btn btn-applied" disabled>
-            <i class="fas fa-check"></i> Applied
-          </button>
-        {% endif %}
-      {% elif missing_docs %}
-        <button class="apply-btn btn-applied" disabled>
-          <i class="fas fa-file-upload"></i> Upload Documents First
-        </button>
-      {% else %}
-        <a href="{% url 'apply_job' job.id %}" class="apply-btn">
-          <i class="fas fa-paper-plane"></i> Apply Now
+      <div class="job-actions">
+        <a href="{% url 'view_job_details' job.id %}" class="btn-details">
+          <i class="fas fa-info-circle"></i> View Details
         </a>
-      {% endif %}
+        {% if not job.is_available %}
+          <button class="apply-btn btn-applied" disabled><i class="fas fa-ban"></i> Unavailable</button>
+        {% elif job.id in applied_job_ids %}
+          {% if applied_job_statuses|get_item:job.id == "Hired" %}
+            <button class="apply-btn btn-hired" disabled><i class="fas fa-check-circle"></i> Hired</button>
+          {% else %}
+            <button class="apply-btn btn-applied" disabled><i class="fas fa-check"></i> Applied</button>
+          {% endif %}
+        {% elif missing_docs %}
+          <button class="apply-btn btn-applied" disabled><i class="fas fa-file-upload"></i> Upload Docs</button>
+        {% else %}
+          <a href="{% url 'apply_job' job.id %}" class="apply-btn"><i class="fas fa-paper-plane"></i> Apply Now</a>
+        {% endif %}
+      </div>
     </div>
     {% endfor %}
   </div>
   {% else %}
-  <div class="no-jobs">
-    <p>No job listings found at the moment.</p>
-  </div>
+  <div class="no-jobs"><p>No job listings found at the moment.</p></div>
   {% endif %}
+
 </div>
 
 <script>
@@ -894,9 +624,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   document.addEventListener("click", (e) => {
-    if (!bell.contains(e.target)) {
-      dropdown.classList.remove("active");
-    }
+    if (!bell.contains(e.target)) dropdown.classList.remove("active");
   });
 
   async function loadNotifications() {
@@ -904,9 +632,8 @@ document.addEventListener("DOMContentLoaded", function() {
       const res = await fetch("{% url 'get_notifications' %}");
       const data = await res.json();
       list.innerHTML = "";
-      
       if (data.notifications.length === 0) {
-        list.innerHTML = "<p style='padding:20px;color:#6c757d;text-align:center;'>No new notifications.</p>";
+        list.innerHTML = "<p style='padding:20px;color:#b0b0be;text-align:center;font-size:13px;'>No new notifications.</p>";
       } else {
         data.notifications.forEach(n => {
           const item = document.createElement("div");
@@ -914,18 +641,11 @@ document.addEventListener("DOMContentLoaded", function() {
           item.innerHTML = `<strong>${n.message}</strong><small>${n.created_at}</small>`;
           list.appendChild(item);
         });
-        
         const unread = data.notifications.filter(n => !n.is_read).length;
-        if (unread > 0) {
-          countBadge.textContent = unread;
-          countBadge.style.display = "inline-block";
-        } else {
-          countBadge.style.display = "none";
-        }
+        if (unread > 0) { countBadge.textContent = unread; countBadge.style.display = "inline-block"; }
+        else { countBadge.style.display = "none"; }
       }
-    } catch (error) {
-      console.error("Error loading notifications:", error);
-    }
+    } catch (err) { console.error("Notification error:", err); }
   }
 
   loadNotifications();
