@@ -3,639 +3,580 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BlueHire | System Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueHire — System Admin</title>
   <link rel="icon" href="{% static 'core/image/logo.png' %}" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface-2:#1c2128;
+      --surface-3:#21262d;
+      --border:   #30363d;
+      --border-2: #3d444d;
+      --white:    #e6edf3;
+      --muted:    #7d8590;
+      --muted-2:  #4d5563;
+      --blue:     #2f81f7;
+      --blue-dim: #1f4a8f;
+      --blue-bg:  #0d1f3c;
+      --green:    #2ea043;
+      --green-dim:#1a5c2a;
+      --green-bg: #0d2818;
+      --red:      #f85149;
+      --red-dim:  #8b1a1a;
+      --red-bg:   #2a0d0d;
+      --amber:    #d29922;
+      --amber-dim:#7a5a10;
+      --amber-bg: #2a1f08;
+      --violet:   #bc8cff;
+      --violet-bg:#1e1133;
+      --shadow:   0 1px 3px rgba(0,0,0,0.4);
+      --radius:   8px;
+      --radius-sm:5px;
+      --mono:     'JetBrains Mono', monospace;
     }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{font-size:14px;scroll-behavior:smooth;}
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;display:flex;flex-direction:column;}
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      background-attachment: fixed;
-      min-height: 100vh;
+    /* ── TOPBAR ── */
+    .topbar{background:var(--surface);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:200;}
+    .topbar-left{display:flex;align-items:center;gap:14px;}
+    .topbar-logo{display:flex;align-items:center;gap:8px;}
+    .topbar-logo img{height:26px;border-radius:4px;}
+    .topbar-logo span{font-size:15px;font-weight:800;color:var(--white);letter-spacing:-0.3px;}
+    .topbar-logo span b{color:var(--blue);}
+    .admin-badge{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-dim);font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;letter-spacing:0.8px;text-transform:uppercase;font-family:var(--mono);}
+    .topbar-right{display:flex;align-items:center;gap:8px;}
+    .topbar-right a{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;padding:0 12px;height:32px;border-radius:var(--radius-sm);border:1px solid transparent;transition:all 0.12s;}
+    .topbar-right a:hover{color:var(--white);border-color:var(--border);}
+    .topbar-right a.logout{color:var(--red);border-color:var(--red-dim);}
+    .topbar-right a.logout:hover{background:var(--red-bg);}
+
+    /* ── LAYOUT ── */
+    .layout{display:flex;flex:1;}
+
+    /* ── SIDEBAR ── */
+    .sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+    .sidebar-section{padding:0 12px;margin-bottom:20px;}
+    .sidebar-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted-2);padding:0 8px;margin-bottom:6px;}
+    .sidebar-link{display:flex;align-items:center;gap:9px;color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;padding:7px 10px;border-radius:var(--radius-sm);transition:all 0.12s;border:1px solid transparent;cursor:pointer;background:none;width:100%;text-align:left;font-family:'Outfit',sans-serif;}
+    .sidebar-link:hover{color:var(--white);background:var(--surface-3);}
+    .sidebar-link.active{color:var(--white);background:var(--surface-3);border-color:var(--border);}
+    .sidebar-link i{width:14px;text-align:center;font-size:12px;flex-shrink:0;}
+    .sidebar-link .count{margin-left:auto;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--surface-2);border:1px solid var(--border);padding:1px 6px;border-radius:50px;color:var(--muted);}
+    .sidebar-link.active .count,.sidebar-link:hover .count{color:var(--white);}
+    .sidebar-divider{border:none;border-top:1px solid var(--border);margin:8px 12px;}
+
+    /* ── MAIN ── */
+    .main{flex:1;padding:28px 32px 64px;overflow-x:hidden;}
+    .page-section{display:none;}
+    .page-section.active{display:block;}
+
+    /* ── PAGE HEADER ── */
+    .page-header{margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+    .page-header-left h1{font-size:20px;font-weight:800;color:var(--white);letter-spacing:-0.4px;margin-bottom:3px;}
+    .page-header-left p{font-size:12px;color:var(--muted);font-family:var(--mono);}
+
+    /* ── STATS GRID ── */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;cursor:pointer;transition:border-color 0.12s;}
+    .stat-card:hover{border-color:var(--border-2);}
+    .stat-card .stat-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+    .stat-card .stat-label i{font-size:11px;}
+    .stat-card .stat-value{font-size:28px;font-weight:900;color:var(--white);letter-spacing:-1px;line-height:1;font-family:var(--mono);}
+    .stat-card .stat-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+    .stat-card.blue .stat-label i,.stat-card.blue .stat-label{color:var(--blue);}
+    .stat-card.green .stat-label i,.stat-card.green .stat-label{color:var(--green);}
+    .stat-card.red .stat-label i,.stat-card.red .stat-label{color:var(--red);}
+    .stat-card.amber .stat-label i,.stat-card.amber .stat-label{color:var(--amber);}
+    .stat-card.violet .stat-label i,.stat-card.violet .stat-label{color:var(--violet);}
+
+    /* ── ACTION BUTTONS ── */
+    .action-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+    .action-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:32px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;text-decoration:none;border:1px solid;transition:all 0.12s;cursor:pointer;font-family:'Outfit',sans-serif;}
+    .action-btn-default{color:var(--muted);border-color:var(--border);background:var(--surface);}
+    .action-btn-default:hover{color:var(--white);border-color:var(--border-2);background:var(--surface-3);}
+    .action-btn-blue{color:var(--blue);border-color:var(--blue-dim);background:var(--blue-bg);}
+    .action-btn-blue:hover{background:var(--blue-dim);}
+    .action-btn-red{color:var(--red);border-color:var(--red-dim);background:var(--red-bg);}
+    .action-btn-red:hover{background:var(--red-dim);color:#fff;}
+
+    /* ── SECTION HEADING ── */
+    .section-heading{font-size:14px;font-weight:800;color:var(--white);letter-spacing:-0.2px;margin-bottom:14px;margin-top:28px;display:flex;align-items:center;gap:8px;}
+    .section-heading:first-child{margin-top:0;}
+    .section-heading i{color:var(--blue);font-size:13px;}
+    .section-heading .section-count{font-size:10px;font-weight:700;font-family:var(--mono);background:var(--surface-3);border:1px solid var(--border);padding:1px 7px;border-radius:50px;color:var(--muted);}
+
+    /* ── TABLE ── */
+    .table-wrapper{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    thead tr{background:var(--surface-2);border-bottom:1px solid var(--border);}
+    thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);white-space:nowrap;font-family:var(--mono);}
+    tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s;}
+    tbody tr:last-child{border-bottom:none;}
+    tbody tr:hover{background:var(--surface-2);}
+    tbody td{padding:10px 14px;color:var(--white);vertical-align:middle;}
+    .td-name{font-weight:700;font-size:13px;}
+    .td-mono{font-family:var(--mono);font-size:12px;color:var(--muted);}
+    .empty-row td{text-align:center;padding:32px;color:var(--muted);font-style:italic;font-size:13px;}
+
+    /* ── FILE LINKS ── */
+    .file-link{display:inline-flex;align-items:center;gap:4px;color:var(--blue);text-decoration:none;font-size:11px;font-weight:700;padding:3px 8px;background:var(--blue-bg);border:1px solid var(--blue-dim);border-radius:var(--radius-sm);transition:all 0.12s;}
+    .file-link:hover{background:var(--blue-dim);color:#fff;}
+    .no-file{color:var(--muted-2);font-size:11px;font-style:italic;}
+
+    /* ── STATUS CHIPS ── */
+    .chip{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:0.3px;border:1px solid;}
+    .chip-green{background:var(--green-bg);color:var(--green);border-color:var(--green-dim);}
+    .chip-red{background:var(--red-bg);color:var(--red);border-color:var(--red-dim);}
+    .chip-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-dim);}
+    .chip-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-dim);}
+    .chip-muted{background:var(--surface-3);color:var(--muted);border-color:var(--border);}
+    .chip-violet{background:var(--violet-bg);color:var(--violet);border-color:#4a2d7a;}
+
+    /* ── ACTION BUTTONS (table) ── */
+    .btn{border:1px solid;padding:0 10px;height:26px;border-radius:var(--radius-sm);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.12s;display:inline-flex;align-items:center;gap:4px;font-family:'Outfit',sans-serif;}
+    .btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .btn-success{color:var(--green);background:var(--green-bg);border-color:var(--green-dim);}
+    .btn-success:not(:disabled):hover{background:var(--green-dim);color:#fff;}
+    .btn-danger{color:var(--red);background:var(--red-bg);border-color:var(--red-dim);}
+    .btn-danger:not(:disabled):hover{background:var(--red-dim);color:#fff;}
+    .btn-warning{color:var(--amber);background:var(--amber-bg);border-color:var(--amber-dim);}
+    .btn-warning:not(:disabled):hover{background:var(--amber-dim);color:#fff;}
+
+    /* ── AI ALERTS ── */
+    .confidence-high{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-dim);border-radius:50px;font-size:11px;font-weight:700;font-family:var(--mono);}
+    .confidence-med{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-dim);border-radius:50px;font-size:11px;font-weight:700;font-family:var(--mono);}
+    .confidence-low{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-dim);border-radius:50px;font-size:11px;font-weight:700;font-family:var(--mono);}
+
+    /* ── LOGS ── */
+    .logs-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+    .logs-actions{display:flex;gap:6px;flex-wrap:wrap;}
+    .clear-logs-form{display:inline-block;}
+    .log-list{display:flex;flex-direction:column;gap:4px;}
+    .log-item{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);border-left:3px solid var(--blue-dim);}
+    .log-item .log-time{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0;margin-top:1px;}
+    .log-item .log-action{font-size:13px;color:var(--white);}
+    .logs-empty{text-align:center;padding:32px;color:var(--muted);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+
+    /* ── FOOTER ── */
+    footer{background:var(--surface);border-top:1px solid var(--border);padding:14px 28px;text-align:center;}
+    footer p{font-size:11px;color:var(--muted);font-family:var(--mono);}
+
+    @media(max-width:900px){
+      .sidebar{display:none;}
+      .main{padding:20px 16px 48px;}
     }
-
-    .admin-header {
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(10px);
-      padding: 20px 50px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-title {
-      font-size: 28px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .admin-header nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 10px 20px;
-      border-radius: 8px;
-      margin-left: 10px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    }
-
-    .admin-header nav a:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 40px auto;
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    }
-
-    h2 {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-size: 28px;
-      margin-bottom: 20px;
-      font-weight: 700;
-    }
-
-    h3 {
-      color: #333;
-      font-size: 20px;
-      margin: 30px 0 15px 0;
-      font-weight: 600;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-
-    .circle-card {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border-radius: 16px;
-      padding: 25px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border: 2px solid #e9ecef;
-    }
-
-    .circle-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
-      border-color: #667eea;
-    }
-
-    .circle {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      margin: 0 auto 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    }
-
-    .circle.employer {
-      background: linear-gradient(135deg, #17a2b8, #138496);
-    }
-
-    .circle.success {
-      background: linear-gradient(135deg, #28a745, #218838);
-    }
-
-    .circle.neutral {
-      background: linear-gradient(135deg, #ffc107, #ff9800);
-    }
-
-    .circle.info {
-      background: linear-gradient(135deg, #007bff, #0056b3);
-    }
-
-    .circle-info h2 {
-      font-size: 32px;
-      margin: 10px 0 5px 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .circle-info p {
-      color: #666;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .btn-verify {
-      background: linear-gradient(135deg, #28a745, #218838);
-      color: white;
-      padding: 10px 18px;
-      border-radius: 8px;
-      text-decoration: none;
-      display: inline-block;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-    }
-
-    .btn-verify:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, #dc3545, #c82333);
-    }
-
-    .btn-danger:hover {
-      box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    thead {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    thead th {
-      color: white;
-      padding: 15px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 14px;
-      text-transform: uppercase;
-    }
-
-    tbody tr {
-      border-bottom: 1px solid #e9ecef;
-      transition: all 0.3s ease;
-    }
-
-    tbody tr:hover {
-      background: #f8f9fa;
-    }
-
-    tbody td {
-      padding: 15px;
-      color: #333;
-      font-size: 14px;
-    }
-
-    .file-link {
-      background: #007bff;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      display: inline-block;
-    }
-
-    .file-link:hover {
-      background: #0056b3;
-      transform: translateX(3px);
-    }
-
-    .no-file {
-      color: #999;
-      font-style: italic;
-    }
-
-    .btn {
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      color: white;
-      transition: all 0.3s ease;
-      margin-right: 5px;
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, #28a745, #218838);
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, #dc3545, #c82333);
-    }
-
-    .btn-warning {
-      background: linear-gradient(135deg, #ffc107, #ff9800);
-      color: #000;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .data-section {
-      margin-top: 40px;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 60px;
-      padding: 20px;
-      font-size: 13px;
-      color: #777;
-    }
-
-    .logs-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .clear-logs-form {
-      display: inline-block;
-    }
-
-    @media (max-width: 768px) {
-      .admin-header {
-        padding: 15px 20px;
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .container {
-        padding: 25px;
-        margin: 20px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .action-buttons {
-        flex-direction: column;
-      }
+    @media(max-width:600px){
+      .topbar{padding:0 16px;}
+      .stats-grid{grid-template-columns:1fr 1fr;}
+      .action-bar{flex-direction:column;}
     }
   </style>
 </head>
 <body>
-<header class="admin-header">
-  <div class="header-title">BlueHire System Admin</div>
-  <nav>
-    <a href="{% url 'homepage' %}">Home</a>
-    <a href="{% url 'logout_view' %}">Logout</a>
-  </nav>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">
+      <img src="{% static 'core/image/logo.png' %}" alt="BlueHire">
+      <span>Blue<b>Hire</b></span>
+    </div>
+    <span class="admin-badge"><i class="fas fa-shield-halved"></i> System Admin</span>
+  </div>
+  <div class="topbar-right">
+    <a href="{% url 'homepage' %}"><i class="fas fa-arrow-up-right-from-square"></i> View Site</a>
+    <a href="{% url 'logout_view' %}" class="logout"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
 </header>
 
-<main class="container">
-  <div class="action-buttons">
-    <a href="{% url 'generate_report' %}?type=monthly_hires" class="btn-verify">📄 Monthly Hires Report</a>
-    <a href="{% url 'generate_report' %}?type=verified_users" class="btn-verify">📄 Verified Users Report</a>
-    <a href="{% url 'generate_report' %}?type=applications_overview" class="btn-verify">📄 Applications Report</a>
-    <a href="{% url 'generate_report' %}?type=monthly_statistics" class="btn-verify">📄 Monthly Statistics</a>
-    <a href="{% url 'pending_jobs' %}" class="btn-verify" style="background: linear-gradient(135deg, #007bff, #0056b3);">
-      🕐 View Pending Jobs ({{ pending_count|default:0 }})
-    </a>
-  </div>
+<div class="layout">
 
-  <!-- ✅ STATS WITH NEW METRICS -->
-  <section class="stats">
-    <div class="circle-card" onclick="document.getElementById('jobseekers-section').scrollIntoView({behavior:'smooth'})">
-      <div class="circle"></div>
-      <div class="circle-info"><h2>{{ total_seekers }}</h2><p>Job Seekers</p></div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Overview</div>
+      <button class="sidebar-link active" onclick="showSection('overview')"><i class="fas fa-chart-bar"></i> Dashboard</button>
+      <button class="sidebar-link" onclick="showSection('alerts')"><i class="fas fa-triangle-exclamation"></i> AI Alerts <span class="count">{% if alerts_data %}{{ alerts_data|length }}{% else %}0{% endif %}</span></button>
     </div>
-    <div class="circle-card" onclick="document.getElementById('employers-section').scrollIntoView({behavior:'smooth'})">
-      <div class="circle employer"></div>
-      <div class="circle-info"><h2>{{ total_employers }}</h2><p>Employers</p></div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Users</div>
+      <button class="sidebar-link" onclick="showSection('jobseekers')"><i class="fas fa-users"></i> Job Seekers <span class="count">{{ total_seekers }}</span></button>
+      <button class="sidebar-link" onclick="showSection('employers')"><i class="fas fa-building"></i> Employers <span class="count">{{ total_employers }}</span></button>
     </div>
-    <div class="circle-card">
-      <div class="circle success"></div>
-      <div class="circle-info"><h2>{{ hired_percent }}%</h2><p>Hired This Month ({{ hired_applications }}/{{ total_applications }})</p></div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section">
+      <div class="sidebar-label">System</div>
+      <button class="sidebar-link" onclick="showSection('logs')"><i class="fas fa-list-ul"></i> System Logs <span class="count">{{ logs|length }}</span></button>
+      <a href="{% url 'pending_jobs' %}" class="sidebar-link"><i class="fas fa-clock"></i> Pending Jobs <span class="count">{{ pending_count|default:0 }}</span></a>
     </div>
-    <div class="circle-card">
-      <div class="circle info"></div>
-      <div class="circle-info"><h2>{{ jobs_this_month }}</h2><p>Jobs Posted This Month</p></div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Reports</div>
+      <a href="{% url 'generate_report' %}?type=monthly_hires" class="sidebar-link"><i class="fas fa-file-lines"></i> Monthly Hires</a>
+      <a href="{% url 'generate_report' %}?type=verified_users" class="sidebar-link"><i class="fas fa-file-lines"></i> Verified Users</a>
+      <a href="{% url 'generate_report' %}?type=applications_overview" class="sidebar-link"><i class="fas fa-file-lines"></i> Applications</a>
+      <a href="{% url 'generate_report' %}?type=monthly_statistics" class="sidebar-link"><i class="fas fa-file-lines"></i> Monthly Stats</a>
     </div>
-    <div class="circle-card">
-      <div class="circle info"></div>
-      <div class="circle-info"><h2>{{ applications_this_month }}</h2><p>Applications This Month</p></div>
-    </div>
-    <div class="circle-card overall"><div class="circle" style="background:#28a745;"></div><div class="circle-info"><h2>{{ total_verified|default:0 }}</h2><p>Overall Verified</p></div></div>
-    <div class="circle-card overall"><div class="circle" style="background:#dc3545;"></div><div class="circle-info"><h2>{{ total_rejected|default:0 }}</h2><p>Overall Rejected</p></div></div>
-    <div class="circle-card logs-card" onclick="document.getElementById('logs-section').scrollIntoView({behavior:'smooth'})">
-      <div class="circle neutral"></div>
-      <div class="circle-info"><h2>{{ logs|length }}</h2><p>Recent Logs (30 days)</p></div>
-    </div>
-  </section>
+  </aside>
 
-  <!-- ✅ AI VERIFICATION ALERTS -->
-  <h2 style="font-weight:600;margin-bottom:10px;">⚠️ AI Document Verification Alerts</h2>
-  {% if alerts_data %}
-  <table>
-    <thead>
-      <tr>
-        <th>USER TYPE</th>
-        <th>FULL NAME</th>
-        <th>DOCUMENT TYPE</th>
-        <th>FILE</th>
-        <th>CONFIDENCE</th>
-        <th>STATUS</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for alert in alerts_data %}
-      <tr>
-        <td>{{ alert.user_type }}</td>
-        <td>{{ alert.full_name }}</td>
-        <td>{{ alert.doc_type }}</td>
-        <td>
-          {% if alert.file %}
-            <a href="{{ alert.file.url }}" class="file-link" target="_blank">View File</a>
-          {% else %}
-            <span class="no-file">No File</span>
-          {% endif %}
-        </td>
-        <td>
-          {% if alert.confidence < 0.3 %}
-            <span style="background:#dc3545;color:white;padding:6px 12px;border-radius:8px;font-weight:600;">Low ({{ alert.confidence|floatformat:2 }})</span>
-          {% elif alert.confidence < 0.7 %}
-            <span style="background:#ffc107;color:black;padding:6px 12px;border-radius:8px;font-weight:600;">Medium ({{ alert.confidence|floatformat:2 }})</span>
-          {% else %}
-            <span style="background:#28a745;color:white;padding:6px 12px;border-radius:8px;font-weight:600;">High ({{ alert.confidence|floatformat:2 }})</span>
-          {% endif %}
-        </td>
-        <td>
-          {% if alert.status == "Suspicious" %}
-            <span style="color:#dc3545;font-weight:600;">⚠️ Suspicious</span>
-          {% elif alert.status == "Pending" %}
-            <span style="color:#ffc107;font-weight:600;">⏳ Pending</span>
-          {% elif alert.status == "Cleared" or alert.status == "Verified" or alert.status == "Approved" %}
-            <span style="color:#28a745;font-weight:600;">✓ Cleared</span>
-          {% elif alert.status == "Rejected" %}
-            <span style="color:#dc3545;font-weight:600;">✗ Rejected</span>
-          {% else %}
-            <span style="color:#007bff;font-weight:600;">{{ alert.status }}</span>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
-    <p style="color:#777;text-align:center;padding:30px;background:#f8f9fa;border-radius:12px;">✓ No suspicious uploads detected. All documents look good!</p>
-  {% endif %}
+  <!-- MAIN CONTENT -->
+  <main class="main">
 
-  <!-- ✅ JOB SEEKERS -->
-  <section id="jobseekers-section" class="data-section">
-    <h2>Job Seekers</h2>
-    <div class="table-wrapper">
-      <table>
-        <thead><tr><th>FULL NAME</th><th>BARANGAY</th><th>POLICE</th><th>NBI</th><th>ID TYPE</th><th>STATUS</th><th>ACTION</th></tr></thead>
-        <tbody>
-          {% for seeker in jobseekers %}
-          <tr>
-            <td>{{ seeker.user.first_name }} {{ seeker.user.last_name }}</td>
-            {% if seeker.barangay_clearance %}<td><a href="{{ seeker.barangay_clearance.url }}" class="file-link" target="_blank">Barangay</a></td>{% else %}<td><span class="no-file">No File</span></td>{% endif %}
-            {% if seeker.police_clearance %}<td><a href="{{ seeker.police_clearance.url }}" class="file-link" target="_blank">Police</a></td>{% else %}<td><span class="no-file">No File</span></td>{% endif %}
-            {% if seeker.nbi_clearance %}<td><a href="{{ seeker.nbi_clearance.url }}" class="file-link" target="_blank">NBI</a></td>{% else %}<td><span class="no-file">No File</span></td>{% endif %}
-            {% if seeker.valid_id %}<td><a href="{{ seeker.valid_id.url }}" class="file-link" target="_blank">{{ seeker.valid_id_type|default:"Valid ID" }}</a></td>{% else %}<td><span class="no-file">No File</span></td>{% endif %}
-            <td>
-              {% if seeker.approval_status == "Approved" %}<span style="color:#28a745;font-weight:600;">✓ Verified</span>
-              {% elif seeker.approval_status == "Rejected" %}<span style="color:#dc3545;font-weight:600;">✗ Rejected</span>
-              {% elif seeker.approval_status == "Re-upload Required" %}<span style="color:#ffc107;font-weight:600;">⚠️ Re-upload</span>
-              {% elif seeker.approval_status == "Incomplete" %}<span style="color:#999;font-weight:600;">📝 Incomplete</span>
-              {% else %}<span style="color:#007bff;font-weight:600;">⏳ Pending</span>{% endif %}
-            </td>
-            <td>
-              {% if seeker.approval_status == "Approved" %}
-                <button class="btn btn-success" disabled>✓ Approved</button>
-              {% elif seeker.approval_status == "Rejected" %}
-                <button class="btn btn-danger" disabled>✗ Rejected</button>
-              {% elif seeker.approval_status == "Re-upload Required" %}
-                <button class="btn btn-warning" disabled>⚠️ Re-upload</button>
-              {% elif seeker.approval_status == "Incomplete" %}
-                <span style="color:#999;font-style:italic;">Awaiting Documents</span>
-              {% elif seeker.approval_status == "Pending" %}
-                <button class="btn btn-success" onclick="updateStatus('{{ seeker.seeker_id }}','approve')">Approve</button>
-                <button class="btn btn-danger" onclick="updateStatus('{{ seeker.seeker_id }}','reject')">Reject</button>
-                <button class="btn btn-warning" onclick="updateStatus('{{ seeker.seeker_id }}','reupload')">Re-upload</button>
-              {% else %}
-                <span style="color:#999;font-style:italic;">-</span>
-              {% endif %}
-            </td>
-          </tr>
-          {% empty %}<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">No Job Seekers Found</td></tr>{% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ✅ EMPLOYERS -->
-  <section id="employers-section" class="data-section">
-    <h2>Employers</h2>
-
-    <h3>Company Employers</h3>
-    <div class="table-wrapper">
-      <table>
-        <thead><tr><th>Full Name</th><th>Company</th><th>Business Permit</th><th>Company ID</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody>
-          {% for e in company_employers %}
-          <tr>
-            <td>{{ e.user.first_name }} {{ e.user.last_name }}</td>
-            <td>{{ e.company_name|default:"—" }}</td>
-            <td>{% if e.business_permit %}<a href="{{ e.business_permit.url }}" class="file-link" target="_blank">Business Permit</a>{% else %}<span class="no-file">No File</span>{% endif %}</td>
-            <td>{% if e.company_id_file %}<a href="{{ e.company_id_file.url }}" class="file-link" target="_blank">Company ID</a>{% else %}<span class="no-file">No File</span>{% endif %}</td>
-            <td>
-              {% if e.approval_status == "Approved" or e.is_verified %}<span style="color:#28a745;font-weight:600;">✓ Verified</span>
-              {% elif e.approval_status == "Rejected" %}<span style="color:#dc3545;font-weight:600;">✗ Rejected</span>
-              {% elif e.approval_status == "Re-upload Required" %}<span style="color:#ffc107;font-weight:600;">⚠️ Re-upload</span>
-              {% elif e.approval_status == "Incomplete" %}<span style="color:#999;font-weight:600;">📝 Incomplete</span>
-              {% else %}<span style="color:#007bff;font-weight:600;">⏳ Pending</span>{% endif %}
-            </td>
-            <td>
-              {% if e.approval_status == "Approved" or e.is_verified %}
-                <button class="btn btn-success" disabled>✓ Approved</button>
-              {% elif e.approval_status == "Rejected" %}
-                <button class="btn btn-danger" disabled>✗ Rejected</button>
-              {% elif e.approval_status == "Re-upload Required" %}
-                <button class="btn btn-warning" disabled>⚠️ Re-upload</button>
-              {% elif e.approval_status == "Incomplete" %}
-                <span style="color:#999;font-style:italic;">Awaiting Documents</span>
-              {% elif e.approval_status == "Pending" %}
-                <button class="btn btn-success" onclick="updateEmployerStatus('{{ e.employer_id }}','approve')">Approve</button>
-                <button class="btn btn-danger" onclick="updateEmployerStatus('{{ e.employer_id }}','reject')">Reject</button>
-                <button class="btn btn-warning" onclick="updateEmployerStatus('{{ e.employer_id }}','reupload')">Re-upload</button>
-              {% else %}
-                <span style="color:#999;font-style:italic;">-</span>
-              {% endif %}
-            </td>
-          </tr>
-          {% empty %}<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">No Company Employers Found</td></tr>{% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <h3 style="margin-top:40px;">Personal / SME Employers</h3>
-    <div class="table-wrapper">
-      <table>
-        <thead><tr><th>Full Name</th><th>Barangay</th><th>Police</th><th>NBI</th><th>Valid ID</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody>
-          {% for e in personal_employers %}
-          <tr>
-            <td>{{ e.user.first_name }} {{ e.user.last_name }}</td>
-            {% if e.barangay_clearance %}<td><a href="{{ e.barangay_clearance.url }}" class="file-link" target="_blank">Barangay</a></td>{% else %}<td><span class="no-file">No File</span></td>{% endif %}
-            {% if e.police_clearance %}<td><a href="{{ e.police_clearance.url }}" class="file-link" target="_blank">Police</a></td>{% else %}<td><span class="no-file">No File</span></td>{% endif %}
-            {% if e.nbi_clearance %}<td><a href="{{ e.nbi_clearance.url }}" class="file-link" target="_blank">NBI</a></td>{% else %}<td><span class="no-file">No File</span></td>{% endif %}
-            {% if e.valid_id %}<td><a href="{{ e.valid_id.url }}" class="file-link" target="_blank">{{ e.valid_id_type|default:"Valid ID" }}</a></td>{% else %}<td><span class="no-file">No File</span>{% endif %}</td>
-            <td>
-              {% if e.approval_status == "Approved" or e.is_verified %}<span style="color:#28a745;font-weight:600;">✓ Verified</span>
-              {% elif e.approval_status == "Rejected" %}<span style="color:#dc3545;font-weight:600;">✗ Rejected</span>
-              {% elif e.approval_status == "Re-upload Required" %}<span style="color:#ffc107;font-weight:600;">⚠️ Re-upload</span>
-              {% elif e.approval_status == "Incomplete" %}<span style="color:#999;font-weight:600;">📝 Incomplete</span>
-              {% else %}<span style="color:#007bff;font-weight:600;">⏳ Pending</span>{% endif %}
-            </td>
-            <td>
-              {% if e.approval_status == "Approved" or e.is_verified %}
-                <button class="btn btn-success" disabled>✓ Approved</button>
-              {% elif e.approval_status == "Rejected" %}
-                <button class="btn btn-danger" disabled>✗ Rejected</button>
-              {% elif e.approval_status == "Re-upload Required" %}
-                <button class="btn btn-warning" disabled>⚠️ Re-upload</button>
-              {% elif e.approval_status == "Incomplete" %}
-                <span style="color:#999;font-style:italic;">Awaiting Documents</span>
-              {% elif e.approval_status == "Pending" %}
-                <button class="btn btn-success" onclick="updateEmployerStatus('{{ e.employer_id }}','approve')">Approve</button>
-                <button class="btn btn-danger" onclick="updateEmployerStatus('{{ e.employer_id }}','reject')">Reject</button>
-                <button class="btn btn-warning" onclick="updateEmployerStatus('{{ e.employer_id }}','reupload')">Re-upload</button>
-              {% else %}
-                <span style="color:#999;font-style:italic;">-</span>
-              {% endif %}
-            </td>
-          </tr>
-          {% empty %}<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">No Personal Employers Found</td></tr>{% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ✅ LOGS WITH CLEAR BUTTON -->
-  <section id="logs-section" class="data-section" style="margin-top:50px;">
-    <div class="logs-header">
-      <h2>🕐 Recent System Logs (Last 30 Days)</h2>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <form method="POST" action="{% url 'clear_old_logs' %}" class="clear-logs-form" onsubmit="return confirm('Clear logs older than 30 days? This cannot be undone.');">
-          {% csrf_token %}
-          <input type="hidden" name="days" value="30">
-          <button type="submit" class="btn-verify btn-danger">🗑️ Clear Logs (30+ days)</button>
-        </form>
-        <form method="POST" action="{% url 'clear_old_logs' %}" class="clear-logs-form" onsubmit="return confirm('Clear logs older than 7 days? This cannot be undone.');">
-          {% csrf_token %}
-          <input type="hidden" name="days" value="7">
-          <button type="submit" class="btn-verify btn-danger">🗑️ Clear Logs (7+ days)</button>
-        </form>
-        <form method="POST" action="{% url 'clear_old_logs' %}" class="clear-logs-form" onsubmit="return confirm('⚠️ DELETE ALL LOGS? This cannot be undone!');">
-          {% csrf_token %}
-          <input type="hidden" name="days" value="0">
-          <button type="submit" class="btn-verify btn-danger">🗑️ Clear All Logs</button>
-        </form>
+    <!-- ── OVERVIEW ── -->
+    <section id="overview" class="page-section active">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1>Dashboard Overview</h1>
+          <p>system / admin / overview</p>
+        </div>
+        <div class="action-bar" style="margin-bottom:0;">
+          <a href="{% url 'generate_report' %}?type=monthly_hires" class="action-btn action-btn-default"><i class="fas fa-file-arrow-down"></i> Monthly Hires</a>
+          <a href="{% url 'generate_report' %}?type=verified_users" class="action-btn action-btn-default"><i class="fas fa-file-arrow-down"></i> Verified Users</a>
+          <a href="{% url 'generate_report' %}?type=applications_overview" class="action-btn action-btn-default"><i class="fas fa-file-arrow-down"></i> Applications</a>
+          <a href="{% url 'generate_report' %}?type=monthly_statistics" class="action-btn action-btn-default"><i class="fas fa-file-arrow-down"></i> Monthly Stats</a>
+          <a href="{% url 'pending_jobs' %}" class="action-btn action-btn-blue"><i class="fas fa-clock"></i> Pending Jobs ({{ pending_count|default:0 }})</a>
+        </div>
       </div>
-    </div>
-    
-    {% if logs %}
-      <ul style="list-style:none;padding:0;">
-        {% for log in logs %}
-          <li style="margin-bottom:8px;padding:10px;background:#f8f9fa;border-radius:8px;border-left:4px solid #667eea;">
-            <strong>{{ log.timestamp|date:"M d, Y H:i" }}</strong> — {{ log.action }}
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p style="color:#777;text-align:center;padding:30px;background:#f8f9fa;border-radius:12px;">No recent activity recorded.</p>
-    {% endif %}
-  </section>
-</main>
+
+      <div class="stats-grid">
+        <div class="stat-card blue" onclick="showSection('jobseekers')">
+          <div class="stat-label"><i class="fas fa-users"></i> Job Seekers</div>
+          <div class="stat-value">{{ total_seekers }}</div>
+          <div class="stat-sub">Registered accounts</div>
+        </div>
+        <div class="stat-card blue" onclick="showSection('employers')">
+          <div class="stat-label"><i class="fas fa-building"></i> Employers</div>
+          <div class="stat-value">{{ total_employers }}</div>
+          <div class="stat-sub">Registered accounts</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label"><i class="fas fa-user-check"></i> Hired Rate</div>
+          <div class="stat-value">{{ hired_percent }}%</div>
+          <div class="stat-sub">{{ hired_applications }}/{{ total_applications }} this month</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label"><i class="fas fa-briefcase"></i> Jobs Posted</div>
+          <div class="stat-value">{{ jobs_this_month }}</div>
+          <div class="stat-sub">This month</div>
+        </div>
+        <div class="stat-card violet">
+          <div class="stat-label"><i class="fas fa-file-signature"></i> Applications</div>
+          <div class="stat-value">{{ applications_this_month }}</div>
+          <div class="stat-sub">This month</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label"><i class="fas fa-shield-check"></i> Verified</div>
+          <div class="stat-value">{{ total_verified|default:0 }}</div>
+          <div class="stat-sub">Overall verified users</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label"><i class="fas fa-ban"></i> Rejected</div>
+          <div class="stat-value">{{ total_rejected|default:0 }}</div>
+          <div class="stat-sub">Overall rejected</div>
+        </div>
+        <div class="stat-card amber" onclick="showSection('logs')">
+          <div class="stat-label"><i class="fas fa-list-ul"></i> Recent Logs</div>
+          <div class="stat-value">{{ logs|length }}</div>
+          <div class="stat-sub">Last 30 days</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── AI ALERTS ── -->
+    <section id="alerts" class="page-section">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1>AI Document Verification Alerts</h1>
+          <p>system / admin / ai-alerts</p>
+        </div>
+      </div>
+
+      {% if alerts_data %}
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>User Type</th>
+              <th>Full Name</th>
+              <th>Document</th>
+              <th>File</th>
+              <th>Confidence</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for alert in alerts_data %}
+            <tr>
+              <td><span class="chip chip-muted">{{ alert.user_type }}</span></td>
+              <td class="td-name">{{ alert.full_name }}</td>
+              <td class="td-mono">{{ alert.doc_type }}</td>
+              <td>
+                {% if alert.file %}<a href="{{ alert.file.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a>
+                {% else %}<span class="no-file">No File</span>{% endif %}
+              </td>
+              <td>
+                {% if alert.confidence < 0.3 %}<span class="confidence-low"><i class="fas fa-circle-exclamation"></i> Low ({{ alert.confidence|floatformat:2 }})</span>
+                {% elif alert.confidence < 0.7 %}<span class="confidence-med"><i class="fas fa-circle-minus"></i> Med ({{ alert.confidence|floatformat:2 }})</span>
+                {% else %}<span class="confidence-high"><i class="fas fa-circle-check"></i> High ({{ alert.confidence|floatformat:2 }})</span>{% endif %}
+              </td>
+              <td>
+                {% if alert.status == "Suspicious" %}<span class="chip chip-red"><i class="fas fa-triangle-exclamation"></i> Suspicious</span>
+                {% elif alert.status == "Pending" %}<span class="chip chip-amber"><i class="fas fa-clock"></i> Pending</span>
+                {% elif alert.status == "Cleared" or alert.status == "Verified" or alert.status == "Approved" %}<span class="chip chip-green"><i class="fas fa-check"></i> Cleared</span>
+                {% elif alert.status == "Rejected" %}<span class="chip chip-red"><i class="fas fa-times"></i> Rejected</span>
+                {% else %}<span class="chip chip-blue">{{ alert.status }}</span>{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="logs-empty"><i class="fas fa-circle-check" style="color:var(--green);font-size:24px;display:block;margin-bottom:10px;"></i>No suspicious uploads detected. All documents look good.</div>
+      {% endif %}
+    </section>
+
+    <!-- ── JOB SEEKERS ── -->
+    <section id="jobseekers" class="page-section">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1>Job Seekers</h1>
+          <p>system / admin / job-seekers — {{ total_seekers }} total</p>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Barangay</th>
+              <th>Police</th>
+              <th>NBI</th>
+              <th>Valid ID</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for seeker in jobseekers %}
+            <tr>
+              <td class="td-name">{{ seeker.user.first_name }} {{ seeker.user.last_name }}</td>
+              {% if seeker.barangay_clearance %}<td><a href="{{ seeker.barangay_clearance.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a></td>{% else %}<td><span class="no-file">—</span></td>{% endif %}
+              {% if seeker.police_clearance %}<td><a href="{{ seeker.police_clearance.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a></td>{% else %}<td><span class="no-file">—</span></td>{% endif %}
+              {% if seeker.nbi_clearance %}<td><a href="{{ seeker.nbi_clearance.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a></td>{% else %}<td><span class="no-file">—</span></td>{% endif %}
+              {% if seeker.valid_id %}<td><a href="{{ seeker.valid_id.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> {{ seeker.valid_id_type|default:"ID" }}</a></td>{% else %}<td><span class="no-file">—</span></td>{% endif %}
+              <td>
+                {% if seeker.approval_status == "Approved" %}<span class="chip chip-green"><i class="fas fa-check"></i> Verified</span>
+                {% elif seeker.approval_status == "Rejected" %}<span class="chip chip-red"><i class="fas fa-times"></i> Rejected</span>
+                {% elif seeker.approval_status == "Re-upload Required" %}<span class="chip chip-amber"><i class="fas fa-rotate"></i> Re-upload</span>
+                {% elif seeker.approval_status == "Incomplete" %}<span class="chip chip-muted"><i class="fas fa-hourglass"></i> Incomplete</span>
+                {% else %}<span class="chip chip-blue"><i class="fas fa-clock"></i> Pending</span>{% endif %}
+              </td>
+              <td style="white-space:nowrap;">
+                {% if seeker.approval_status == "Approved" %}
+                  <button class="btn btn-success" disabled><i class="fas fa-check"></i> Approved</button>
+                {% elif seeker.approval_status == "Rejected" %}
+                  <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Rejected</button>
+                {% elif seeker.approval_status == "Re-upload Required" %}
+                  <button class="btn btn-warning" disabled><i class="fas fa-rotate"></i> Re-upload</button>
+                {% elif seeker.approval_status == "Incomplete" %}
+                  <span style="color:var(--muted);font-style:italic;font-size:12px;">Awaiting docs</span>
+                {% elif seeker.approval_status == "Pending" %}
+                  <button class="btn btn-success" onclick="updateStatus('{{ seeker.seeker_id }}','approve')"><i class="fas fa-check"></i> Approve</button>
+                  <button class="btn btn-danger" onclick="updateStatus('{{ seeker.seeker_id }}','reject')"><i class="fas fa-times"></i> Reject</button>
+                  <button class="btn btn-warning" onclick="updateStatus('{{ seeker.seeker_id }}','reupload')"><i class="fas fa-rotate"></i> Re-upload</button>
+                {% else %}
+                  <span style="color:var(--muted);font-style:italic;font-size:12px;">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}<tr class="empty-row"><td colspan="7">No job seekers found</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── EMPLOYERS ── -->
+    <section id="employers" class="page-section">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1>Employers</h1>
+          <p>system / admin / employers — {{ total_employers }} total</p>
+        </div>
+      </div>
+
+      <div class="section-heading"><i class="fas fa-building"></i> Company Employers</div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Full Name</th><th>Company</th><th>Business Permit</th><th>Company ID</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for e in company_employers %}
+            <tr>
+              <td class="td-name">{{ e.user.first_name }} {{ e.user.last_name }}</td>
+              <td class="td-mono">{{ e.company_name|default:"—" }}</td>
+              <td>{% if e.business_permit %}<a href="{{ e.business_permit.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a>{% else %}<span class="no-file">—</span>{% endif %}</td>
+              <td>{% if e.company_id_file %}<a href="{{ e.company_id_file.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a>{% else %}<span class="no-file">—</span>{% endif %}</td>
+              <td>
+                {% if e.approval_status == "Approved" or e.is_verified %}<span class="chip chip-green"><i class="fas fa-check"></i> Verified</span>
+                {% elif e.approval_status == "Rejected" %}<span class="chip chip-red"><i class="fas fa-times"></i> Rejected</span>
+                {% elif e.approval_status == "Re-upload Required" %}<span class="chip chip-amber"><i class="fas fa-rotate"></i> Re-upload</span>
+                {% elif e.approval_status == "Incomplete" %}<span class="chip chip-muted"><i class="fas fa-hourglass"></i> Incomplete</span>
+                {% else %}<span class="chip chip-blue"><i class="fas fa-clock"></i> Pending</span>{% endif %}
+              </td>
+              <td style="white-space:nowrap;">
+                {% if e.approval_status == "Approved" or e.is_verified %}
+                  <button class="btn btn-success" disabled><i class="fas fa-check"></i> Approved</button>
+                {% elif e.approval_status == "Rejected" %}
+                  <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Rejected</button>
+                {% elif e.approval_status == "Re-upload Required" %}
+                  <button class="btn btn-warning" disabled><i class="fas fa-rotate"></i> Re-upload</button>
+                {% elif e.approval_status == "Incomplete" %}
+                  <span style="color:var(--muted);font-style:italic;font-size:12px;">Awaiting docs</span>
+                {% elif e.approval_status == "Pending" %}
+                  <button class="btn btn-success" onclick="updateEmployerStatus('{{ e.employer_id }}','approve')"><i class="fas fa-check"></i> Approve</button>
+                  <button class="btn btn-danger" onclick="updateEmployerStatus('{{ e.employer_id }}','reject')"><i class="fas fa-times"></i> Reject</button>
+                  <button class="btn btn-warning" onclick="updateEmployerStatus('{{ e.employer_id }}','reupload')"><i class="fas fa-rotate"></i> Re-upload</button>
+                {% else %}
+                  <span style="color:var(--muted);font-style:italic;font-size:12px;">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}<tr class="empty-row"><td colspan="6">No company employers found</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-heading"><i class="fas fa-user-tie"></i> Personal / SME Employers</div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Full Name</th><th>Barangay</th><th>Police</th><th>NBI</th><th>Valid ID</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for e in personal_employers %}
+            <tr>
+              <td class="td-name">{{ e.user.first_name }} {{ e.user.last_name }}</td>
+              {% if e.barangay_clearance %}<td><a href="{{ e.barangay_clearance.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a></td>{% else %}<td><span class="no-file">—</span></td>{% endif %}
+              {% if e.police_clearance %}<td><a href="{{ e.police_clearance.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a></td>{% else %}<td><span class="no-file">—</span></td>{% endif %}
+              {% if e.nbi_clearance %}<td><a href="{{ e.nbi_clearance.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> View</a></td>{% else %}<td><span class="no-file">—</span></td>{% endif %}
+              {% if e.valid_id %}<td><a href="{{ e.valid_id.url }}" class="file-link" target="_blank"><i class="fas fa-eye"></i> {{ e.valid_id_type|default:"ID" }}</a></td>{% else %}<td><span class="no-file">—</span></td>{% endif %}
+              <td>
+                {% if e.approval_status == "Approved" or e.is_verified %}<span class="chip chip-green"><i class="fas fa-check"></i> Verified</span>
+                {% elif e.approval_status == "Rejected" %}<span class="chip chip-red"><i class="fas fa-times"></i> Rejected</span>
+                {% elif e.approval_status == "Re-upload Required" %}<span class="chip chip-amber"><i class="fas fa-rotate"></i> Re-upload</span>
+                {% elif e.approval_status == "Incomplete" %}<span class="chip chip-muted"><i class="fas fa-hourglass"></i> Incomplete</span>
+                {% else %}<span class="chip chip-blue"><i class="fas fa-clock"></i> Pending</span>{% endif %}
+              </td>
+              <td style="white-space:nowrap;">
+                {% if e.approval_status == "Approved" or e.is_verified %}
+                  <button class="btn btn-success" disabled><i class="fas fa-check"></i> Approved</button>
+                {% elif e.approval_status == "Rejected" %}
+                  <button class="btn btn-danger" disabled><i class="fas fa-times"></i> Rejected</button>
+                {% elif e.approval_status == "Re-upload Required" %}
+                  <button class="btn btn-warning" disabled><i class="fas fa-rotate"></i> Re-upload</button>
+                {% elif e.approval_status == "Incomplete" %}
+                  <span style="color:var(--muted);font-style:italic;font-size:12px;">Awaiting docs</span>
+                {% elif e.approval_status == "Pending" %}
+                  <button class="btn btn-success" onclick="updateEmployerStatus('{{ e.employer_id }}','approve')"><i class="fas fa-check"></i> Approve</button>
+                  <button class="btn btn-danger" onclick="updateEmployerStatus('{{ e.employer_id }}','reject')"><i class="fas fa-times"></i> Reject</button>
+                  <button class="btn btn-warning" onclick="updateEmployerStatus('{{ e.employer_id }}','reupload')"><i class="fas fa-rotate"></i> Re-upload</button>
+                {% else %}
+                  <span style="color:var(--muted);font-style:italic;font-size:12px;">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}<tr class="empty-row"><td colspan="7">No personal employers found</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── LOGS ── -->
+    <section id="logs" class="page-section">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1>System Logs</h1>
+          <p>system / admin / logs — last 30 days</p>
+        </div>
+      </div>
+
+      <div class="logs-header">
+        <span style="font-size:13px;color:var(--muted);">{{ logs|length }} entr{% if logs|length == 1 %}y{% else %}ies{% endif %} found</span>
+        <div class="logs-actions">
+          <form method="POST" action="{% url 'clear_old_logs' %}" class="clear-logs-form" onsubmit="return confirm('Clear logs older than 30 days? This cannot be undone.');">
+            {% csrf_token %}<input type="hidden" name="days" value="30">
+            <button type="submit" class="action-btn action-btn-red"><i class="fas fa-trash"></i> Clear 30+ days</button>
+          </form>
+          <form method="POST" action="{% url 'clear_old_logs' %}" class="clear-logs-form" onsubmit="return confirm('Clear logs older than 7 days? This cannot be undone.');">
+            {% csrf_token %}<input type="hidden" name="days" value="7">
+            <button type="submit" class="action-btn action-btn-red"><i class="fas fa-trash"></i> Clear 7+ days</button>
+          </form>
+          <form method="POST" action="{% url 'clear_old_logs' %}" class="clear-logs-form" onsubmit="return confirm('DELETE ALL LOGS? This cannot be undone!');">
+            {% csrf_token %}<input type="hidden" name="days" value="0">
+            <button type="submit" class="action-btn action-btn-red"><i class="fas fa-trash"></i> Clear All</button>
+          </form>
+        </div>
+      </div>
+
+      {% if logs %}
+        <div class="log-list">
+          {% for log in logs %}
+          <div class="log-item">
+            <span class="log-time">{{ log.timestamp|date:"M d, Y H:i" }}</span>
+            <span class="log-action">{{ log.action }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="logs-empty"><i class="fas fa-inbox" style="font-size:24px;display:block;margin-bottom:10px;"></i>No recent activity recorded.</div>
+      {% endif %}
+    </section>
+
+  </main>
+</div>
 
 <footer>
-  <p>BlueHire v{{ BLUEHIRE_VERSION|default:"1.0.0" }} — Open-Source Blue-Collar Recruitment Platform</p>
+  <p>BlueHire v{{ BLUEHIRE_VERSION|default:"1.0.0" }} — System Administration Panel</p>
 </footer>
 
 <script>
-function getCookie(name){
-  let cookieValue=null;
-  if(document.cookie&&document.cookie!==""){
-    const cookies=document.cookie.split(";");
-    for(let cookie of cookies){
-      const c=cookie.trim();
-      if(c.startsWith(name+"=")){cookieValue=decodeURIComponent(c.substring(name.length+1));break;}
-    }
-  }
-  return cookieValue;
+// Section switcher
+function showSection(id) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.sidebar-link').forEach(l => {
+    if (l.getAttribute('onclick') === `showSection('${id}')`) l.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// CSRF
+function getCookie(name){let c=null;if(document.cookie&&document.cookie!==""){const cs=document.cookie.split(";");for(let ck of cs){const t=ck.trim();if(t.startsWith(name+"=")){c=decodeURIComponent(t.substring(name.length+1));break;}}}return c;}
+
 function updateStatus(seekerId,action){
-  const csrfToken=getCookie("csrftoken");
+  const csrf=getCookie("csrftoken");
   let endpoint="";
   if(action==="approve") endpoint=`/system-admin/jobseeker/approve/${seekerId}/`;
   if(action==="reject") endpoint=`/system-admin/jobseeker/reject/${seekerId}/`;
   if(action==="reupload") endpoint=`/system-admin/jobseeker/reupload/${seekerId}/`;
-  fetch(endpoint,{method:"POST",headers:{"X-CSRFToken":csrfToken,"Accept":"application/json"}})
+  fetch(endpoint,{method:"POST",headers:{"X-CSRFToken":csrf,"Accept":"application/json"}})
   .then(res=>{if(res.ok) location.reload(); else res.text().then(t=>alert("Failed: "+t));})
   .catch(err=>alert("Network error: "+err));
 }
 
 function updateEmployerStatus(empId,action){
-  const csrfToken=getCookie("csrftoken");
+  const csrf=getCookie("csrftoken");
   let endpoint="";
   if(action==="approve") endpoint=`/system-admin/employer/approve/${empId}/`;
   if(action==="reject") endpoint=`/system-admin/employer/reject/${empId}/`;
   if(action==="reupload") endpoint=`/system-admin/employer/reupload/${empId}/`;
-  fetch(endpoint,{method:"POST",headers:{"X-CSRFToken":csrfToken,"Accept":"application/json"}})
+  fetch(endpoint,{method:"POST",headers:{"X-CSRFToken":csrf,"Accept":"application/json"}})
   .then(res=>{if(res.ok) location.reload(); else res.text().then(t=>alert("Failed: "+t));})
   .catch(err=>alert("Network error: "+err));
 }

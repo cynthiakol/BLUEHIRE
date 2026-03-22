@@ -293,22 +293,40 @@
   <!-- DOCUMENTS -->
   <div class="info-section" style="margin-bottom:16px;">
     <h3><i class="fas fa-file-alt"></i> Documents & Clearances</h3>
-    <div class="doc-grid">
-      {% if jobseeker.barangay_clearance %}
-        <div class="doc-item"><i class="fas fa-file-contract"></i><strong>Barangay Clearance</strong><a href="{{ jobseeker.barangay_clearance.url }}" target="_blank"><i class="fas fa-eye"></i> View</a></div>
-      {% endif %}
-      {% if jobseeker.police_clearance %}
-        <div class="doc-item"><i class="fas fa-shield-alt"></i><strong>Police Clearance</strong><a href="{{ jobseeker.police_clearance.url }}" target="_blank"><i class="fas fa-eye"></i> View</a></div>
-      {% endif %}
-      {% if jobseeker.nbi_clearance %}
-        <div class="doc-item"><i class="fas fa-id-badge"></i><strong>NBI Clearance</strong><a href="{{ jobseeker.nbi_clearance.url }}" target="_blank"><i class="fas fa-eye"></i> View</a></div>
-      {% endif %}
-      {% if jobseeker.valid_id %}
-        <div class="doc-item"><i class="fas fa-id-card"></i><strong>Valid ID{% if jobseeker.valid_id_type %} ({{ jobseeker.valid_id_type }}){% endif %}</strong><a href="{{ jobseeker.valid_id.url }}" target="_blank"><i class="fas fa-eye"></i> View</a></div>
-      {% endif %}
-      {% if not jobseeker.barangay_clearance and not jobseeker.nbi_clearance and not jobseeker.police_clearance and not jobseeker.valid_id %}
-        <div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-folder-open"></i><p>No documents uploaded.</p></div>
-      {% endif %}
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+
+      <!-- Barangay Clearance -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:2px solid {% if jobseeker.barangay_clearance %}#bbf7d0{% else %}#e2e8f0{% endif %};background:{% if jobseeker.barangay_clearance %}#f0fdf4{% else %}#f8fafc{% endif %};">
+        <i class="fas fa-file-contract" style="color:{% if jobseeker.barangay_clearance %}#16a34a{% else %}#94a3b8{% endif %};"></i>
+        <span style="font-weight:600;font-size:13px;color:{% if jobseeker.barangay_clearance %}#15803d{% else %}#94a3b8{% endif %};">Barangay Clearance</span>
+        {% if jobseeker.barangay_clearance %}<span style="background:#16a34a;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">✓ Uploaded</span>{% else %}<span style="background:#e2e8f0;color:#94a3b8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">✗ None</span>{% endif %}
+        {% if request.user.is_superuser and jobseeker.barangay_clearance %}<a href="{{ jobseeker.barangay_clearance.url }}" target="_blank" style="margin-left:6px;font-size:11px;color:#3b82f6;font-weight:600;">View</a>{% endif %}
+      </div>
+
+      <!-- Police Clearance -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:2px solid {% if jobseeker.police_clearance %}#bbf7d0{% else %}#e2e8f0{% endif %};background:{% if jobseeker.police_clearance %}#f0fdf4{% else %}#f8fafc{% endif %};">
+        <i class="fas fa-shield-alt" style="color:{% if jobseeker.police_clearance %}#16a34a{% else %}#94a3b8{% endif %};"></i>
+        <span style="font-weight:600;font-size:13px;color:{% if jobseeker.police_clearance %}#15803d{% else %}#94a3b8{% endif %};">Police Clearance</span>
+        {% if jobseeker.police_clearance %}<span style="background:#16a34a;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">✓ Uploaded</span>{% else %}<span style="background:#e2e8f0;color:#94a3b8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">✗ None</span>{% endif %}
+        {% if request.user.is_superuser and jobseeker.police_clearance %}<a href="{{ jobseeker.police_clearance.url }}" target="_blank" style="margin-left:6px;font-size:11px;color:#3b82f6;font-weight:600;">View</a>{% endif %}
+      </div>
+
+      <!-- NBI Clearance -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:2px solid {% if jobseeker.nbi_clearance %}#bbf7d0{% else %}#e2e8f0{% endif %};background:{% if jobseeker.nbi_clearance %}#f0fdf4{% else %}#f8fafc{% endif %};">
+        <i class="fas fa-id-badge" style="color:{% if jobseeker.nbi_clearance %}#16a34a{% else %}#94a3b8{% endif %};"></i>
+        <span style="font-weight:600;font-size:13px;color:{% if jobseeker.nbi_clearance %}#15803d{% else %}#94a3b8{% endif %};">NBI Clearance</span>
+        {% if jobseeker.nbi_clearance %}<span style="background:#16a34a;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">✓ Uploaded</span>{% else %}<span style="background:#e2e8f0;color:#94a3b8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">✗ None</span>{% endif %}
+        {% if request.user.is_superuser and jobseeker.nbi_clearance %}<a href="{{ jobseeker.nbi_clearance.url }}" target="_blank" style="margin-left:6px;font-size:11px;color:#3b82f6;font-weight:600;">View</a>{% endif %}
+      </div>
+
+      <!-- Valid ID -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:2px solid {% if jobseeker.valid_id %}#bbf7d0{% else %}#e2e8f0{% endif %};background:{% if jobseeker.valid_id %}#f0fdf4{% else %}#f8fafc{% endif %};">
+        <i class="fas fa-id-card" style="color:{% if jobseeker.valid_id %}#16a34a{% else %}#94a3b8{% endif %};"></i>
+        <span style="font-weight:600;font-size:13px;color:{% if jobseeker.valid_id %}#15803d{% else %}#94a3b8{% endif %};">Valid ID{% if jobseeker.valid_id_type %} ({{ jobseeker.valid_id_type }}){% endif %}</span>
+        {% if jobseeker.valid_id %}<span style="background:#16a34a;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">✓ Uploaded</span>{% else %}<span style="background:#e2e8f0;color:#94a3b8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">✗ None</span>{% endif %}
+        {% if request.user.is_superuser and jobseeker.valid_id %}<a href="{{ jobseeker.valid_id.url }}" target="_blank" style="margin-left:6px;font-size:11px;color:#3b82f6;font-weight:600;">View</a>{% endif %}
+      </div>
+
     </div>
   </div>
 

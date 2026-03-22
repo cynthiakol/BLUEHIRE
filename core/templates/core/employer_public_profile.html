@@ -5,308 +5,263 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ employer.company_name|default:employer.user.get_full_name }} | BlueHire</title>
-  <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); background-attachment: fixed; min-height: 100vh; }
-    .top-nav { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); padding: 16px 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo img { width: 40px; height: 40px; border-radius: 8px; }
-    .logo span { font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .back-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #007bff, #0056b3); color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; }
-    .back-btn:hover { transform: translateY(-2px); }
-    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-    .profile-header { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); margin-bottom: 30px; }
-    .profile-content { display: flex; gap: 30px; align-items: start; }
-    .profile-image { flex-shrink: 0; }
-    .profile-image img { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid #007bff; box-shadow: 0 4px 12px rgba(0,123,255,0.2); }
-    .profile-info { flex: 1; }
-    .profile-name { font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
-    .profile-badge { display: inline-block; padding: 6px 14px; background: linear-gradient(135deg, #007bff, #0056b3); color: white; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .profile-badge.personal { background: linear-gradient(135deg, #28a745, #218838); }
-    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 20px; }
-    .info-item { display: flex; align-items: start; gap: 10px; }
-    .info-icon { color: #007bff; font-size: 18px; margin-top: 2px; }
-    .info-content strong { display: block; color: #666; font-size: 13px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .info-content span { color: #1a1a1a; font-size: 15px; }
-    .about-section { background: #f8f9fa; padding: 20px; border-radius: 12px; margin-top: 24px; border-left: 4px solid #007bff; }
-    .about-section h3 { color: #007bff; font-size: 16px; margin-bottom: 12px; font-weight: 600; }
-    .about-section p { color: #495057; line-height: 1.6; font-size: 15px; }
-    .section-card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); margin-bottom: 30px; }
-    .section-title { font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
-    .section-title::before { content: ''; width: 4px; height: 28px; background: linear-gradient(135deg, #007bff, #0056b3); border-radius: 4px; }
-    .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-    .doc-card { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border: 2px solid #e9ecef; border-radius: 12px; padding: 20px; text-align: center; transition: all 0.3s ease; }
-    .doc-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,123,255,0.15); border-color: #007bff; }
-    .doc-icon { width: 60px; height: 60px; margin: 0 auto 16px; background: linear-gradient(135deg, #007bff, #0056b3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; }
-    .doc-name { display: block; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; font-size: 15px; }
-    .doc-link { display: inline-block; background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease; }
-    .doc-link:hover { transform: translateY(-2px); }
-    .doc-not-available { color: #999; font-style: italic; font-size: 14px; }
-    .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-    .job-card { background: linear-gradient(135deg, #ffffff, #f8f9fa); border: 2px solid #e9ecef; border-radius: 12px; padding: 24px; transition: all 0.3s ease; border-left: 4px solid #007bff; }
-    .job-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,123,255,0.15); border-color: #0056b3; }
-    .job-title { font-size: 20px; font-weight: 700; color: #007bff; margin-bottom: 12px; }
-    .job-meta { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
-    .job-meta-item { display: flex; align-items: center; gap: 6px; color: #666; font-size: 14px; }
-    .job-meta-item::before { content: '•'; color: #007bff; font-weight: bold; }
-    .job-description { color: #495057; line-height: 1.6; font-size: 14px; margin-bottom: 16px; }
-    .job-actions { display: flex; gap: 12px; }
-    .job-btn { flex: 1; padding: 10px 16px; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600; font-size: 14px; transition: all 0.3s ease; }
-    .job-btn-primary { background: linear-gradient(135deg, #007bff, #0056b3); color: white; }
-    .job-btn-primary:hover { transform: translateY(-2px); }
-    .empty-state { text-align: center; padding: 60px 20px; color: #999; }
-    .empty-state-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
-    .verified-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #28a745, #218838); color: white; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-top: 8px; }
-    .rating-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
-    .rating-card:hover { border-color: #007bff; box-shadow: 0 4px 12px rgba(0,123,255,0.1); }
-    @media (max-width: 768px) {
-      .top-nav { padding: 12px 20px; flex-direction: column; gap: 12px; }
-      .container { margin: 20px auto; }
-      .profile-header { padding: 24px; }
-      .profile-content { flex-direction: column; align-items: center; text-align: center; }
-      .section-card { padding: 20px; }
-      .jobs-grid, .doc-grid { grid-template-columns: 1fr; }
-      .profile-name { font-size: 24px; }
-      .info-grid { grid-template-columns: 1fr; }
+    :root{--bg:#f8f9fc;--white:#ffffff;--navy:#0f2456;--navy-2:#1a3a7c;--slate:#475569;--slate-2:#64748b;--slate-3:#94a3b8;--ink:#0d1117;--border:#e1e7ef;--blue:#2563eb;--blue-light:#eff6ff;--blue-mid:#bfdbfe;--green:#059669;--green-light:#ecfdf5;--red:#dc2626;--amber:#d97706;--amber-light:#fffbeb;--shadow-sm:0 1px 2px rgba(0,0,0,0.05);--shadow-md:0 4px 6px rgba(0,0,0,0.07);--shadow-lg:0 10px 24px rgba(0,0,0,0.08);--radius:12px;--radius-sm:7px;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Outfit',sans-serif;background:var(--bg);min-height:100vh;color:var(--ink);}
+
+    .top-nav{background:var(--navy);padding:0 52px;height:62px;box-shadow:0 2px 12px rgba(15,36,86,0.3);position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .logo img{width:32px;height:32px;border-radius:6px;}
+    .logo span{font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.3px;}
+    .logo span b{color:var(--blue-mid);}
+    .back-btn{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);text-decoration:none;padding:0 16px;height:36px;border-radius:var(--radius-sm);font-weight:600;font-size:13px;transition:all 0.15s;}
+    .back-btn:hover{background:rgba(255,255,255,0.18);}
+
+    .container{max-width:1100px;margin:32px auto;padding:0 24px 64px;}
+
+    /* PROFILE HEADER */
+    .profile-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm);}
+    .profile-card-top{height:4px;background:var(--navy);}
+    .profile-card-body{padding:28px 32px;}
+    .profile-header{display:flex;align-items:flex-start;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--border);}
+    .profile-image img{width:96px;height:96px;border-radius:var(--radius-sm);object-fit:cover;border:2px solid var(--border);flex-shrink:0;}
+    .profile-info{flex:1;}
+    .profile-name{font-size:26px;font-weight:900;color:var(--navy);letter-spacing:-0.5px;margin-bottom:10px;}
+    .profile-badge{display:inline-block;padding:3px 10px;background:var(--navy);color:#fff;border-radius:50px;font-size:10px;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;}
+    .profile-badge.personal{background:var(--green);}
+    .verified-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green);padding:3px 10px;border-radius:50px;font-size:10px;font-weight:700;margin-left:8px;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #a7f3d0;}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,0.15)}50%{box-shadow:0 0 0 5px rgba(5,150,105,0)}}
+    .verified-badge{animation:pulse 2.5s ease-in-out infinite;}
+
+    .rating-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+    .stars-row{display:flex;gap:2px;}
+    .star-filled{color:#f59e0b;font-size:13px;}
+    .star-empty{color:#d1d5db;font-size:13px;}
+    .rating-val{font-size:13px;font-weight:700;color:#f59e0b;}
+    .rating-count{font-size:12px;color:var(--slate-3);}
+
+    .about-section{background:var(--bg);padding:12px 14px;border-radius:var(--radius-sm);margin:10px 0;border-left:3px solid var(--navy);font-size:13px;color:var(--slate);line-height:1.65;}
+    .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:16px;}
+    .info-item{display:flex;align-items:flex-start;gap:10px;}
+    .info-icon{color:var(--blue);font-size:15px;margin-top:2px;}
+    .info-content strong{display:block;color:var(--slate-3);font-size:11px;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;}
+    .info-content span{color:var(--navy);font-size:14px;font-weight:600;}
+
+    /* SECTIONS */
+    .section-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
+    .section-title{font-size:16px;font-weight:800;color:var(--navy);letter-spacing:-0.2px;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+    .section-title i{color:var(--blue);}
+    .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+    /* DOC GRID */
+    .doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+    .doc-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px;text-align:center;transition:all 0.15s;}
+    .doc-card:hover{border-color:var(--blue-mid);transform:translateY(-2px);}
+    .doc-icon{width:48px;height:48px;margin:0 auto 12px;background:var(--navy);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;color:white;}
+    .doc-name{display:block;font-weight:700;color:var(--navy);margin-bottom:10px;font-size:13px;letter-spacing:-0.1px;}
+    .doc-link{display:inline-block;background:var(--navy);color:white;padding:7px 16px;border-radius:var(--radius-sm);text-decoration:none;font-weight:700;font-size:12px;transition:background 0.15s;}
+    .doc-link:hover{background:var(--blue);}
+    .doc-not-available{color:var(--slate-3);font-style:italic;font-size:13px;}
+
+    /* CLEARANCE ITEMS */
+    .clearance-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid;margin-bottom:8px;font-size:13px;font-weight:600;}
+    .clearance-item.has{border-color:#a7f3d0;background:var(--green-light);color:var(--green);}
+    .clearance-item.none{border-color:var(--border);background:var(--bg);color:var(--slate-3);}
+
+    /* JOBS GRID */
+    .jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+    .job-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;transition:all 0.15s;border-left:3px solid var(--blue);}
+    .job-card:hover{border-color:var(--blue-mid);box-shadow:var(--shadow-md);}
+    .job-title{font-size:17px;font-weight:800;color:var(--navy);margin-bottom:10px;letter-spacing:-0.2px;}
+    .job-meta{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
+    .job-meta-item{display:flex;align-items:center;gap:5px;color:var(--slate-2);font-size:13px;}
+    .job-meta-item i{color:var(--blue);font-size:11px;}
+    .job-description{color:var(--slate);line-height:1.65;font-size:13px;margin-bottom:14px;}
+    .job-actions{display:flex;gap:10px;}
+    .job-btn{flex:1;padding:10px 14px;border-radius:var(--radius-sm);text-decoration:none;text-align:center;font-weight:700;font-size:13px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .job-btn-primary{background:var(--navy);color:white;}
+    .job-btn-primary:hover{background:var(--blue);}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:48px 20px;color:var(--slate-3);font-size:14px;}
+    .empty-state i{font-size:36px;margin-bottom:12px;opacity:0.3;display:block;}
+
+    /* RATINGS */
+    .rating-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px;transition:all 0.15s;}
+    .rating-card:hover{border-color:var(--blue-mid);}
+    .rating-overview{display:flex;align-items:center;gap:28px;margin-bottom:20px;padding:18px;background:var(--bg);border-radius:var(--radius-sm);flex-wrap:wrap;border:1px solid var(--border);}
+    .rating-big .num{font-size:40px;font-weight:900;color:#f59e0b;letter-spacing:-2px;line-height:1;}
+    .rating-big .sub{color:var(--slate-3);font-size:11px;margin-top:4px;}
+    .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+    .bar-row .label{color:var(--slate-3);font-size:11px;width:12px;text-align:right;}
+    .bar-row .bar-track{flex:1;background:var(--border);border-radius:50px;height:5px;overflow:hidden;}
+    .bar-row .bar-fill{background:#f59e0b;height:100%;border-radius:50px;}
+    .bar-row .count{color:var(--slate-3);font-size:11px;width:18px;}
+
+    @media(max-width:768px){
+      .top-nav{padding:0 16px;}
+      .container{margin:20px auto;padding:0 16px 48px;}
+      .profile-header{flex-direction:column;}
+      .info-grid{grid-template-columns:1fr;}
+      .section-card{padding:18px;}
+      .jobs-grid,.doc-grid{grid-template-columns:1fr;}
+      .profile-name{font-size:22px;}
     }
   </style>
 </head>
 <body>
   <nav class="top-nav">
     <div class="logo">
-      <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo">
-      <span>BlueHire</span>
+      <img src="{% static 'core/image/logo.png' %}" alt="BlueHire">
+      <span>Blue<b>Hire</b></span>
     </div>
-    <a href="{% url 'jobseeker_dashboard' %}" class="back-btn">← Back to Dashboard</a>
+    <a href="{% url 'jobseeker_dashboard' %}" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
   </nav>
 
   <div class="container">
-    <!-- Profile Header -->
-    <div class="profile-header">
-      <div class="profile-content">
-        <div class="profile-image">
-          {% if employer.employer_type == "Company" and employer.company_logo %}
-            <img src="{{ employer.company_logo.url }}" alt="{{ employer.company_name }}">
-          {% elif employer.profile_photo %}
-            <img src="{{ employer.profile_photo.url }}" alt="{{ employer.user.get_full_name }}">
-          {% else %}
-            <img src="{% static 'core/image/default-avatar.png' %}" alt="Default Avatar">
-          {% endif %}
-        </div>
 
-        <div class="profile-info">
-          <h1 class="profile-name">{{ employer.company_name|default:employer.user.get_full_name }}</h1>
-
-          <span class="profile-badge {% if employer.employer_type == 'Personal' %}personal{% endif %}">
-            {{ employer.employer_type }} Employer
-          </span>
-
-          {% if employer.is_verified %}
-            <span class="verified-badge">✓ Verified Employer</span>
-          {% endif %}
-
-          <!-- Avg Rating -->
-          {% if avg_rating %}
-            <div style="margin:10px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-              {% for i in filled_stars %}<span style="color:#f59e0b;font-size:1.3rem;">&#9733;</span>{% endfor %}
-              {% for i in empty_stars %}<span style="color:#ccc;font-size:1.3rem;">&#9734;</span>{% endfor %}
-              <span style="font-weight:700;color:#f59e0b;">{{ avg_rating }}/5</span>
-              <span style="color:#94a3b8;font-size:0.85rem;">({{ total_ratings }} review{{ total_ratings|pluralize }})</span>
-            </div>
-          {% else %}
-            <div style="margin:10px 0;color:#94a3b8;font-size:0.9rem;">No reviews yet</div>
-          {% endif %}
-
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="info-icon">📧</span>
-              <div class="info-content">
-                <strong>Email</strong>
-                <span>{{ employer.user.email }}</span>
-              </div>
-            </div>
-            <div class="info-item">
-              <span class="info-icon">📱</span>
-              <div class="info-content">
-                <strong>Phone</strong>
-                <span>{{ employer.user.phone|default:'Not provided' }}</span>
-              </div>
-            </div>
-            {% if employer.employer_type == "Company" and employer.company_address %}
-              <div class="info-item">
-                <span class="info-icon">📍</span>
-                <div class="info-content">
-                  <strong>Address</strong>
-                  <span>{{ employer.company_address }}</span>
-                </div>
-              </div>
-            {% elif employer.personal_address %}
-              <div class="info-item">
-                <span class="info-icon">📍</span>
-                <div class="info-content">
-                  <strong>Address</strong>
-                  <span>{{ employer.personal_address }}</span>
-                </div>
-              </div>
-            {% endif %}
+    <!-- PROFILE HEADER -->
+    <div class="profile-card">
+      <div class="profile-card-top"></div>
+      <div class="profile-card-body">
+        <div class="profile-header">
+          <div class="profile-image">
+            {% if employer.employer_type == "Company" and employer.company_logo %}<img src="{{ employer.company_logo.url }}" alt="{{ employer.company_name }}">
+            {% elif employer.profile_photo %}<img src="{{ employer.profile_photo.url }}" alt="{{ employer.user.get_full_name }}">
+            {% else %}<img src="{% static 'core/image/default-avatar.png' %}" alt="Default">{% endif %}
           </div>
+          <div class="profile-info">
+            <h1 class="profile-name">{{ employer.company_name|default:employer.user.get_full_name }}</h1>
+            <span class="profile-badge {% if employer.employer_type == 'Personal' %}personal{% endif %}">{{ employer.employer_type }} Employer</span>
+            {% if employer.is_verified %}<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>{% endif %}
 
-          {% if employer.bio or employer.company_description %}
-            <div class="about-section">
-              <h3>About</h3>
-              <p>{{ employer.bio|default:employer.company_description }}</p>
+            {% if avg_rating %}
+            <div class="rating-row" style="margin-top:10px;">
+              <div class="stars-row">{% for i in filled_stars %}<span class="star-filled">&#9733;</span>{% endfor %}{% for i in empty_stars %}<span class="star-empty">&#9734;</span>{% endfor %}</div>
+              <span class="rating-val">{{ avg_rating }}/5</span>
+              <span class="rating-count">({{ total_ratings }} review{{ total_ratings|pluralize }})</span>
             </div>
-          {% endif %}
+            {% endif %}
+
+            {% if employer.employer_type == "Company" %}
+              {% if employer.company_description %}<div class="about-section">{{ employer.company_description }}</div>{% endif %}
+            {% else %}
+              {% if employer.bio %}<div class="about-section">{{ employer.bio }}</div>{% endif %}
+            {% endif %}
+
+            <div class="info-grid">
+              {% if employer.employer_type == "Company" %}
+                {% if employer.company_address %}<div class="info-item"><i class="fas fa-map-marker-alt info-icon"></i><div class="info-content"><strong>Address</strong><span>{{ employer.company_address }}</span></div></div>{% endif %}
+              {% else %}
+                {% if employer.personal_address %}<div class="info-item"><i class="fas fa-map-marker-alt info-icon"></i><div class="info-content"><strong>Address</strong><span>{{ employer.personal_address }}</span></div></div>{% endif %}
+                <div class="info-item"><i class="fas fa-envelope info-icon"></i><div class="info-content"><strong>Email</strong><span>{{ employer.user.email|default:"N/A" }}</span></div></div>
+              {% endif %}
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Verification Documents -->
+    <!-- DOCS / CLEARANCES -->
+    {% if employer.employer_type == "Company" %}
     <div class="section-card">
-      <h2 class="section-title">Verification Documents</h2>
-      {% if employer.employer_type == "Company" %}
-        <div class="doc-grid">
-          <div class="doc-card">
-            <div class="doc-icon">📄</div>
-            <span class="doc-name">Business Permit</span>
-            {% if employer.business_permit %}
-              <a href="{{ employer.business_permit.url }}" target="_blank" class="doc-link">View Document</a>
-            {% else %}
-              <span class="doc-not-available">Not uploaded</span>
-            {% endif %}
+      <div class="section-title"><i class="fas fa-file-alt"></i> Company Documents</div>
+      <div class="doc-grid">
+        {% if employer.business_permit %}
+        <div class="doc-card"><div class="doc-icon"><i class="fas fa-certificate"></i></div><span class="doc-name">Business Permit</span>{% if request.user.is_superuser %}<a href="{{ employer.business_permit.url }}" target="_blank" class="doc-link"><i class="fas fa-eye"></i> View</a>{% else %}<span class="doc-not-available">Confidential</span>{% endif %}</div>
+        {% endif %}
+        {% if employer.company_id_file %}
+        <div class="doc-card"><div class="doc-icon"><i class="fas fa-id-card"></i></div><span class="doc-name">Company ID</span>{% if request.user.is_superuser %}<a href="{{ employer.company_id_file.url }}" target="_blank" class="doc-link"><i class="fas fa-eye"></i> View</a>{% else %}<span class="doc-not-available">Confidential</span>{% endif %}</div>
+        {% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="section-card">
+      <div class="section-title"><i class="fas fa-file-alt"></i> Clearances &amp; Documents</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="clearance-item {% if employer.barangay_clearance %}has{% else %}none{% endif %}">
+          <i class="fas fa-{% if employer.barangay_clearance %}check-circle{% else %}times-circle{% endif %}"></i>
+          <span>Barangay Clearance</span>
+          {% if employer.barangay_clearance %}<span style="margin-left:auto;font-size:10px;font-weight:700;background:var(--green);color:#fff;padding:2px 8px;border-radius:50px;">Uploaded</span>{% if request.user.is_superuser %}&nbsp;<a href="{{ employer.barangay_clearance.url }}" target="_blank" style="color:var(--green);font-size:11px;">View</a>{% endif %}{% endif %}
+        </div>
+        <div class="clearance-item {% if employer.police_clearance %}has{% else %}none{% endif %}">
+          <i class="fas fa-{% if employer.police_clearance %}check-circle{% else %}times-circle{% endif %}"></i>
+          <span>Police Clearance</span>
+          {% if employer.police_clearance %}<span style="margin-left:auto;font-size:10px;font-weight:700;background:var(--green);color:#fff;padding:2px 8px;border-radius:50px;">Uploaded</span>{% if request.user.is_superuser %}&nbsp;<a href="{{ employer.police_clearance.url }}" target="_blank" style="color:var(--green);font-size:11px;">View</a>{% endif %}{% endif %}
+        </div>
+        <div class="clearance-item {% if employer.nbi_clearance %}has{% else %}none{% endif %}">
+          <i class="fas fa-{% if employer.nbi_clearance %}check-circle{% else %}times-circle{% endif %}"></i>
+          <span>NBI Clearance</span>
+          {% if employer.nbi_clearance %}<span style="margin-left:auto;font-size:10px;font-weight:700;background:var(--green);color:#fff;padding:2px 8px;border-radius:50px;">Uploaded</span>{% if request.user.is_superuser %}&nbsp;<a href="{{ employer.nbi_clearance.url }}" target="_blank" style="color:var(--green);font-size:11px;">View</a>{% endif %}{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- POSTED JOBS -->
+    <div class="section-card">
+      <div class="section-title"><i class="fas fa-briefcase"></i> Available Positions</div>
+      {% if jobs %}
+      <div class="jobs-grid">
+        {% for job in jobs %}
+        <div class="job-card">
+          <h3 class="job-title">{{ job.title }}</h3>
+          <div class="job-meta">
+            {% if job.category %}<span class="job-meta-item"><i class="fas fa-tag"></i>{{ job.category }}</span>{% endif %}
+            {% if job.location %}<span class="job-meta-item"><i class="fas fa-map-marker-alt"></i>{{ job.location }}</span>{% endif %}
+            {% if job.salary %}<span class="job-meta-item"><i class="fas fa-coins"></i>{{ job.salary }}</span>{% endif %}
           </div>
-          <div class="doc-card">
-            <div class="doc-icon">🆔</div>
-            <span class="doc-name">Company ID</span>
-            {% if employer.company_id_file %}
-              <a href="{{ employer.company_id_file.url }}" target="_blank" class="doc-link">View Document</a>
-            {% else %}
-              <span class="doc-not-available">Not uploaded</span>
-            {% endif %}
+          <p class="job-description">{{ job.description|truncatechars:150 }}</p>
+          <div class="job-actions">
+            <a href="{% url 'view_job_details' job.id %}" class="job-btn job-btn-primary"><i class="fas fa-eye"></i> View &amp; Apply</a>
           </div>
         </div>
-      {% elif employer.employer_type == "Personal" %}
-        <div class="doc-grid">
-          <div class="doc-card">
-            <div class="doc-icon">🆔</div>
-            <span class="doc-name">Valid ID</span>
-            {% if employer.valid_id %}
-              <a href="{{ employer.valid_id.url }}" target="_blank" class="doc-link">View Document</a>
-            {% else %}
-              <span class="doc-not-available">Not uploaded</span>
-            {% endif %}
-          </div>
-          <div class="doc-card">
-            <div class="doc-icon">📋</div>
-            <span class="doc-name">Barangay Clearance</span>
-            {% if employer.barangay_clearance %}
-              <a href="{{ employer.barangay_clearance.url }}" target="_blank" class="doc-link">View Document</a>
-            {% else %}
-              <span class="doc-not-available">Not uploaded</span>
-            {% endif %}
-          </div>
-          <div class="doc-card">
-            <div class="doc-icon">👮</div>
-            <span class="doc-name">Police Clearance</span>
-            {% if employer.police_clearance %}
-              <a href="{{ employer.police_clearance.url }}" target="_blank" class="doc-link">View Document</a>
-            {% else %}
-              <span class="doc-not-available">Not uploaded</span>
-            {% endif %}
-          </div>
-          <div class="doc-card">
-            <div class="doc-icon">🛡️</div>
-            <span class="doc-name">NBI Clearance</span>
-            {% if employer.nbi_clearance %}
-              <a href="{{ employer.nbi_clearance.url }}" target="_blank" class="doc-link">View Document</a>
-            {% else %}
-              <span class="doc-not-available">Not uploaded</span>
-            {% endif %}
-          </div>
-        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state"><i class="fas fa-briefcase"></i><p>No job positions available at the moment.</p></div>
       {% endif %}
     </div>
 
-    <!-- Posted Jobs -->
+    <!-- RATINGS -->
     <div class="section-card">
-      <h2 class="section-title">Available Positions</h2>
-      {% if jobs %}
-        <div class="jobs-grid">
-          {% for job in jobs %}
-            <div class="job-card">
-              <h3 class="job-title">{{ job.title }}</h3>
-              <div class="job-meta">
-                {% if job.category %}<span class="job-meta-item">{{ job.category }}</span>{% endif %}
-                {% if job.location %}<span class="job-meta-item">{{ job.location }}</span>{% endif %}
-                {% if job.salary %}<span class="job-meta-item">{{ job.salary }}</span>{% endif %}
-              </div>
-              <p class="job-description">{{ job.description|truncatechars:150 }}</p>
-              <div class="job-actions">
-                <a href="{% url 'view_job_details' job.id %}" class="job-btn job-btn-primary">View Details & Apply</a>
-              </div>
-            </div>
+      <div class="section-title"><i class="fas fa-star" style="color:#f59e0b;"></i> Ratings &amp; Reviews</div>
+      {% if avg_rating %}
+      <div class="rating-overview">
+        <div class="rating-big">
+          <div class="num">{{ avg_rating }}</div>
+          <div class="stars-row" style="justify-content:center;margin-top:4px;">{% for i in filled_stars %}<span class="star-filled">&#9733;</span>{% endfor %}{% for i in empty_stars %}<span class="star-empty">&#9734;</span>{% endfor %}</div>
+          <div class="sub">{{ total_ratings }} review{{ total_ratings|pluralize }}</div>
+        </div>
+        <div style="flex:1;min-width:180px;">
+          {% for star,count in distribution.items %}
+          <div class="bar-row">
+            <span class="label">{{ star }}</span>
+            <span style="color:#f59e0b;font-size:11px;">&#9733;</span>
+            <div class="bar-track">{% if total_ratings > 0 %}<div class="bar-fill" style="width:{% widthratio count total_ratings 100 %}%;"></div>{% endif %}</div>
+            <span class="count">{{ count }}</span>
+          </div>
           {% endfor %}
         </div>
+      </div>
       {% else %}
-        <div class="empty-state">
-          <div class="empty-state-icon">💼</div>
-          <p>No job positions available at the moment.</p>
-        </div>
+      <p style="color:var(--slate-3);margin-bottom:16px;font-size:13px;">No reviews yet.</p>
       {% endif %}
-    </div>
-
-    <!-- ⭐ RATINGS & REVIEWS -->
-    <div class="section-card">
-      <h2 class="section-title"><i class="fas fa-star" style="color:#f59e0b;"></i> Ratings & Reviews</h2>
-
-      {% if avg_rating %}
-        <div style="display:flex;align-items:center;gap:30px;margin-bottom:24px;padding:20px;background:#fffbeb;border-radius:12px;flex-wrap:wrap;">
-          <div style="text-align:center;">
-            <div style="font-size:3rem;font-weight:800;color:#f59e0b;">{{ avg_rating }}</div>
-            <div style="color:#64748b;font-size:0.9rem;">out of 5</div>
-            <div style="margin-top:4px;">
-              {% for i in filled_stars %}<span style="color:#f59e0b;font-size:1.2rem;">&#9733;</span>{% endfor %}
-              {% for i in empty_stars %}<span style="color:#ccc;font-size:1.2rem;">&#9734;</span>{% endfor %}
-            </div>
-            <div style="color:#64748b;font-size:0.85rem;margin-top:4px;">{{ total_ratings }} review{{ total_ratings|pluralize }}</div>
-          </div>
-          <div style="flex:1;min-width:200px;">
-            {% for star, count in distribution.items %}
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                <span style="color:#64748b;font-size:0.85rem;width:14px;">{{ star }}</span>
-                <span style="color:#f59e0b;font-size:0.85rem;">&#9733;</span>
-                <div style="flex:1;background:#e2e8f0;border-radius:10px;height:8px;overflow:hidden;">
-                  {% if total_ratings > 0 %}
-                    <div style="width:{% widthratio count total_ratings 100 %}%;background:#f59e0b;height:100%;border-radius:10px;"></div>
-                  {% endif %}
-                </div>
-                <span style="color:#64748b;font-size:0.85rem;width:20px;">{{ count }}</span>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      {% else %}
-        <p style="color:#94a3b8;margin-bottom:20px;">No reviews yet.</p>
-      {% endif %}
-
       {% for rating in ratings %}
-        <div class="rating-card">
-          <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
-            <div>
-              <span style="font-weight:700;color:#1a1a1a;">{{ rating.reviewer.get_full_name|default:rating.reviewer.username }}</span>
-              <span style="color:#94a3b8;font-size:0.85rem;margin-left:8px;">· {{ rating.application.job.title }}</span>
-            </div>
-            <div>
-              {% for s in rating.star_range %}<span style="color:#f59e0b;">&#9733;</span>{% endfor %}
-              {% for s in rating.empty_star_range %}<span style="color:#ccc;">&#9734;</span>{% endfor %}
-            </div>
+      <div class="rating-card">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
+          <div>
+            <span style="font-weight:700;color:var(--navy);font-size:14px;">{{ rating.reviewer.get_full_name|default:rating.reviewer.username }}</span>
+            <span style="color:var(--slate-3);font-size:12px;margin-left:6px;">· {{ rating.application.job.title }}</span>
           </div>
-          {% if rating.comment %}
-            <p style="margin-top:8px;color:#475569;font-size:0.9rem;">{{ rating.comment }}</p>
-          {% endif %}
-          <div style="margin-top:6px;color:#94a3b8;font-size:0.8rem;">{{ rating.created_at|date:"M d, Y" }}</div>
+          <div class="stars-row">{% for s in rating.star_range %}<span class="star-filled">&#9733;</span>{% endfor %}{% for s in rating.empty_star_range %}<span class="star-empty">&#9734;</span>{% endfor %}</div>
         </div>
+        {% if rating.comment %}<p style="margin-top:8px;color:var(--slate);font-size:13px;line-height:1.6;">{{ rating.comment }}</p>{% endif %}
+        <div style="margin-top:6px;color:var(--slate-3);font-size:11px;">{{ rating.created_at|date:"M d, Y" }}</div>
+      </div>
       {% endfor %}
     </div>
 

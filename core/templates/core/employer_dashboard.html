@@ -4,491 +4,404 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Employer Dashboard | BlueHire</title>
   <link rel="icon" href="{% static 'core/image/logo.png' %}" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(to bottom, #f1f5f9 0%, #e2e8f0 100%); color: #1a1a1a; min-height: 100vh; }
-    header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 1.2rem 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 20px rgba(30,58,138,0.3); position: sticky; top: 0; z-index: 1000; }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo img { height: 45px; filter: brightness(0) invert(1); }
-    .logo h1 { font-size: 1.5rem; font-weight: 700; margin: 0; }
-    .header-actions { display: flex; align-items: center; gap: 2rem; }
-    .notification-bell { position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; transition: all 0.3s ease; }
-    .notification-bell:hover { background: rgba(255,255,255,0.15); }
-    .notification-bell i { font-size: 1.3rem; color: white; }
-    #notif-count { position: absolute; top: 0; right: 0; background: linear-gradient(135deg,#ef4444,#dc2626); color: white; border-radius: 50%; font-size: 0.7rem; padding: 3px 6px; font-weight: 700; display: none; }
-    #notif-dropdown { display: none; position: absolute; right: 0; top: 45px; background: white; color: #333; width: 320px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; z-index: 200; }
-    #notif-dropdown h4 { padding: 1rem; background: linear-gradient(135deg,#1e3a8a,#3b82f6); color: white; margin: 0; font-size: 1rem; }
-    #notif-list { list-style: none; margin: 0; padding: 0; max-height: 350px; overflow-y: auto; }
-    #notif-list li { padding: 1rem; border-bottom: 1px solid #e2e8f0; }
-    #notif-list li:hover { background: #f8fafc; }
-    #notif-list li:last-child { border-bottom: none; }
-    .dropdown { position: relative; }
-    .dropbtn { background: rgba(255,255,255,0.15); border: none; color: white; font-size: 1rem; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px; padding: 0.6rem 1.2rem; border-radius: 8px; transition: all 0.3s ease; }
-    .dropbtn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
-    .dropdown-content { display: none; position: absolute; right: 0; top: calc(100% + 8px); background: white; min-width: 200px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); overflow: hidden; z-index: 999; }
-    .dropdown-content a { display: flex; align-items: center; gap: 10px; padding: 12px 18px; color: #333; text-decoration: none; font-size: 0.95rem; transition: all 0.2s ease; }
-    .dropdown-content a:hover { background: linear-gradient(135deg,#3b82f6,#2563eb); color: white; }
-    .dashboard { max-width: 1200px; margin: 2.5rem auto; padding: 0 5%; }
-    .dashboard-header { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 2rem; }
-    .dashboard-header h2 { font-size: 2.2rem; color: #1e3a8a; margin-bottom: 0.5rem; font-weight: 800; }
-    .dashboard-header p { color: #64748b; font-size: 1.1rem; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
-    .card { background: linear-gradient(135deg,#3b82f6,#2563eb); color: white; padding: 2rem; border-radius: 16px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(59,130,246,0.3); position: relative; overflow: hidden; }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 8px 30px rgba(59,130,246,0.4); }
-    .card h3 { font-size: 1.5rem; margin-bottom: 0.8rem; }
-    .card p { opacity: 0.9; line-height: 1.5; }
-    .applications-section { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 2rem; }
-    .applications-section h3 { font-size: 1.8rem; color: #1e3a8a; margin-bottom: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-    .job-listing { background: linear-gradient(135deg,#f8fafc,#ffffff); padding: 2rem; border-radius: 16px; margin-bottom: 1.5rem; box-shadow: 0 3px 15px rgba(0,0,0,0.08); border: 2px solid #e2e8f0; transition: all 0.3s ease; position: relative; overflow: hidden; }
-    .job-listing::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: linear-gradient(135deg,#3b82f6,#2563eb); }
-    .job-listing:hover { box-shadow: 0 6px 25px rgba(59,130,246,0.2); border-color: #3b82f6; transform: translateX(5px); }
-    .job-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; }
-    .job-header h4 { margin: 0; font-size: 1.6rem; color: #1e3a8a; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-    .job-actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
-    .job-details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-    .job-detail-card { background: white; padding: 1rem 1.2rem; border-radius: 12px; border: 2px solid #e2e8f0; transition: all 0.3s ease; display: flex; flex-direction: column; gap: 0.5rem; }
-    .job-detail-card:hover { border-color: #3b82f6; transform: translateY(-2px); }
-    .job-detail-label { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .job-detail-label i { color: #3b82f6; }
-    .job-detail-value { font-size: 1.05rem; color: #1e293b; font-weight: 700; padding-left: 1.5rem; }
-    .job-desc { color: #475569; margin: 1rem 0 1.5rem 0; font-size: 0.95rem; line-height: 1.6; background: white; padding: 1.2rem; border-radius: 10px; border-left: 4px solid #3b82f6; }
-    .stats-container { display: flex; gap: 1rem; margin: 1.2rem 0; flex-wrap: wrap; }
-    .stat-badge { padding: 0.8rem 1.2rem; border-radius: 12px; font-size: 0.9rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .stat-badge.applicants { background: linear-gradient(135deg,#dbeafe,#bfdbfe); color: #1e40af; border: 2px solid #93c5fd; }
-    .stat-badge.hired      { background: linear-gradient(135deg,#d1fae5,#a7f3d0); color: #065f46; border: 2px solid #6ee7b7; }
-    .stat-badge.deadline   { background: linear-gradient(135deg,#fef3c7,#fde68a); color: #92400e; border: 2px solid #fcd34d; }
-    .stat-badge.expired    { background: linear-gradient(135deg,#fee2e2,#fecaca); color: #991b1b; border: 2px solid #fca5a5; }
-    .job-status { display: inline-flex; align-items: center; gap: 6px; padding: 0.6rem 1.2rem; border-radius: 25px; font-size: 0.9rem; font-weight: 700; margin-top: 0.8rem; }
-    .status-available   { background: linear-gradient(135deg,#10b981,#059669); color: white; }
-    .status-unavailable { background: linear-gradient(135deg,#ef4444,#dc2626); color: white; }
-    .edit-link { color: #3b82f6; text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 0.6rem 1.2rem; border-radius: 10px; background: rgba(59,130,246,0.1); border: 2px solid transparent; transition: all 0.2s ease; }
-    .edit-link:hover { background: rgba(59,130,246,0.2); border-color: #3b82f6; }
-    .btn { padding: 0.7rem 1.5rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 3px 10px rgba(0,0,0,0.15); display: inline-flex; align-items: center; gap: 8px; }
-    .btn:hover { transform: translateY(-2px); }
-    .btn-available   { background: linear-gradient(135deg,#10b981,#059669); color: white; }
-    .btn-unavailable { background: linear-gradient(135deg,#ef4444,#dc2626); color: white; }
-    .btn-outline { background: linear-gradient(135deg,#3b82f6,#2563eb); color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 10px; text-decoration: none; font-size: 0.95rem; font-weight: 700; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
-    .btn-outline:hover { background: linear-gradient(135deg,#2563eb,#1e40af); transform: translateY(-2px); }
-    .hired-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px dashed #e2e8f0; }
-    .hired-section-title { font-size: 1rem; font-weight: 700; color: #475569; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
-    .hired-worker-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 0.8rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; transition: all 0.3s ease; }
-    .hired-worker-card:hover { border-color: #3b82f6; box-shadow: 0 3px 10px rgba(59,130,246,0.1); }
-    .hired-worker-info { display: flex; align-items: center; gap: 12px; }
-    .hired-worker-avatar { width: 42px; height: 42px; background: linear-gradient(135deg,#3b82f6,#2563eb); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
-    .hired-worker-name { font-weight: 700; color: #1e3a8a; font-size: 0.95rem; }
-    .hired-worker-email { color: #64748b; font-size: 0.82rem; }
-    .hired-worker-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .application-card { background: linear-gradient(to bottom,#f8fafc,#ffffff); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; transition: all 0.3s ease; }
-    .application-card:hover { box-shadow: 0 4px 15px rgba(59,130,246,0.15); border-color: #3b82f6; }
-    .application-card h4 { color: #1e3a8a; font-size: 1.2rem; margin-bottom: 0.8rem; font-weight: 700; }
-    .application-card p { color: #64748b; margin: 0.5rem 0; font-size: 0.95rem; }
-    .application-card strong { color: #475569; }
-    .empty-state { text-align: center; padding: 4rem 2rem; color: #94a3b8; font-size: 1.1rem; }
-    .empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.3; display: block; }
-    @media (max-width: 768px) {
-      header { flex-direction: column; gap: 1rem; padding: 1rem 3%; }
-      .cards { grid-template-columns: 1fr; }
-      .job-header { flex-direction: column; align-items: flex-start; }
-      .job-actions { width: 100%; }
-      .stats-container { flex-direction: column; }
-      .stat-badge { width: 100%; justify-content: center; }
-      .job-details-grid { grid-template-columns: 1fr; }
-      .hired-worker-card { flex-direction: column; align-items: flex-start; }
+    :root {
+      --bg:#f8f9fc; --white:#ffffff; --navy:#0f2456; --navy-2:#1a3a7c;
+      --slate:#475569; --slate-2:#64748b; --slate-3:#94a3b8;
+      --ink:#0d1117; --border:#e1e7ef; --border-2:#cbd5e1;
+      --blue:#2563eb; --blue-light:#eff6ff; --blue-mid:#bfdbfe;
+      --green:#059669; --green-light:#ecfdf5;
+      --red:#dc2626; --red-light:#fef2f2;
+      --amber:#d97706; --amber-light:#fffbeb;
+      --violet:#7c3aed; --violet-light:#f5f3ff;
+      --shadow-sm:0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg:0 10px 24px rgba(0,0,0,0.08),0 4px 8px rgba(0,0,0,0.04);
+      --radius:12px; --radius-sm:7px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+    /* NAV */
+    header{background:var(--navy);padding:0 52px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(15,36,86,0.3);}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .logo img{height:32px;border-radius:6px;}
+    .logo h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.3px;}
+    .logo h1 span{color:var(--blue-mid);}
+    .header-actions{display:flex;align-items:center;gap:8px;}
+    .notification-bell{position:relative;cursor:pointer;width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.15);transition:all 0.15s;}
+    .notification-bell:hover{background:rgba(255,255,255,0.1);}
+    .notification-bell i{font-size:15px;color:rgba(255,255,255,0.8);}
+    #notif-count{position:absolute;top:-3px;right:-3px;background:var(--red);color:white;border-radius:50%;font-size:10px;padding:2px 5px;font-weight:700;display:none;line-height:1;}
+    #notif-dropdown{display:none;position:absolute;right:0;top:calc(100%+10px);background:var(--white);color:var(--ink);width:320px;border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;z-index:200;border:1px solid var(--border);}
+    #notif-dropdown h4{padding:12px 18px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--slate-2);}
+    #notif-list{list-style:none;margin:0;padding:0;max-height:320px;overflow-y:auto;}
+    #notif-list li{padding:12px 18px;border-bottom:1px solid var(--bg);font-size:13px;color:var(--slate);}
+    #notif-list li:hover{background:var(--bg);}
+    .dropdown{position:relative;}
+    .dropbtn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:13px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:8px;padding:0 16px;height:36px;border-radius:var(--radius-sm);transition:all 0.15s;font-family:'Outfit',sans-serif;}
+    .dropbtn:hover{background:rgba(255,255,255,0.18);}
+    .dropdown-content{display:none;position:absolute;right:0;top:calc(100%+8px);background:var(--white);min-width:190px;border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;z-index:999;border:1px solid var(--border);}
+    .dropdown-content a{display:flex;align-items:center;gap:10px;padding:11px 16px;color:var(--slate);text-decoration:none;font-size:13px;font-weight:500;transition:all 0.15s;border-bottom:1px solid var(--bg);}
+    .dropdown-content a:last-child{border-bottom:none;}
+    .dropdown-content a i{width:14px;text-align:center;color:var(--slate-3);}
+    .dropdown-content a:hover{background:var(--blue-light);color:var(--blue);}
+    .dropdown-content a:hover i{color:var(--blue);}
+
+    /* MAIN */
+    .dashboard{max-width:1200px;margin:32px auto;padding:0 52px 64px;}
+
+    /* WELCOME */
+    .dashboard-header{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;margin-bottom:20px;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:space-between;gap:16px;}
+    .dashboard-header h2{font-size:22px;color:var(--navy);font-weight:800;letter-spacing:-0.4px;margin-bottom:4px;}
+    .dashboard-header p{color:var(--slate-2);font-size:14px;}
+
+    /* UNVERIFIED ALERT */
+    .alert-unverified{background:var(--red-light);border:1px solid #fca5a5;border-left:4px solid var(--red);padding:20px 24px;border-radius:var(--radius);margin-bottom:20px;display:flex;align-items:flex-start;gap:16px;}
+    .alert-unverified i{color:var(--red);font-size:20px;flex-shrink:0;margin-top:1px;}
+    .alert-unverified h3{color:var(--red);font-size:15px;font-weight:700;margin-bottom:6px;letter-spacing:-0.1px;}
+    .alert-unverified p{color:#7f1d1d;font-size:13px;line-height:1.6;}
+    .alert-unverified a{color:var(--red);font-weight:700;text-decoration:underline;}
+    .alert-unverified .upload-now{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 16px;background:var(--red);color:white;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:13px;transition:background 0.15s;}
+    .alert-unverified .upload-now:hover{background:#b91c1c;}
+
+    /* QUICK ACTION CARDS */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:28px;}
+    .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;text-decoration:none;color:var(--ink);transition:all 0.2s ease;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;}
+    .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--navy);opacity:0;transition:opacity 0.2s;}
+    .card:hover{border-color:var(--blue-mid);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+    .card:hover::before{opacity:1;}
+    .card-icon{width:44px;height:44px;border-radius:var(--radius-sm);background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--blue);flex-shrink:0;}
+    .card h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:3px;letter-spacing:-0.1px;}
+    .card p{font-size:13px;color:var(--slate-2);line-height:1.4;}
+
+    /* SECTIONS */
+    .section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;margin-bottom:20px;box-shadow:var(--shadow-sm);}
+    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+    .section-header h3{font-size:17px;font-weight:800;color:var(--navy);letter-spacing:-0.3px;}
+    .section-header i{color:var(--blue);}
+
+    /* JOB LISTING */
+    .job-listing{border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:16px;transition:all 0.18s;position:relative;overflow:hidden;background:var(--bg);}
+    .job-listing::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue);}
+    .job-listing:hover{border-color:var(--blue-mid);box-shadow:var(--shadow-md);}
+    .job-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+    .job-header h4{margin:0;font-size:18px;color:var(--navy);font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:8px;}
+    .job-header h4 i{color:var(--blue);font-size:16px;}
+    .job-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+    .job-details-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px;}
+    .job-detail-card{background:var(--white);padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);display:flex;flex-direction:column;gap:4px;}
+    .job-detail-label{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--slate-3);font-weight:700;text-transform:uppercase;letter-spacing:0.7px;}
+    .job-detail-label i{color:var(--blue);font-size:11px;}
+    .job-detail-value{font-size:14px;color:var(--navy);font-weight:700;padding-left:17px;}
+
+    .job-desc{color:var(--slate);margin:12px 0;font-size:13px;line-height:1.65;background:var(--white);padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);border-left:3px solid var(--blue);}
+
+    .stats-container{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;}
+    .stat-badge{padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px;border:1px solid;}
+    .stat-badge.applicants{background:var(--blue-light);color:var(--blue);border-color:var(--blue-mid);}
+    .stat-badge.hired{background:var(--green-light);color:var(--green);border-color:#a7f3d0;}
+    .stat-badge.deadline{background:var(--amber-light);color:var(--amber);border-color:#fde68a;}
+    .stat-badge.expired{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+
+    .job-status{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-top:8px;}
+    .status-available{background:var(--green-light);color:var(--green);border:1px solid #a7f3d0;}
+    .status-unavailable{background:var(--red-light);color:var(--red);border:1px solid #fca5a5;}
+
+    /* BUTTONS */
+    .btn{padding:8px 16px;border:none;border-radius:var(--radius-sm);cursor:pointer;font-weight:700;font-size:13px;transition:all 0.15s;display:inline-flex;align-items:center;gap:7px;font-family:'Outfit',sans-serif;}
+    .btn:hover{transform:translateY(-1px);}
+    .btn-available{background:var(--green);color:white;}
+    .btn-available:hover{background:#047857;}
+    .btn-unavailable{background:var(--red);color:white;}
+    .btn-unavailable:hover{background:#b91c1c;}
+    .btn-outline{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-mid);text-decoration:none;font-size:13px;font-weight:700;padding:8px 16px;border-radius:var(--radius-sm);transition:all 0.15s;display:inline-flex;align-items:center;gap:7px;}
+    .btn-outline:hover{background:var(--blue);color:white;border-color:var(--blue);}
+    .edit-link{color:var(--slate-2);text-decoration:none;font-weight:600;font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:var(--white);border:1px solid var(--border);transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+    .edit-link:hover{border-color:var(--blue-mid);color:var(--blue);}
+
+    /* HIRED SECTION */
+    .hired-section{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border-2);}
+    .hired-section-title{font-size:13px;font-weight:700;color:var(--slate);margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+    .hired-section-title i{color:var(--green);}
+    .hired-worker-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;transition:all 0.15s;}
+    .hired-worker-card:hover{border-color:var(--blue-mid);}
+    .hired-worker-info{display:flex;align-items:center;gap:10px;}
+    .hired-worker-avatar{width:38px;height:38px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:13px;flex-shrink:0;}
+    .hired-worker-name{font-weight:700;color:var(--navy);font-size:14px;}
+    .hired-worker-email{color:var(--slate-3);font-size:12px;}
+    .hired-worker-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+
+    /* STATUS BADGES (inline) */
+    .badge-completed{padding:4px 10px;background:var(--violet-light);color:var(--violet);border-radius:50px;font-size:11px;font-weight:700;border:1px solid #ddd6fe;}
+    .badge-not-completed{padding:4px 10px;background:var(--amber-light);color:var(--amber);border-radius:50px;font-size:11px;font-weight:700;border:1px solid #fde68a;}
+    .badge-hired{padding:4px 10px;background:var(--green-light);color:var(--green);border-radius:50px;font-size:11px;font-weight:700;border:1px solid #a7f3d0;}
+
+    /* WORKER ACTION BTNs */
+    .wa-btn{padding:5px 11px;border:none;border-radius:var(--radius-sm);cursor:pointer;font-weight:700;font-size:12px;transition:all 0.15s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;font-family:'Outfit',sans-serif;}
+    .wa-btn-blue{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-mid);}
+    .wa-btn-blue:hover{background:var(--blue);color:white;}
+    .wa-btn-violet{background:var(--violet-light);color:var(--violet);border:1px solid #ddd6fe;}
+    .wa-btn-violet:hover{background:var(--violet);color:white;}
+    .wa-btn-amber{background:var(--amber-light);color:var(--amber);border:1px solid #fde68a;}
+    .wa-btn-amber:hover{background:var(--amber);color:white;}
+    .wa-btn-orange{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+    .wa-btn-orange:hover{background:#c2410c;color:white;}
+
+    /* RATINGS */
+    .rating-stars{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;background:var(--blue-light);color:var(--blue);border-radius:var(--radius-sm);font-weight:700;font-size:12px;border:1px solid var(--blue-mid);}
+    .star-filled{color:#f59e0b;}
+
+    /* APPLICATION CARD */
+    .application-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:10px;transition:all 0.15s;}
+    .application-card:hover{border-color:var(--blue-mid);}
+    .application-card h4{color:var(--navy);font-size:15px;margin-bottom:8px;font-weight:700;letter-spacing:-0.1px;display:flex;align-items:center;gap:7px;}
+    .application-card h4 i{color:var(--blue);}
+    .application-card p{color:var(--slate-2);margin:4px 0;font-size:13px;}
+    .application-card strong{color:var(--slate);font-weight:600;}
+
+    /* EMPTY STATE */
+    .empty-state{text-align:center;padding:48px 20px;color:var(--slate-3);}
+    .empty-state i{font-size:40px;margin-bottom:12px;display:block;opacity:0.3;}
+    .empty-state p{font-size:14px;line-height:1.6;}
+
+    @media(max-width:768px){
+      header{padding:0 16px;}
+      .dashboard{padding:20px 16px 48px;}
+      .cards{grid-template-columns:1fr;}
+      .job-header{flex-direction:column;align-items:flex-start;}
+      .job-details-grid{grid-template-columns:1fr;}
+      .stats-container{flex-direction:column;}
+      .hired-worker-card{flex-direction:column;align-items:flex-start;}
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">
-      <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo">
-      <h1>BlueHire Employer</h1>
-    </div>
-    <div class="header-actions">
-      <div class="notification-bell" onclick="toggleNotifications()">
-        <i class="fa fa-bell"></i>
-        <span id="notif-count">0</span>
-        <div id="notif-dropdown">
-          <h4>Notifications</h4>
-          <ul id="notif-list"></ul>
-        </div>
-      </div>
-      <div class="dropdown">
-        <button class="dropbtn"><i class="fas fa-user-circle"></i> Account ▾</button>
-        <div class="dropdown-content">
-          <a href="{% url 'employer_profile' %}"><i class="fas fa-id-card"></i> Profile</a>
-          <a href="{% url 'password_change' %}"><i class="fas fa-key"></i> Change Password</a>
-          <a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
+<header>
+  <div class="logo">
+    <img src="{% static 'core/image/logo.png' %}" alt="BlueHire">
+    <h1>Blue<span>Hire</span> <span style="font-weight:400;font-size:13px;opacity:0.6;margin-left:4px;">Employer</span></h1>
+  </div>
+  <div class="header-actions">
+    <div class="notification-bell" onclick="toggleNotifications()">
+      <i class="fa fa-bell"></i>
+      <span id="notif-count">0</span>
+      <div id="notif-dropdown">
+        <h4>Notifications</h4>
+        <ul id="notif-list"></ul>
       </div>
     </div>
-  </header>
-
-  <main class="dashboard">
-    <div class="dashboard-header">
-      <h2>👋 Welcome back, {{ user.first_name }}</h2>
-      <p>Manage your job postings and applicants here.</p>
-    </div>
-
-    {% if not employer.is_verified %}
-    <div style="background:linear-gradient(135deg,#fee2e2,#fecaca);border:2px solid #fca5a5;padding:1.8rem 2.5rem;border-radius:16px;margin-bottom:2rem;">
-      <div style="display:flex;align-items:center;gap:1.5rem;">
-        <i class="fas fa-exclamation-circle" style="color:#991b1b;font-size:2.5rem;"></i>
-        <div>
-          <h3 style="color:#991b1b;margin:0 0 0.8rem;font-size:1.4rem;font-weight:800;"><i class="fas fa-shield-alt"></i> Account Not Verified</h3>
-          <p style="margin:0;color:#7f1d1d;font-size:1.05rem;line-height:1.6;">
-            Please upload all required documents in your
-            <a href="{% url 'employer_profile' %}" style="color:#991b1b;font-weight:700;text-decoration:underline;">profile page</a> to complete verification.
-          </p>
-          <a href="{% url 'employer_profile' %}" style="display:inline-flex;align-items:center;gap:8px;margin-top:1rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#991b1b,#7f1d1d);color:white;text-decoration:none;border-radius:10px;font-weight:700;">
-            <i class="fas fa-upload"></i> Upload Documents Now
-          </a>
-        </div>
+    <div class="dropdown">
+      <button class="dropbtn"><i class="fas fa-user-circle"></i> Account</button>
+      <div class="dropdown-content">
+        <a href="{% url 'employer_profile' %}"><i class="fas fa-id-card"></i> Profile</a>
+        <a href="{% url 'password_change' %}"><i class="fas fa-key"></i> Change Password</a>
+        <a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </div>
     </div>
-    {% endif %}
+  </div>
+</header>
 
-    <div class="cards">
-      <a href="{% url 'employer_profile' %}" class="card">
-        <h3><i class="fas fa-user-circle"></i> Profile</h3>
-        <p>View and update your details and documents</p>
-      </a>
-      <a href="{% url 'post_job' %}" class="card">
-        <h3><i class="fas fa-briefcase"></i> Post a Job</h3>
-        <p>Create and manage your job listings</p>
-      </a>
-      <a href="{% url 'view_applications' %}" class="card">
-        <h3><i class="fas fa-users"></i> Applicants</h3>
-        <p>Review applicants and manage application status</p>
-      </a>
+<main class="dashboard">
+
+  <div class="dashboard-header">
+    <div>
+      <h2>Welcome back, {{ user.first_name }}.</h2>
+      <p>Manage your job postings and applicants from here.</p>
     </div>
+    <a href="{% url 'post_job' %}" class="btn-outline"><i class="fas fa-plus"></i> Post a Job</a>
+  </div>
 
-    <!-- ===== JOB LISTINGS ===== -->
-    <div class="applications-section">
-      <h3><i class="fas fa-clipboard-list"></i> Your Job Posts</h3>
-      {% if jobs %}
-        {% for job in jobs %}
-          <div class="job-listing">
-            <div class="job-header">
-              <h4><i class="fas fa-briefcase"></i> {{ job.title }}</h4>
-              <div class="job-actions">
-                <a href="{% url 'edit_job' job.id %}" class="edit-link"><i class="fas fa-edit"></i> Edit</a>
-                <a href="{% url 'view_applications' %}" class="btn-outline"><i class="fas fa-users"></i> View Applicants</a>
-                {% if job.is_available %}
-                  <button class="btn btn-unavailable" onclick="toggleAvailability('{{ job.id }}', false)">
-                    <i class="fas fa-times-circle"></i> Mark Unavailable
-                  </button>
-                {% else %}
-                  <button class="btn btn-available" onclick="toggleAvailability('{{ job.id }}', true)">
-                    <i class="fas fa-check-circle"></i> Mark Available
-                  </button>
-                {% endif %}
-              </div>
-            </div>
-
-            <div class="job-details-grid">
-              <div class="job-detail-card">
-                <div class="job-detail-label"><i class="fas fa-map-marker-alt"></i><span>Location</span></div>
-                <div class="job-detail-value">{{ job.location }}</div>
-              </div>
-              <div class="job-detail-card">
-                <div class="job-detail-label"><i class="fas fa-tag"></i><span>Category</span></div>
-                <div class="job-detail-value">{{ job.category }}</div>
-              </div>
-              <div class="job-detail-card">
-                <div class="job-detail-label"><i class="fas fa-clock"></i><span>Job Type</span></div>
-                <div class="job-detail-value">{{ job.job_type|default:"Not specified" }}</div>
-              </div>
-              <div class="job-detail-card">
-                <div class="job-detail-label"><i class="fas fa-money-bill-wave"></i><span>Salary</span></div>
-                <div class="job-detail-value">{{ job.salary|default:"Negotiable" }}</div>
-              </div>
-            </div>
-
-            <div class="job-desc">
-              <i class="fas fa-align-left" style="margin-right:8px;color:#3b82f6;"></i>
-              {{ job.description|truncatewords:30 }}
-            </div>
-
-            <div class="stats-container">
-              <div class="stat-badge applicants"><i class="fas fa-users"></i><span>{{ job.total_applicants }} Applicant{{ job.total_applicants|pluralize }}</span></div>
-              <div class="stat-badge hired"><i class="fas fa-user-check"></i><span>{{ job.hired_count }}/{{ job.hiring_quota }} Hired</span></div>
-              {% if job.application_deadline %}
-                {% if job.is_past_deadline %}
-                  <div class="stat-badge expired"><i class="fas fa-calendar-times"></i><span>Deadline Passed</span></div>
-                {% else %}
-                  <div class="stat-badge deadline"><i class="fas fa-clock"></i><span>{{ job.get_deadline_status }}</span></div>
-                {% endif %}
-              {% endif %}
-            </div>
-
-            <span class="job-status {% if job.is_available %}status-available{% else %}status-unavailable{% endif %}">
-              {% if job.is_available %}<i class="fas fa-check-circle"></i> Available
-              {% else %}<i class="fas fa-times-circle"></i> Unavailable{% endif %}
-            </span>
-
-            <!-- HIRED WORKERS INSIDE JOB CARD -->
-            {% if job.hired_applications %}
-              <div class="hired-section">
-                <div class="hired-section-title">
-                  <i class="fas fa-user-check" style="color:#10b981;"></i>
-                  Hired Workers ({{ job.hired_applications|length }})
-                </div>
-                {% for app in job.hired_applications %}
-                  <div class="hired-worker-card">
-                    <div class="hired-worker-info">
-                      <div class="hired-worker-avatar">
-                        {{ app.applicant.user.first_name|first|upper }}{{ app.applicant.user.last_name|first|upper }}
-                      </div>
-                      <div>
-                        <div class="hired-worker-name">{{ app.applicant.user.first_name }} {{ app.applicant.user.last_name }}</div>
-                        <div class="hired-worker-email">{{ app.applicant.user.email }}</div>
-                      </div>
-                    </div>
-
-                    <div class="hired-worker-actions">
-                      <!-- Status Badge -->
-                      {% if app.status == "Completed" %}
-                        <span style="padding:5px 12px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;border-radius:20px;font-size:12px;font-weight:700;">
-                          <i class="fas fa-flag-checkered"></i> Completed
-                        </span>
-                      {% elif app.status == "Not Completed" %}
-                        <span style="padding:5px 12px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:20px;font-size:12px;font-weight:700;">
-                          <i class="fas fa-exclamation-triangle"></i> Not Completed
-                        </span>
-                      {% else %}
-                        <span style="padding:5px 12px;background:linear-gradient(135deg,#10b981,#059669);color:white;border-radius:20px;font-size:12px;font-weight:700;">
-                          <i class="fas fa-check-circle"></i> Hired
-                        </span>
-                      {% endif %}
-
-                      <!-- View Profile -->
-                      <a href="{% url 'jobseeker_public_profile' app.applicant.seeker_id %}"
-                         style="padding:6px 12px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;border-radius:8px;text-decoration:none;font-weight:600;font-size:12px;">
-                        <i class="fas fa-eye"></i> Profile
-                      </a>
-
-                      <!-- Mark buttons only when still Hired -->
-                      {% if app.status == "Hired" %}
-                        <button onclick="markCompleted('{{ app.application_id }}')"
-                                style="padding:6px 12px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;">
-                          <i class="fas fa-flag-checkered"></i> Mark Completed
-                        </button>
-                        <button onclick="markNotCompleted('{{ app.application_id }}')"
-                                style="padding:6px 12px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;">
-                          <i class="fas fa-exclamation-triangle"></i> No Show / Not Completed
-                        </button>
-                      {% endif %}
-
-                      <!-- Rating: show stars if already rated, Rate button if not -->
-                      {% if app.status == "Completed" or app.status == "Not Completed" %}
-                        {% if app.existing_rating %}
-                          <span style="padding:6px 12px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:white;border-radius:8px;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:4px;">
-                            {% for i in "12345" %}
-                              {% if forloop.counter <= app.existing_rating.score %}
-                                <i class="fas fa-star" style="color:#fbbf24;"></i>
-                              {% else %}
-                                <i class="far fa-star" style="color:#fbbf24;"></i>
-                              {% endif %}
-                            {% endfor %}
-                            {{ app.existing_rating.score }}/5
-                          </span>
-                        {% else %}
-                          <a href="{% url 'rate_jobseeker' app.application_id %}"
-                             style="padding:6px 12px;background:linear-gradient(135deg,#f59e0b,#f97316);color:white;border-radius:8px;text-decoration:none;font-weight:600;font-size:12px;">
-                            <i class="fas fa-star"></i> Rate Worker
-                          </a>
-                        {% endif %}
-                      {% endif %}
-                    </div>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
-
-          </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">
-          <i class="fas fa-inbox"></i>
-          <p>No active job postings yet.</p>
-          <p style="font-size:0.9rem;margin-top:0.5rem;">Create your first job to start receiving applications!</p>
-        </div>
-      {% endif %}
+  {% if not employer.is_verified %}
+  <div class="alert-unverified">
+    <i class="fas fa-exclamation-circle"></i>
+    <div>
+      <h3><i class="fas fa-shield-alt"></i> Account Not Verified</h3>
+      <p>Please upload all required documents in your <a href="{% url 'employer_profile' %}">profile page</a> to complete verification and start posting jobs.</p>
+      <a href="{% url 'employer_profile' %}" class="upload-now"><i class="fas fa-upload"></i> Upload Documents Now</a>
     </div>
+  </div>
+  {% endif %}
 
-    <!-- ===== RECENT HIRES ===== -->
-    <div class="applications-section">
-      <h3><i class="fas fa-user-check"></i> Recent Hires</h3>
-      {% if recent_applicants %}
-        {% for app in recent_applicants %}
-          <div class="application-card">
-            <h4><i class="fas fa-user"></i> {{ app.applicant.user.first_name }} {{ app.applicant.user.last_name }}</h4>
-            <p><strong>Job:</strong> {{ app.job.title }}</p>
-            <p><strong>Hired on:</strong> {{ app.applied_date|date:"F j, Y, g:i a" }}</p>
+  <div class="cards">
+    <a href="{% url 'employer_profile' %}" class="card">
+      <div class="card-icon"><i class="fas fa-user-circle"></i></div>
+      <div><h3>Profile</h3><p>View and update your details and documents</p></div>
+    </a>
+    <a href="{% url 'post_job' %}" class="card">
+      <div class="card-icon"><i class="fas fa-briefcase"></i></div>
+      <div><h3>Post a Job</h3><p>Create and manage your job listings</p></div>
+    </a>
+    <a href="{% url 'view_applications' %}" class="card">
+      <div class="card-icon"><i class="fas fa-users"></i></div>
+      <div><h3>Applicants</h3><p>Review applicants and manage applications</p></div>
+    </a>
+  </div>
 
-            {% if app.status == "Completed" %}
-              <span style="display:inline-block;margin-top:8px;padding:5px 14px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;border-radius:20px;font-size:13px;font-weight:700;">
-                <i class="fas fa-flag-checkered"></i> Completed
-              </span>
-            {% elif app.status == "Not Completed" %}
-              <span style="display:inline-block;margin-top:8px;padding:5px 14px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:20px;font-size:13px;font-weight:700;">
-                <i class="fas fa-exclamation-triangle"></i> Not Completed
-              </span>
+  <!-- JOB POSTS -->
+  <div class="section">
+    <div class="section-header">
+      <i class="fas fa-clipboard-list"></i>
+      <h3>Your Job Posts</h3>
+    </div>
+    {% if jobs %}
+      {% for job in jobs %}
+      <div class="job-listing">
+        <div class="job-header">
+          <h4><i class="fas fa-briefcase"></i> {{ job.title }}</h4>
+          <div class="job-actions">
+            <a href="{% url 'edit_job' job.id %}" class="edit-link"><i class="fas fa-edit"></i> Edit</a>
+            <a href="{% url 'view_applications' %}" class="btn-outline"><i class="fas fa-users"></i> Applicants</a>
+            {% if job.is_available %}
+              <button class="btn btn-unavailable" onclick="toggleAvailability('{{ job.id }}', false)"><i class="fas fa-times-circle"></i> Mark Unavailable</button>
             {% else %}
-              <span style="display:inline-block;margin-top:8px;padding:5px 14px;background:linear-gradient(135deg,#10b981,#059669);color:white;border-radius:20px;font-size:13px;font-weight:700;">
-                <i class="fas fa-check-circle"></i> Hired
-              </span>
+              <button class="btn btn-available" onclick="toggleAvailability('{{ job.id }}', true)"><i class="fas fa-check-circle"></i> Mark Available</button>
             {% endif %}
+          </div>
+        </div>
 
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center;">
-              {% if app.applicant and app.applicant.seeker_id %}
-                <a href="{% url 'jobseeker_public_profile' app.applicant.seeker_id %}" class="btn-outline">
-                  <i class="fas fa-eye"></i> View Profile
-                </a>
+        <div class="job-details-grid">
+          <div class="job-detail-card"><div class="job-detail-label"><i class="fas fa-map-marker-alt"></i>Location</div><div class="job-detail-value">{{ job.location }}</div></div>
+          <div class="job-detail-card"><div class="job-detail-label"><i class="fas fa-tag"></i>Category</div><div class="job-detail-value">{{ job.category }}</div></div>
+          <div class="job-detail-card"><div class="job-detail-label"><i class="fas fa-clock"></i>Job Type</div><div class="job-detail-value">{{ job.job_type|default:"Not specified" }}</div></div>
+          <div class="job-detail-card"><div class="job-detail-label"><i class="fas fa-money-bill-wave"></i>Salary</div><div class="job-detail-value">{{ job.salary|default:"Negotiable" }}</div></div>
+        </div>
+
+        <div class="job-desc"><i class="fas fa-align-left" style="margin-right:6px;color:var(--blue);"></i>{{ job.description|truncatewords:30 }}</div>
+
+        <div class="stats-container">
+          <span class="stat-badge applicants"><i class="fas fa-users"></i>{{ job.total_applicants }} Applicant{{ job.total_applicants|pluralize }}</span>
+          <span class="stat-badge hired"><i class="fas fa-user-check"></i>{{ job.hired_count }}/{{ job.hiring_quota }} Hired</span>
+          {% if job.application_deadline %}
+            {% if job.is_past_deadline %}
+              <span class="stat-badge expired"><i class="fas fa-calendar-times"></i>Deadline Passed</span>
+            {% else %}
+              <span class="stat-badge deadline"><i class="fas fa-clock"></i>{{ job.get_deadline_status }}</span>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <span class="job-status {% if job.is_available %}status-available{% else %}status-unavailable{% endif %}">
+          {% if job.is_available %}<i class="fas fa-check-circle"></i> Available{% else %}<i class="fas fa-times-circle"></i> Unavailable{% endif %}
+        </span>
+
+        {% if job.hired_applications %}
+        <div class="hired-section">
+          <div class="hired-section-title"><i class="fas fa-user-check"></i> Hired Workers ({{ job.hired_applications|length }})</div>
+          {% for app in job.hired_applications %}
+          <div class="hired-worker-card">
+            <div class="hired-worker-info">
+              <div class="hired-worker-avatar">{{ app.applicant.user.first_name|first|upper }}{{ app.applicant.user.last_name|first|upper }}</div>
+              <div>
+                <div class="hired-worker-name">{{ app.applicant.user.first_name }} {{ app.applicant.user.last_name }}</div>
+                <div class="hired-worker-email">{{ app.applicant.user.email }}</div>
+              </div>
+            </div>
+            <div class="hired-worker-actions">
+              {% if app.status == "Completed" %}
+                <span class="badge-completed"><i class="fas fa-flag-checkered"></i> Completed</span>
+              {% elif app.status == "Not Completed" %}
+                <span class="badge-not-completed"><i class="fas fa-exclamation-triangle"></i> Not Completed</span>
+              {% else %}
+                <span class="badge-hired"><i class="fas fa-check-circle"></i> Hired</span>
               {% endif %}
-
+              <a href="{% url 'jobseeker_public_profile' app.applicant.seeker_id %}" class="wa-btn wa-btn-blue"><i class="fas fa-eye"></i> Profile</a>
               {% if app.status == "Hired" %}
-                <button onclick="markCompleted('{{ app.application_id }}')"
-                        style="padding:8px 16px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">
-                  <i class="fas fa-flag-checkered"></i> Mark as Completed
-                </button>
-                <button onclick="markNotCompleted('{{ app.application_id }}')"
-                        style="padding:8px 16px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">
-                  <i class="fas fa-exclamation-triangle"></i> No Show / Not Completed
-                </button>
+                <button onclick="markCompleted('{{ app.application_id }}')" class="wa-btn wa-btn-violet"><i class="fas fa-flag-checkered"></i> Mark Completed</button>
+                <button onclick="markNotCompleted('{{ app.application_id }}')" class="wa-btn wa-btn-amber"><i class="fas fa-exclamation-triangle"></i> No Show</button>
               {% endif %}
-
-              <!-- Rating: show stars if already rated, Rate button if not -->
               {% if app.status == "Completed" or app.status == "Not Completed" %}
                 {% if app.existing_rating %}
-                  <span style="padding:8px 16px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:white;border-radius:8px;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:4px;">
-                    {% for i in "12345" %}
-                      {% if forloop.counter <= app.existing_rating.score %}
-                        <i class="fas fa-star" style="color:#fbbf24;"></i>
-                      {% else %}
-                        <i class="far fa-star" style="color:#fbbf24;"></i>
-                      {% endif %}
-                    {% endfor %}
+                  <span class="rating-stars">
+                    {% for i in "12345" %}{% if forloop.counter <= app.existing_rating.score %}<span class="star-filled">&#9733;</span>{% else %}<span style="color:#d1d5db;">&#9734;</span>{% endif %}{% endfor %}
                     {{ app.existing_rating.score }}/5
                   </span>
                 {% else %}
-                  <a href="{% url 'rate_jobseeker' app.application_id %}"
-                     style="padding:8px 16px;background:linear-gradient(135deg,#f59e0b,#f97316);color:white;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px;">
-                    <i class="fas fa-star"></i> Rate Worker
-                  </a>
+                  <a href="{% url 'rate_jobseeker' app.application_id %}" class="wa-btn wa-btn-orange"><i class="fas fa-star"></i> Rate Worker</a>
                 {% endif %}
               {% endif %}
             </div>
           </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">
-          <i class="fas fa-inbox"></i>
-          <p>No hired applicants yet.</p>
+          {% endfor %}
         </div>
-      {% endif %}
+        {% endif %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>No active job postings yet.<br><small>Create your first job to start receiving applications.</small></p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- RECENT HIRES -->
+  <div class="section">
+    <div class="section-header">
+      <i class="fas fa-user-check"></i>
+      <h3>Recent Hires</h3>
     </div>
+    {% if recent_applicants %}
+      {% for app in recent_applicants %}
+      <div class="application-card">
+        <h4><i class="fas fa-user"></i> {{ app.applicant.user.first_name }} {{ app.applicant.user.last_name }}</h4>
+        <p><strong>Job:</strong> {{ app.job.title }}</p>
+        <p><strong>Hired on:</strong> {{ app.applied_date|date:"F j, Y, g:i a" }}</p>
 
-  </main>
+        {% if app.status == "Completed" %}
+          <span class="badge-completed" style="margin-top:8px;display:inline-flex;"><i class="fas fa-flag-checkered"></i> Completed</span>
+        {% elif app.status == "Not Completed" %}
+          <span class="badge-not-completed" style="margin-top:8px;display:inline-flex;"><i class="fas fa-exclamation-triangle"></i> Not Completed</span>
+        {% else %}
+          <span class="badge-hired" style="margin-top:8px;display:inline-flex;"><i class="fas fa-check-circle"></i> Hired</span>
+        {% endif %}
 
-  <script>
-  function getCookie(name){
-    let cookieValue=null;
-    if(document.cookie&&document.cookie!==""){
-      const cookies=document.cookie.split(";");
-      for(let cookie of cookies){
-        const c=cookie.trim();
-        if(c.startsWith(name+"=")){cookieValue=decodeURIComponent(c.substring(name.length+1));break;}
-      }
-    }
-    return cookieValue;
-  }
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
+          {% if app.applicant and app.applicant.seeker_id %}
+            <a href="{% url 'jobseeker_public_profile' app.applicant.seeker_id %}" class="btn-outline"><i class="fas fa-eye"></i> View Profile</a>
+          {% endif %}
+          {% if app.status == "Hired" %}
+            <button onclick="markCompleted('{{ app.application_id }}')" class="wa-btn wa-btn-violet"><i class="fas fa-flag-checkered"></i> Mark as Completed</button>
+            <button onclick="markNotCompleted('{{ app.application_id }}')" class="wa-btn wa-btn-amber"><i class="fas fa-exclamation-triangle"></i> No Show</button>
+          {% endif %}
+          {% if app.status == "Completed" or app.status == "Not Completed" %}
+            {% if app.existing_rating %}
+              <span class="rating-stars">
+                {% for i in "12345" %}{% if forloop.counter <= app.existing_rating.score %}<span class="star-filled">&#9733;</span>{% else %}<span style="color:#d1d5db;">&#9734;</span>{% endif %}{% endfor %}
+                {{ app.existing_rating.score }}/5
+              </span>
+            {% else %}
+              <a href="{% url 'rate_jobseeker' app.application_id %}" class="wa-btn wa-btn-orange"><i class="fas fa-star"></i> Rate Worker</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>No hired applicants yet.</p>
+      </div>
+    {% endif %}
+  </div>
 
-  function toggleAvailability(jobId, available){
-    const csrfToken=getCookie("csrftoken");
-    fetch(`/accounts/employer/job/${jobId}/availability/`,{
-      method:"POST",
-      headers:{"X-CSRFToken":csrfToken,"Content-Type":"application/json","Accept":"application/json"},
-      body:JSON.stringify({available})
-    })
-    .then(res=>res.ok?location.reload():res.text().then(t=>alert("Failed: "+t)))
-    .catch(err=>alert("Network error: "+err));
-  }
+</main>
 
-  function markCompleted(appId){
-    if(!confirm("Mark this job as completed? The worker will be able to rate you after this.")) return;
-    const csrfToken=getCookie("csrftoken");
-    const formData=new FormData();
-    formData.append('status','Completed');
-    fetch(`/accounts/employer/applications/update/${appId}/`,{
-      method:"POST",
-      headers:{'X-CSRFToken':csrfToken},
-      body:formData
-    })
-    .then(res=>res.json())
-    .then(data=>{ if(data.success){ location.reload(); } else{ alert(data.error||"Something went wrong"); } })
-    .catch(err=>alert("Error: "+err.message));
-  }
-
-  function markNotCompleted(appId){
-    if(!confirm("Mark this worker as No Show / Not Completed? This will be recorded on their profile.")) return;
-    const csrfToken=getCookie("csrftoken");
-    const formData=new FormData();
-    formData.append('status','Not Completed');
-    fetch(`/accounts/employer/applications/update/${appId}/`,{
-      method:"POST",
-      headers:{'X-CSRFToken':csrfToken},
-      body:formData
-    })
-    .then(res=>res.json())
-    .then(data=>{ if(data.success){ location.reload(); } else{ alert(data.error||"Something went wrong"); } })
-    .catch(err=>alert("Error: "+err.message));
-  }
-
-  async function loadNotifications(){
-    const res=await fetch("{% url 'get_notifications' %}");
-    const data=await res.json();
-    const list=document.getElementById("notif-list");
-    const badge=document.getElementById("notif-count");
-    list.innerHTML="";
-    let unreadCount=0;
-    data.notifications.forEach(n=>{
-      const li=document.createElement("li");
-      li.innerHTML=`<p style='margin:0;font-size:0.95rem;color:#333;'>${n.message}</p><small style='color:#94a3b8;font-size:0.85rem;'>${n.created_at}</small>`;
-      list.appendChild(li);
-      if(!n.is_read) unreadCount++;
-    });
-    badge.textContent=unreadCount;
-    badge.style.display=unreadCount>0?"inline":"none";
-  }
-
-  function toggleNotifications(){
-    const dropdown=document.getElementById("notif-dropdown");
-    dropdown.style.display=dropdown.style.display==="block"?"none":"block";
-    fetch("{% url 'mark_notifications_read' %}");
-    setTimeout(()=>{document.getElementById("notif-count").style.display="none";},300);
-  }
-
-  document.addEventListener("DOMContentLoaded",()=>{
-    const dropBtn=document.querySelector(".dropbtn");
-    const dropMenu=document.querySelector(".dropdown-content");
-    dropBtn.addEventListener("click",(e)=>{
-      e.stopPropagation();
-      const visible=dropMenu.style.display==="block";
-      document.querySelectorAll(".dropdown-content").forEach(d=>d.style.display="none");
-      dropMenu.style.display=visible?"none":"block";
-    });
-    document.addEventListener("click",(e)=>{
-      if(!e.target.closest(".dropdown")) dropMenu.style.display="none";
-      if(!e.target.closest(".notification-bell")) document.getElementById("notif-dropdown").style.display="none";
-    });
-    loadNotifications();
-    setInterval(loadNotifications,10000);
-  });
-  </script>
+<script>
+function getCookie(name){let c=null;if(document.cookie&&document.cookie!==""){const cs=document.cookie.split(";");for(let ck of cs){const t=ck.trim();if(t.startsWith(name+"=")){c=decodeURIComponent(t.substring(name.length+1));break;}}}return c;}
+function toggleAvailability(jobId,available){const csrf=getCookie("csrftoken");fetch(`/accounts/employer/job/${jobId}/availability/`,{method:"POST",headers:{"X-CSRFToken":csrf,"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({available})}).then(res=>res.ok?location.reload():res.text().then(t=>alert("Failed: "+t))).catch(err=>alert("Error: "+err));}
+function markCompleted(appId){if(!confirm("Mark this job as completed? The worker will be able to rate you after this."))return;const csrf=getCookie("csrftoken");const fd=new FormData();fd.append('status','Completed');fetch(`/accounts/employer/applications/update/${appId}/`,{method:"POST",headers:{'X-CSRFToken':csrf},body:fd}).then(res=>res.json()).then(data=>{if(data.success){location.reload();}else{alert(data.error||"Something went wrong");}}).catch(err=>alert("Error: "+err.message));}
+function markNotCompleted(appId){if(!confirm("Mark as No Show / Not Completed?"))return;const csrf=getCookie("csrftoken");const fd=new FormData();fd.append('status','Not Completed');fetch(`/accounts/employer/applications/update/${appId}/`,{method:"POST",headers:{'X-CSRFToken':csrf},body:fd}).then(res=>res.json()).then(data=>{if(data.success){location.reload();}else{alert(data.error||"Something went wrong");}}).catch(err=>alert("Error: "+err.message));}
+async function loadNotifications(){const res=await fetch("{% url 'get_notifications' %}");const data=await res.json();const list=document.getElementById("notif-list");const badge=document.getElementById("notif-count");list.innerHTML="";let unread=0;data.notifications.forEach(n=>{const li=document.createElement("li");li.innerHTML=`<p style='margin:0;font-size:13px;color:var(--slate);'>${n.message}</p><small style='color:var(--slate-3);font-size:11px;'>${n.created_at}</small>`;list.appendChild(li);if(!n.is_read)unread++;});badge.textContent=unread;badge.style.display=unread>0?"inline":"none";}
+function toggleNotifications(){const dd=document.getElementById("notif-dropdown");dd.style.display=dd.style.display==="block"?"none":"block";fetch("{% url 'mark_notifications_read' %}");setTimeout(()=>{document.getElementById("notif-count").style.display="none";},300);}
+document.addEventListener("DOMContentLoaded",()=>{const btn=document.querySelector(".dropbtn");const menu=document.querySelector(".dropdown-content");btn.addEventListener("click",(e)=>{e.stopPropagation();const v=menu.style.display==="block";document.querySelectorAll(".dropdown-content").forEach(d=>d.style.display="none");menu.style.display=v?"none":"block";});document.addEventListener("click",(e)=>{if(!e.target.closest(".dropdown"))menu.style.display="none";if(!e.target.closest(".notification-bell"))document.getElementById("notif-dropdown").style.display="none";});loadNotifications();setInterval(loadNotifications,10000);});
+</script>
 </body>
 </html>

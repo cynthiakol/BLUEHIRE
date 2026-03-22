@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.db.models import Avg, Count
 from applications.models import Application
 from accounts.models import JobSeeker, Employer
+from jobs.models import Notification
 from .models import Rating
 
 
@@ -35,13 +36,29 @@ def rate_jobseeker(request, application_id):
         if not score.isdigit() or not (1 <= int(score) <= 5):
             messages.error(request, "Please select a valid rating (1–5 stars).")
             return redirect(request.path)
+
         Rating.objects.create(
             reviewer=request.user,
             application=application,
             rated_jobseeker=jobseeker,
             score=int(score),
             comment=comment or None,
+            is_visible=True,
         )
+
+        # Notify the jobseeker
+        try:
+            employer = request.user.employer
+            employer_name = employer.company_name or request.user.get_full_name() or request.user.username
+        except:
+            employer_name = request.user.get_full_name() or request.user.username
+
+        star_label = f"{score} star{'s' if int(score) != 1 else ''}"
+        Notification.objects.create(
+            receiver=jobseeker.user,
+            message=f"⭐ {employer_name} rated you {star_label} for \"{application.job.title}\". You can now rate them back!"
+        )
+
         messages.success(request, "Rating submitted!")
         return redirect('employer_dashboard')
 
@@ -83,13 +100,28 @@ def rate_employer(request, application_id):
         if not score.isdigit() or not (1 <= int(score) <= 5):
             messages.error(request, "Please select a valid rating (1–5 stars).")
             return redirect(request.path)
+
         Rating.objects.create(
             reviewer=request.user,
             application=application,
             rated_employer=employer,
             score=int(score),
             comment=comment or None,
+            is_visible=True,
         )
+
+        # Notify the employer
+        try:
+            seeker_name = jobseeker.user.get_full_name() or jobseeker.user.username
+        except:
+            seeker_name = request.user.username
+
+        star_label = f"{score} star{'s' if int(score) != 1 else ''}"
+        Notification.objects.create(
+            receiver=employer.user,
+            message=f"⭐ {seeker_name} rated you {star_label} for \"{application.job.title}\"."
+        )
+
         messages.success(request, "Rating submitted!")
         return redirect('jobseeker_dashboard')
 

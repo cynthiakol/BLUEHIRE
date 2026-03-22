@@ -5,64 +5,132 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terms and Conditions | BlueHire</title>
-  <link rel="stylesheet" href="{% static 'core/css/terms.css' %}">
-  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <style>
+    :root{--bg:#f0ede8;--white:#ffffff;--ink:#0f0f14;--ink-2:#3c3c48;--ink-3:#7a7a8a;--ink-4:#b0b0be;--blue:#2347d6;--blue-light:#ebeffc;--blue-mid:#c7d2f8;--border:#dcd8d2;--shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 12px rgba(0,0,0,0.08);--radius:14px;--radius-sm:8px;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--bg);}
 
+    .navbar{display:flex;justify-content:space-between;align-items:center;padding:0 52px;height:62px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:var(--shadow-sm);}
+    .left-nav{display:flex;align-items:center;gap:10px;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .brand-logo{height:34px;border-radius:6px;}
+    .logo-text{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-0.4px;}
+    .logo-text b{color:var(--blue);}
+    nav{display:flex;align-items:center;gap:4px;}
+    nav a{color:var(--ink-3);text-decoration:none;font-weight:600;font-size:14px;transition:all 0.15s;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid transparent;}
+    nav a:hover{color:var(--blue);background:var(--blue-light);border-color:var(--blue-mid);}
+    .auth{display:flex;align-items:center;gap:8px;}
+    .auth a{text-decoration:none;font-weight:600;padding:8px 16px;border-radius:var(--radius-sm);transition:all 0.15s;font-size:14px;white-space:nowrap;}
+    .auth a:first-child{color:var(--ink-2);border:1px solid var(--border);background:var(--white);}
+    .auth a:first-child:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light);}
+    .auth a:last-child{background:var(--ink);color:var(--white);border:1px solid var(--ink);}
+    .auth a:last-child:hover{background:var(--blue);border-color:var(--blue);}
+
+    .hero{background:var(--ink);padding:72px 52px;text-align:center;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+    .hero h1{position:relative;z-index:1;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:12px;}
+    .hero p{position:relative;z-index:1;font-size:15px;color:rgba(255,255,255,0.5);max-width:520px;margin:0 auto;line-height:1.7;}
+
+    .layout{max-width:1000px;margin:0 auto;padding:52px 52px 80px;display:grid;grid-template-columns:220px 1fr;gap:28px;align-items:start;}
+
+    /* TOC SIDEBAR */
+    .toc{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:sticky;top:78px;box-shadow:var(--shadow-sm);}
+    .toc h4{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-4);margin-bottom:14px;}
+    .toc a{display:block;color:var(--ink-3);text-decoration:none;font-size:13px;font-weight:500;padding:6px 10px;border-radius:var(--radius-sm);transition:all 0.15s;margin-bottom:2px;}
+    .toc a:hover{color:var(--blue);background:var(--blue-light);}
+
+    /* CONTENT */
+    .terms-content{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:36px 40px;box-shadow:var(--shadow-sm);}
+    .terms-content .last-updated{font-size:12px;color:var(--ink-4);margin-bottom:28px;display:flex;align-items:center;gap:6px;}
+    .terms-content h2{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-0.2px;margin:28px 0 10px;padding-top:28px;border-top:1px solid var(--border);}
+    .terms-content h2:first-of-type{margin-top:0;padding-top:0;border-top:none;}
+    .terms-content p{font-size:14px;color:var(--ink-2);line-height:1.8;}
+    .terms-content a{color:var(--blue);font-weight:600;text-decoration:none;}
+    .terms-content a:hover{text-decoration:underline;}
+
+    footer{background:var(--ink);padding:28px 52px;text-align:center;}
+    footer p{color:rgba(255,255,255,0.3);font-size:13px;}
+
+    @media(max-width:768px){
+      .navbar{padding:0 20px;}
+      .hero{padding:52px 20px;}
+      .layout{grid-template-columns:1fr;padding:28px 20px 52px;}
+      .toc{position:relative;top:0;}
+      .terms-content{padding:24px 20px;}
+      footer{padding:24px 20px;}
+    }
+  </style>
+</head>
 <body>
-  <!-- NAVBAR -->
+
   <header class="navbar">
     <div class="left-nav">
       <div class="logo">
         <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+        <span class="logo-text">Blue<b>Hire</b></span>
       </div>
       <nav>
-        <a href="{% url 'homepage' %}">Home</a><span class="divider">|</span>
-        <a href="{% url 'contact' %}">Contact</a><span class="divider">|</span>
+        <a href="{% url 'homepage' %}">Home</a>
+        <a href="{% url 'contact' %}">Contact</a>
       </nav>
     </div>
-
     <div class="auth">
-      <a href="{% url 'help_center' %}">Help Center?</a>
-      <span class="divider">|</span>
+      <a href="{% url 'help_center' %}">Help Center</a>
       <a href="{% url 'signin_register' %}">Sign in</a>
     </div>
   </header>
 
-  <!-- HERO SECTION -->
   <section class="hero">
     <h1>Terms and Conditions</h1>
-    <p>Welcome to BlueHire. By accessing or using our platform, you agree to the terms below. Please read carefully.</p>
+    <p>By accessing or using our platform, you agree to the terms below. Please read carefully.</p>
   </section>
 
-  <!-- TERMS CONTENT -->
-  <section class="terms-content">
-    <h2>1. Acceptance of Terms</h2>
-    <p>By registering or using BlueHire, you acknowledge and agree to be bound by these Terms of Service, our Privacy Policy, and any other guidelines posted on the platform.</p>
+  <div class="layout">
 
-    <h2>2. User Responsibilities</h2>
-    <p>You agree to provide accurate, complete, and updated information. Misrepresentation or fraudulent activity may result in account suspension or removal.</p>
+    <div class="toc">
+      <h4>Contents</h4>
+      <a href="#acceptance">1. Acceptance</a>
+      <a href="#user">2. User Responsibilities</a>
+      <a href="#employer">3. Employer Obligations</a>
+      <a href="#seeker">4. Job Seeker Obligations</a>
+      <a href="#privacy">5. Data &amp; Privacy</a>
+      <a href="#modifications">6. Modifications</a>
+      <a href="#contact">7. Contact Us</a>
+    </div>
 
-    <h2>3. Employer Obligations</h2>
-    <p>Employers must post legitimate job listings and treat all applicants fairly. BlueHire is not responsible for employment agreements between parties.</p>
+    <div class="terms-content">
+      <p class="last-updated"><i class="fas fa-calendar-alt"></i> Last updated: October 2025</p>
 
-    <h2>4. Job Seeker Obligations</h2>
-    <p>Job seekers are responsible for ensuring that information in their profiles and uploaded documents is true and verifiable.</p>
+      <h2 id="acceptance">1. Acceptance of Terms</h2>
+      <p>By registering or using BlueHire, you acknowledge and agree to be bound by these Terms of Service, our Privacy Policy, and any other guidelines posted on the platform.</p>
 
-    <h2>5. Data & Privacy</h2>
-    <p>We value your privacy. Your data will only be used to improve the platform’s services and match job opportunities effectively. Refer to our Privacy Policy for more details.</p>
+      <h2 id="user">2. User Responsibilities</h2>
+      <p>You agree to provide accurate, complete, and updated information. Misrepresentation or fraudulent activity may result in account suspension or removal.</p>
 
-    <h2>6. Modifications</h2>
-    <p>BlueHire reserves the right to update these terms at any time. Users will be notified through the website or email of major changes.</p>
+      <h2 id="employer">3. Employer Obligations</h2>
+      <p>Employers must post legitimate job listings and treat all applicants fairly. BlueHire is not responsible for employment agreements between parties.</p>
 
-    <h2>7. Contact Us</h2>
-    <p>For questions regarding these terms, you may contact us through the <a href="{% url 'contact' %}">Contact Page</a>.</p>
-  </section>
+      <h2 id="seeker">4. Job Seeker Obligations</h2>
+      <p>Job seekers are responsible for ensuring that information in their profiles and uploaded documents is true and verifiable.</p>
 
-  <!-- FOOTER -->
+      <h2 id="privacy">5. Data &amp; Privacy</h2>
+      <p>We value your privacy. Your data will only be used to improve the platform's services and match job opportunities effectively. Refer to our Privacy Policy for more details.</p>
+
+      <h2 id="modifications">6. Modifications</h2>
+      <p>BlueHire reserves the right to update these terms at any time. Users will be notified through the website or email of major changes.</p>
+
+      <h2 id="contact">7. Contact Us</h2>
+      <p>For questions regarding these terms, you may contact us through the <a href="{% url 'contact' %}">Contact Page</a>.</p>
+    </div>
+
+  </div>
+
   <footer>
     <p>&copy; 2025 BlueHire. All Rights Reserved.</p>
   </footer>
+
 </body>
 </html>

@@ -4,83 +4,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy | BlueHire</title>
-  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
-  <link rel="stylesheet" href="{% static 'core/css/style_base.css' %}">
+  <title>Help Center | BlueHire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <style>
+    :root{--bg:#f0ede8;--white:#ffffff;--ink:#0f0f14;--ink-2:#3c3c48;--ink-3:#7a7a8a;--ink-4:#b0b0be;--blue:#2347d6;--blue-light:#ebeffc;--blue-mid:#c7d2f8;--border:#dcd8d2;--shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 12px rgba(0,0,0,0.08);--radius:14px;--radius-sm:8px;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--bg);}
 
+    .navbar{display:flex;justify-content:space-between;align-items:center;padding:0 52px;height:62px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:var(--shadow-sm);}
+    .left-nav{display:flex;align-items:center;gap:10px;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .brand-logo{height:34px;border-radius:6px;}
+    .logo-text{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-0.4px;}
+    .logo-text b{color:var(--blue);}
+    nav{display:flex;align-items:center;gap:4px;}
+    nav a{color:var(--ink-3);text-decoration:none;font-weight:600;font-size:14px;transition:all 0.15s;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid transparent;}
+    nav a:hover{color:var(--blue);background:var(--blue-light);border-color:var(--blue-mid);}
+    .auth a{text-decoration:none;font-weight:600;padding:8px 16px;border-radius:var(--radius-sm);transition:all 0.15s;font-size:14px;background:var(--ink);color:var(--white);border:1px solid var(--ink);}
+    .auth a:hover{background:var(--blue);border-color:var(--blue);}
+
+    .hero{background:var(--ink);padding:72px 52px;text-align:center;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+    .hero::after{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(35,71,214,0.2) 0%,transparent 70%);pointer-events:none;}
+    .hero-eyebrow{position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:var(--blue-mid);font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:20px;}
+    .hero h1{position:relative;z-index:1;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:12px;}
+    .hero p{position:relative;z-index:1;font-size:15px;color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto;line-height:1.7;}
+
+    .page-content{max-width:860px;margin:0 auto;padding:52px 52px 80px;}
+
+    /* FAQ */
+    .faq-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);margin-bottom:20px;}
+    .faq-list{display:flex;flex-direction:column;gap:10px;margin-bottom:52px;}
+    .faq-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color 0.15s;}
+    .faq-item:hover{border-color:var(--blue-mid);}
+    .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;cursor:pointer;gap:12px;}
+    .faq-question-text{display:flex;align-items:center;gap:12px;}
+    .faq-question-text .q-num{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-mid);padding:2px 8px;border-radius:50px;flex-shrink:0;}
+    .faq-question-text span{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-0.1px;}
+    .faq-chevron{color:var(--ink-4);font-size:12px;transition:transform 0.2s;flex-shrink:0;}
+    .faq-answer{padding:0 22px 18px;font-size:14px;color:var(--ink-2);line-height:1.75;border-top:1px solid var(--border);padding-top:14px;display:none;}
+    .faq-answer a{color:var(--blue);font-weight:600;text-decoration:none;}
+    .faq-answer a:hover{text-decoration:underline;}
+    .faq-item.open .faq-chevron{transform:rotate(180deg);}
+    .faq-item.open{border-color:var(--blue-mid);}
+    .faq-item.open .faq-answer{display:block;}
+
+    /* CTA */
+    .help-cta{background:var(--ink);border-radius:var(--radius);padding:44px;text-align:center;position:relative;overflow:hidden;}
+    .help-cta::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+    .help-cta h2{position:relative;z-index:1;font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;}
+    .help-cta p{position:relative;z-index:1;font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:22px;}
+    .contact-btn{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;background:var(--white);color:var(--ink);padding:13px 28px;border-radius:var(--radius-sm);text-decoration:none;font-weight:800;font-size:14px;transition:all 0.15s;}
+    .contact-btn:hover{background:var(--blue-light);color:var(--blue);}
+
+    footer{background:var(--ink);padding:28px 52px;text-align:center;}
+    footer p{color:rgba(255,255,255,0.3);font-size:13px;}
+
+    @media(max-width:768px){
+      .navbar{padding:0 20px;}
+      .hero{padding:52px 20px;}
+      .page-content{padding:32px 20px 52px;}
+      footer{padding:24px 20px;}
+    }
+  </style>
+</head>
 <body>
 
-  <!-- === NAVBAR === -->
   <header class="navbar">
     <div class="left-nav">
       <div class="logo">
         <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+        <span class="logo-text">Blue<b>Hire</b></span>
       </div>
       <nav>
-        <a href="{% url 'homepage' %}">Home</a><span class="divider">|</span>
-        <a href="{% url 'terms' %}">Terms</a><span class="divider">|</span>
-        <a href="{% url 'help_center' %}">Help Center?</a>
+        <a href="{% url 'homepage' %}">Find Jobs</a>
+        <a href="{% url 'employer' %}">Post a Job</a>
+        <a href="{% url 'privacy' %}">Privacy</a>
       </nav>
     </div>
-
     <div class="auth">
       <a href="/signin/?show=signin">Sign in</a>
     </div>
   </header>
 
-  <!-- === PAGE HEADER === -->
-  <section class="page-header" style="background:#2563eb; color:white; text-align:center; padding:4rem 1rem;">
-    <h1 style="font-size:2.5rem; margin-bottom:0.5rem;">Privacy Policy</h1>
-    <p>Learn how BlueHire protects and uses your data responsibly</p>
+  <section class="hero">
+    <div class="hero-eyebrow"><i class="fas fa-circle-question"></i> Help Center</div>
+    <h1>How can we help?</h1>
+    <p>Got questions? We've got answers — browse our FAQ or reach out to our team.</p>
   </section>
 
-  <!-- === PRIVACY CONTENT === -->
-  <section class="content-section" style="max-width:950px; margin:auto; padding:3rem 2rem; background:#fff;">
-    <p><strong>Last Updated:</strong> October 2025</p>
+  <section class="page-content">
 
-    <p>At <strong>BlueHire</strong>, we value your privacy and are committed to safeguarding your personal information. This Privacy Policy explains how we collect, use, and protect data when you use our platform or related services.</p>
+    <p class="faq-label">Frequently Asked Questions</p>
 
-    <h3>1. Information We Collect</h3>
-    <p>We collect personal details such as your name, contact information, resume, job listings, and verification documents. These details help facilitate job matching and ensure safe interactions between employers and applicants.</p>
+    <div class="faq-list">
 
-    <h3>2. Use of Information</h3>
-    <p>We use collected data to:</p>
-    <ul style="margin-left:2rem;">
-      <li>Authenticate and verify users</li>
-      <li>Process job postings and applications</li>
-      <li>Improve BlueHire’s platform features and experience</li>
-      <li>Comply with academic research requirements as part of the capstone project</li>
-    </ul>
+      <div class="faq-item open">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <div class="faq-question-text">
+            <span class="q-num">01</span>
+            <span>What is BlueHire?</span>
+          </div>
+          <i class="fas fa-chevron-down faq-chevron"></i>
+        </div>
+        <div class="faq-answer">BlueHire is a student capstone project that connects Filipino job seekers with employers in blue-collar industries. It's designed to demonstrate digital hiring solutions and does not facilitate actual employment transactions.</div>
+      </div>
 
-    <h3>3. Data Sharing</h3>
-    <p>BlueHire does not sell or rent your information. Data may only be shared with authorized academic supervisors or research partners for system evaluation purposes under confidentiality agreements.</p>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <div class="faq-question-text">
+            <span class="q-num">02</span>
+            <span>Is BlueHire free to use?</span>
+          </div>
+          <i class="fas fa-chevron-down faq-chevron"></i>
+        </div>
+        <div class="faq-answer">Yes. BlueHire is entirely free since it's for educational and research purposes only. No payments or commercial transactions are made through the system.</div>
+      </div>
 
-    <h3>4. Data Retention</h3>
-    <p>Data collected is retained only for the duration of the academic project and securely deleted once the evaluation phase ends.</p>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <div class="faq-question-text">
+            <span class="q-num">03</span>
+            <span>How do I post a job?</span>
+          </div>
+          <i class="fas fa-chevron-down faq-chevron"></i>
+        </div>
+        <div class="faq-answer">Employers can click <strong>"Post a Job"</strong> on the homepage or employer page. You'll be asked to sign in or create an account to continue.</div>
+      </div>
 
-    <h3>5. Your Rights</h3>
-    <p>Users may request data updates or deletion by contacting the project team. Requests are handled according to ethical standards and project guidelines.</p>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <div class="faq-question-text">
+            <span class="q-num">04</span>
+            <span>Are applicants verified?</span>
+          </div>
+          <i class="fas fa-chevron-down faq-chevron"></i>
+        </div>
+        <div class="faq-answer">Yes. Applicants must upload barangay, police, or NBI clearance to confirm their identity before appearing in search results.</div>
+      </div>
 
-    <h3>6. Security</h3>
-    <p>We implement safety measures such as data encryption and access restrictions. However, as this is a student research platform, it does not operate as a commercial-grade service.</p>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <div class="faq-question-text">
+            <span class="q-num">05</span>
+            <span>Who can I contact for help?</span>
+          </div>
+          <i class="fas fa-chevron-down faq-chevron"></i>
+        </div>
+        <div class="faq-answer">For any questions or technical concerns, please reach out through our contact form on the <a href="{% url 'contact' %}">Contact Page</a> or email our project support team.</div>
+      </div>
 
-    <h3>7. Policy Updates</h3>
-    <p>We may revise this policy from time to time. Updates will be reflected on this page with the new effective date.</p>
+    </div>
 
-    <h3>8. Contact Us</h3>
-    <p>For questions about this Privacy Policy, reach out via our Help Center or project contact email.</p>
+    <div class="help-cta">
+      <h2>Still need help?</h2>
+      <p>If you couldn't find the answer you were looking for, our project team is happy to assist.</p>
+      <a href="{% url 'contact' %}" class="contact-btn"><i class="fas fa-paper-plane"></i> Contact Support</a>
+    </div>
 
-    <p style="margin-top:2rem;">
-      <a href="{% url 'terms' %}" style="color:#2563eb; font-weight:600; text-decoration:none;">Read our Terms & Conditions</a>
-    </p>
   </section>
 
-  <!-- === FOOTER === -->
-  <footer class="footer">
-    <p>© 2025 BlueHire. All Rights Reserved. | Capstone Project</p>
+  <footer>
+    <p>&copy; 2025 BlueHire. All Rights Reserved. | Capstone Project</p>
   </footer>
+
+  <script>
+    function toggleFaq(questionEl) {
+      const item = questionEl.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+  </script>
 
 </body>
 </html>

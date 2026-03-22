@@ -5,61 +5,142 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About BlueHire</title>
-  <link rel="stylesheet" href="{% static 'core/css/style_base.css' %}">
-  <link rel="stylesheet" href="{% static 'core/css/about.css' %}">
-  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" type="image/png" href="{% static 'core/image/logo.png' %}">
+  <style>
+    :root{--bg:#f0ede8;--white:#ffffff;--ink:#0f0f14;--ink-2:#3c3c48;--ink-3:#7a7a8a;--ink-4:#b0b0be;--blue:#2347d6;--blue-light:#ebeffc;--blue-mid:#c7d2f8;--border:#dcd8d2;--shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 12px rgba(0,0,0,0.08);--shadow-lg:0 12px 32px rgba(0,0,0,0.10);--radius:14px;--radius-sm:8px;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--bg);overflow-x:hidden;}
+
+    /* NAV */
+    .navbar{display:flex;justify-content:space-between;align-items:center;padding:0 52px;height:62px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:var(--shadow-sm);}
+    .left-nav{display:flex;align-items:center;gap:10px;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .brand-logo{height:34px;border-radius:6px;}
+    .logo-text{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-0.4px;}
+    .logo-text b{color:var(--blue);}
+    nav{display:flex;align-items:center;gap:4px;}
+    nav a{color:var(--ink-3);text-decoration:none;font-weight:600;font-size:14px;transition:all 0.15s;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid transparent;}
+    nav a:hover{color:var(--blue);background:var(--blue-light);border-color:var(--blue-mid);}
+    .auth{display:flex;align-items:center;gap:8px;}
+    .auth a{text-decoration:none;font-weight:600;padding:8px 16px;border-radius:var(--radius-sm);transition:all 0.15s;font-size:14px;white-space:nowrap;}
+    .auth a:first-child{color:var(--ink-2);border:1px solid var(--border);background:var(--white);}
+    .auth a:first-child:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light);}
+    .auth a:last-child{background:var(--ink);color:var(--white);border:1px solid var(--ink);}
+    .auth a:last-child:hover{background:var(--blue);border-color:var(--blue);}
+    .divider{color:var(--border);margin:0 2px;}
+
+    /* HERO */
+    .hero{background:var(--ink);padding:80px 52px;text-align:center;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+    .hero::after{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(35,71,214,0.2) 0%,transparent 70%);pointer-events:none;}
+    .hero h1{position:relative;z-index:1;font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:#fff;letter-spacing:-1.2px;margin-bottom:16px;line-height:1.1;}
+    .hero p{position:relative;z-index:1;font-size:16px;color:rgba(255,255,255,0.55);max-width:640px;margin:0 auto;line-height:1.7;}
+
+    /* MAIN CONTENT */
+    .page-content{max-width:1100px;margin:0 auto;padding:56px 52px 80px;}
+
+    /* INTRO */
+    .intro{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;margin-bottom:36px;box-shadow:var(--shadow-sm);border-left:4px solid var(--blue);}
+    .intro p{font-size:16px;color:var(--ink-2);line-height:1.75;}
+
+    /* SECTION LABEL */
+    .section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);margin-bottom:20px;}
+
+    /* CARDS */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:52px;}
+    .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm);transition:all 0.2s ease;}
+    .card:hover{border-color:var(--blue-mid);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+    .card .c-icon{width:44px;height:44px;border-radius:var(--radius-sm);background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--blue);margin-bottom:16px;}
+    .card h3{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:-0.2px;}
+    .card p{font-size:14px;color:var(--ink-3);line-height:1.65;}
+
+    /* HOW IT WORKS */
+    .how-it-works{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:36px 40px;margin-bottom:52px;box-shadow:var(--shadow-sm);}
+    .how-it-works h2{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-0.4px;margin-bottom:28px;}
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
+    .step{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;}
+    .step .step-num{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;}
+    .step .s-icon{width:48px;height:48px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--blue);margin:0 auto 14px;}
+    .step h4{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+    .step p{font-size:13px;color:var(--ink-3);line-height:1.6;}
+
+    /* TEAM */
+    .team{margin-bottom:52px;}
+    .team h2{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-0.4px;margin-bottom:24px;}
+    .team-members{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+    .member{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;box-shadow:var(--shadow-sm);transition:all 0.2s;}
+    .member:hover{border-color:var(--blue-mid);box-shadow:var(--shadow-md);}
+    .member img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border);margin-bottom:14px;}
+    .member h4{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px;letter-spacing:-0.1px;}
+    .member p{font-size:12px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:50px;}
+
+    /* CTA */
+    .cta{background:var(--ink);border-radius:var(--radius);padding:48px;text-align:center;position:relative;overflow:hidden;}
+    .cta::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+    .cta h2{position:relative;z-index:1;font-size:24px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-bottom:10px;}
+    .cta p{position:relative;z-index:1;font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:24px;}
+    .cta-btn{position:relative;z-index:1;display:inline-block;background:var(--white);color:var(--ink);padding:13px 32px;border-radius:var(--radius-sm);text-decoration:none;font-weight:800;font-size:15px;transition:all 0.15s;}
+    .cta-btn:hover{background:var(--blue-light);color:var(--blue);}
+
+    /* FOOTER */
+    footer{background:var(--ink);padding:28px 52px;text-align:center;}
+    footer p{color:rgba(255,255,255,0.3);font-size:13px;}
+
+    @media(max-width:768px){
+      .navbar{padding:0 20px;}
+      .hero{padding:56px 20px;}
+      .page-content{padding:36px 20px 56px;}
+      .how-it-works{padding:24px 20px;}
+      footer{padding:24px 20px;}
+    }
+  </style>
 </head>
+<body>
 
-<body class="about-page">
-
-  <!-- NAVBAR -->
   <header class="navbar">
     <div class="left-nav">
       <div class="logo">
         <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
+        <span class="logo-text">Blue<b>Hire</b></span>
       </div>
-        <nav>
-        <a href="{% url 'homepage' %}">Home</a><span class="divider">|</span>
-        <a href="{% url 'contact' %}">Contact</a><span class="divider">|</span>
+      <nav>
+        <a href="{% url 'homepage' %}">Home</a>
+        <a href="{% url 'contact' %}">Contact</a>
       </nav>
     </div>
-
     <div class="auth">
-      <a href="{% url 'help_center' %}">Help Center?</a>
-      <span class="divider">|</span>
+      <a href="{% url 'help_center' %}">Help Center</a>
       <a href="{% url 'signin_register' %}">Sign in</a>
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="hero">
     <h1>About BlueHire</h1>
-    <p>BlueHire is a Filipino-built platform that bridges hardworking skilled workers and trusted employers nationwide — designed to make blue-collar hiring simple, transparent, and secure.</p>
+    <p>A Filipino-built platform that bridges hardworking skilled workers and trusted employers — making blue-collar hiring simple, transparent, and secure.</p>
   </section>
 
-  <!-- CONTENT -->
-  <section class="page-content about-content">
+  <section class="page-content">
 
     <div class="intro">
-      <p>Whether you’re a foreman searching for a dependable crew or a welder looking for your next project, BlueHire connects both sides through verified networks built on trust and opportunity.</p>
+      <p>Whether you're a foreman searching for a dependable crew or a welder looking for your next project, BlueHire connects both sides through verified networks built on trust and opportunity.</p>
     </div>
 
+    <p class="section-label">What we stand for</p>
     <div class="cards">
       <div class="card">
-        <i class="fa-solid fa-bullseye"></i>
+        <div class="c-icon"><i class="fa-solid fa-bullseye"></i></div>
         <h3>Our Mission</h3>
         <p>To make blue-collar recruitment fast, verified, and transparent for every Filipino worker and employer.</p>
       </div>
-
       <div class="card">
-        <i class="fa-solid fa-eye"></i>
+        <div class="c-icon"><i class="fa-solid fa-eye"></i></div>
         <h3>Our Vision</h3>
         <p>To become the go-to platform for trusted job opportunities and skilled hiring across the country.</p>
       </div>
-
       <div class="card">
-        <i class="fa-solid fa-handshake"></i>
+        <div class="c-icon"><i class="fa-solid fa-handshake"></i></div>
         <h3>Our Values</h3>
         <p>Integrity, reliability, and opportunity — empowering the workforce that builds our nation.</p>
       </div>
@@ -69,18 +150,21 @@
       <h2>How BlueHire Works</h2>
       <div class="steps">
         <div class="step">
-          <i class="fa-solid fa-user-plus"></i>
-          <h4>1. Register</h4>
+          <div class="step-num">Step 01</div>
+          <div class="s-icon"><i class="fa-solid fa-user-plus"></i></div>
+          <h4>Register</h4>
           <p>Sign up easily as a Job Seeker or Employer.</p>
         </div>
         <div class="step">
-          <i class="fa-solid fa-clipboard-list"></i>
-          <h4>2. Verify</h4>
+          <div class="step-num">Step 02</div>
+          <div class="s-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+          <h4>Verify</h4>
           <p>Submit required documents to ensure trust and authenticity.</p>
         </div>
         <div class="step">
-          <i class="fa-solid fa-briefcase"></i>
-          <h4>3. Connect</h4>
+          <div class="step-num">Step 03</div>
+          <div class="s-icon"><i class="fa-solid fa-briefcase"></i></div>
+          <h4>Connect</h4>
           <p>Employers post jobs, job seekers apply — fast and secure.</p>
         </div>
       </div>
@@ -90,17 +174,17 @@
       <h2>Meet the Developer Team</h2>
       <div class="team-members">
         <div class="member">
-          <img src="{% static 'core/img/team1.jpg' %}" alt="Member 1">
+          <img src="{% static 'core/img/team1.jpg' %}" alt="Augustine">
           <h4>Augustine-J G. Comon</h4>
           <p>Full-stack</p>
         </div>
         <div class="member">
-          <img src="{% static 'core/img/team2.jpg' %}" alt="Member 2">
+          <img src="{% static 'core/img/team2.jpg' %}" alt="Ronnikko">
           <h4>Ronnikko Perigo</h4>
           <p>Front-end</p>
         </div>
         <div class="member">
-          <img src="{% static 'core/img/team3.jpg' %}" alt="Member 3">
+          <img src="{% static 'core/img/team3.jpg' %}" alt="JB">
           <h4>JB Iverson Samontina</h4>
           <p>Front-end</p>
         </div>
@@ -115,7 +199,6 @@
 
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <p>&copy; 2025 BlueHire. All Rights Reserved.</p>
   </footer>

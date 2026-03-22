@@ -38,245 +38,84 @@
       --radius-sm:   8px;
       --radius-xs:   5px;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-    }
-
-    /* ── NAV ── */
-    nav.navbar {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      padding: 0 52px;
-      height: 62px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+    nav.navbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 52px; height: 62px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
     .navbar .logo { display: flex; align-items: center; gap: 10px; }
     .navbar .logo img { width: 34px; height: 34px; border-radius: 8px; }
     .navbar .logo span { font-size: 19px; font-weight: 800; color: var(--ink); letter-spacing: -0.4px; }
     .navbar .logo span b { color: var(--blue); }
-
     .navbar .right-section { display: flex; align-items: center; gap: 8px; }
-
-    .notif-bell {
-      position: relative; cursor: pointer;
-      width: 38px; height: 38px; border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid var(--border); background: var(--white);
-      transition: all 0.18s;
-    }
+    .notif-bell { position: relative; cursor: pointer; width: 38px; height: 38px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--white); transition: all 0.18s; }
     .notif-bell:hover { border-color: var(--blue); background: var(--blue-light); }
     .notif-bell i { font-size: 15px; color: var(--ink-3); }
     .notif-bell:hover i { color: var(--blue); }
-    .notif-count {
-      position: absolute; top: -4px; right: -4px;
-      background: var(--red); color: #fff; font-size: 10px;
-      font-weight: 700; border-radius: 50%; padding: 2px 5px; line-height: 1;
-    }
-    .notif-dropdown {
-      display: none; position: absolute; top: calc(100% + 10px); right: 0;
-      background: var(--white); border: 1px solid var(--border);
-      width: 330px; border-radius: var(--radius);
-      box-shadow: var(--shadow-lg); z-index: 1000; overflow: hidden;
-    }
+    .notif-count { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; border-radius: 50%; padding: 2px 5px; line-height: 1; }
+    .notif-dropdown { display: none; position: absolute; top: calc(100% + 10px); right: 0; background: var(--white); border: 1px solid var(--border); width: 330px; border-radius: var(--radius); box-shadow: var(--shadow-lg); z-index: 1000; overflow: hidden; }
     .notif-dropdown.active { display: block; }
-    .notif-dropdown h4 {
-      padding: 13px 18px; border-bottom: 1px solid var(--border);
-      font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
-      text-transform: uppercase; color: var(--ink-3);
-    }
+    .notif-dropdown h4 { padding: 13px 18px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-3); }
     .notif-item { padding: 12px 18px; border-bottom: 1px solid var(--bg); transition: background 0.15s; }
     .notif-item:hover { background: var(--bg); }
     .notif-item:last-child { border-bottom: none; }
     .notif-item strong { font-size: 13px; font-weight: 500; color: var(--ink); display: block; margin-bottom: 3px; line-height: 1.4; }
     .notif-item small { font-size: 11px; color: var(--ink-4); }
-
     .navbar .dropdown { position: relative; }
-    .navbar .dropbtn {
-      background: var(--bg); color: var(--ink-2);
-      padding: 0 16px; height: 38px; border-radius: var(--radius-sm);
-      border: 1px solid var(--border); font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 8px;
-      font-family: 'Outfit', sans-serif;
-    }
+    .navbar .dropbtn { background: var(--bg); color: var(--ink-2); padding: 0 16px; height: 38px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 8px; font-family: 'Outfit', sans-serif; }
     .navbar .dropbtn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-    .navbar .dropdown-content {
-      display: none; position: absolute; right: 0; top: calc(100% + 8px);
-      background: var(--white); min-width: 190px; border-radius: var(--radius);
-      box-shadow: var(--shadow-lg); z-index: 999; overflow: hidden;
-      border: 1px solid var(--border);
-    }
+    .navbar .dropdown-content { display: none; position: absolute; right: 0; top: calc(100% + 8px); background: var(--white); min-width: 190px; border-radius: var(--radius); box-shadow: var(--shadow-lg); z-index: 999; overflow: hidden; border: 1px solid var(--border); }
     .navbar .dropdown:hover .dropdown-content { display: block; }
-    .navbar .dropdown-content a {
-      color: var(--ink-2); padding: 11px 16px; text-decoration: none;
-      display: flex; align-items: center; gap: 10px; font-size: 13px;
-      font-weight: 500; transition: all 0.15s; border-bottom: 1px solid var(--bg);
-    }
+    .navbar .dropdown-content a { color: var(--ink-2); padding: 11px 16px; text-decoration: none; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; transition: all 0.15s; border-bottom: 1px solid var(--bg); }
     .navbar .dropdown-content a:last-child { border-bottom: none; }
     .navbar .dropdown-content a i { width: 15px; text-align: center; color: var(--ink-4); }
     .navbar .dropdown-content a:hover { background: var(--blue-light); color: var(--blue); }
     .navbar .dropdown-content a:hover i { color: var(--blue); }
-
-    /* ── HERO ── */
-    .page-header {
-      background: var(--ink);
-      padding: 36px 52px;
-      position: relative;
-      overflow: hidden;
-    }
-    /* decorative dots pattern */
-    .page-header::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 0; bottom: 0;
-      width: 320px;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
-      background-size: 20px 20px;
-      pointer-events: none;
-    }
-    .page-header h1 {
-      font-size: 28px; font-weight: 800; letter-spacing: -0.6px;
-      color: #fff; margin-bottom: 5px; line-height: 1.15;
-    }
+    .page-header { background: var(--ink); padding: 36px 52px; position: relative; overflow: hidden; }
+    .page-header::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 320px; background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; }
+    .page-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.6px; color: #fff; margin-bottom: 5px; line-height: 1.15; }
     .page-header h1 span { color: var(--blue-mid); }
     .page-header p { font-size: 14px; color: rgba(255,255,255,0.5); }
-
-    /* ── CONTAINER ── */
     .container { max-width: 1360px; margin: 0 auto; padding: 32px 52px 72px; }
-
-    /* ── WELCOME + STATS ROW ── */
-    .welcome-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 16px;
-      margin-bottom: 24px;
-      align-items: start;
-    }
-    .welcome-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px 26px;
-      box-shadow: var(--shadow-sm);
-    }
+    .welcome-row { display: grid; grid-template-columns: 1fr auto; gap: 16px; margin-bottom: 24px; align-items: start; }
+    .welcome-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 26px; box-shadow: var(--shadow-sm); }
     .welcome-card h2 { font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -0.3px; margin-bottom: 4px; }
     .welcome-card p { font-size: 14px; color: var(--ink-3); }
-
-    /* ── QUICK ACTIONS ── */
     .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 24px; }
-    .action-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px 22px;
-      text-decoration: none; color: var(--ink);
-      transition: all 0.2s ease;
-      display: flex; align-items: center; gap: 16px;
-      box-shadow: var(--shadow-sm);
-    }
+    .action-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; text-decoration: none; color: var(--ink); transition: all 0.2s ease; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); }
     .action-card:hover { border-color: var(--blue-mid); box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .action-icon {
-      width: 42px; height: 42px; border-radius: var(--radius-sm);
-      background: var(--blue-light); display: flex; align-items: center;
-      justify-content: center; font-size: 17px; color: var(--blue); flex-shrink: 0;
-    }
+    .action-icon { width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--blue-light); display: flex; align-items: center; justify-content: center; font-size: 17px; color: var(--blue); flex-shrink: 0; }
     .action-card h3 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 2px; letter-spacing: -0.1px; }
     .action-card p { font-size: 12px; color: var(--ink-3); line-height: 1.4; }
-
-    /* ── ALERT ── */
-    .alert-warning {
-      background: var(--amber-light); color: #78350f;
-      padding: 13px 16px; border-radius: var(--radius-sm);
-      border: 1px solid #fcd34d; border-left: 3px solid var(--amber);
-      display: flex; align-items: flex-start; gap: 10px;
-      margin-bottom: 22px; font-size: 13px; line-height: 1.5;
-    }
+    .alert-warning { background: var(--amber-light); color: #78350f; padding: 13px 16px; border-radius: var(--radius-sm); border: 1px solid #fcd34d; border-left: 3px solid var(--amber); display: flex; align-items: flex-start; gap: 10px; margin-bottom: 22px; font-size: 13px; line-height: 1.5; }
     .alert-warning i { color: var(--amber); flex-shrink: 0; margin-top: 1px; }
     .alert-warning a { color: var(--blue); font-weight: 600; text-decoration: none; }
     .alert-warning a:hover { text-decoration: underline; }
-
-    /* ── SEARCH ── */
     .search-bar { display: flex; gap: 10px; margin-bottom: 28px; }
-    .search-bar input {
-      flex: 1; padding: 11px 16px;
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); font-size: 14px; color: var(--ink);
-      font-family: 'Outfit', sans-serif; transition: border-color 0.15s;
-      box-shadow: var(--shadow-sm);
-    }
+    .search-bar input { flex: 1; padding: 11px 16px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; color: var(--ink); font-family: 'Outfit', sans-serif; transition: border-color 0.15s; box-shadow: var(--shadow-sm); }
     .search-bar input::placeholder { color: var(--ink-4); }
     .search-bar input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(35,71,214,0.08); }
-    .search-bar button {
-      padding: 11px 24px; background: var(--blue); color: #fff;
-      border: none; border-radius: var(--radius-sm); cursor: pointer;
-      font-weight: 700; font-size: 13px; font-family: 'Outfit', sans-serif;
-      transition: background 0.15s; display: flex; align-items: center; gap: 8px;
-      letter-spacing: 0.2px;
-    }
+    .search-bar button { padding: 11px 24px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 13px; font-family: 'Outfit', sans-serif; transition: background 0.15s; display: flex; align-items: center; gap: 8px; letter-spacing: 0.2px; }
     .search-bar button:hover { background: #1a38b8; }
-
-    /* ── SECTION TITLE ── */
-    .section-title {
-      font-size: 13px; font-weight: 700; letter-spacing: 1px;
-      text-transform: uppercase; color: var(--ink-3);
-      margin: 28px 0 14px;
-      display: flex; align-items: center; gap: 10px;
-    }
+    .section-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-3); margin: 28px 0 14px; display: flex; align-items: center; gap: 10px; }
     .section-title::before { content: ''; width: 3px; height: 16px; background: var(--blue); border-radius: 3px; flex-shrink: 0; }
     .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-    /* ── JOB GRID ── */
     .job-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; margin-bottom: 36px; }
-
-    /* ── JOB CARD ── */
-    .job-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px;
-      transition: all 0.2s ease;
-      display: flex; flex-direction: column;
-      box-shadow: var(--shadow-sm);
-      position: relative;
-      overflow: hidden;
-      animation: fadeUp 0.35s ease both;
-    }
+    .job-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: all 0.2s ease; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; animation: fadeUp 0.35s ease both; }
     .job-card:nth-child(1){animation-delay:.03s}.job-card:nth-child(2){animation-delay:.06s}
     .job-card:nth-child(3){animation-delay:.09s}.job-card:nth-child(4){animation-delay:.12s}
     .job-card:nth-child(5){animation-delay:.15s}.job-card:nth-child(6){animation-delay:.18s}
     @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-
     .job-card:hover { border-color: var(--blue-mid); box-shadow: var(--shadow-md); transform: translateY(-3px); }
-
-    /* colored top strip */
     .job-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue); opacity: 0; transition: opacity 0.2s; }
     .job-card:hover::before { opacity: 1; }
-
     .job-card h4 { font-size: 16px; font-weight: 800; color: var(--ink); margin-bottom: 12px; letter-spacing: -0.2px; line-height: 1.3; }
-
     .meta-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
     .meta-line { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
     .meta-line i { font-size: 11px; color: var(--ink-4); width: 13px; text-align: center; flex-shrink: 0; }
     .meta-line strong { color: var(--blue); font-weight: 600; font-size: 12px; min-width: 58px; }
     .company-link { color: var(--blue); text-decoration: none; font-weight: 600; transition: color 0.15s; }
     .company-link:hover { color: var(--ink); }
-
-    /* stats */
-    .job-stats {
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-      padding: 9px 12px; background: var(--bg);
-      border-radius: var(--radius-xs); margin: 10px 0; border: 1px solid var(--border);
-    }
+    .job-stats { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 9px 12px; background: var(--bg); border-radius: var(--radius-xs); margin: 10px 0; border: 1px solid var(--border); }
     .stat-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--ink-3); font-weight: 500; }
     .stat-item i { font-size: 11px; }
     .stat-item strong { color: var(--ink-2); font-weight: 700; }
@@ -285,40 +124,19 @@
     .stat-item.deadline i { color: var(--red); }
     .stat-item.deadline.expired { color: var(--red); font-weight: 600; }
     .stat-item.deadline.soon { color: var(--amber); font-weight: 600; }
-
-    /* desc */
     .desc-snippet { font-size: 13px; color: var(--ink-3); line-height: 1.65; margin: 8px 0 10px; }
-
-    /* tags */
     .job-tags { display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0 14px; }
-    .job-tag {
-      background: var(--bg); color: var(--ink-3);
-      padding: 3px 9px; border-radius: var(--radius-xs); font-size: 11px;
-      font-weight: 600; border: 1px solid var(--border); letter-spacing: 0.2px;
-    }
+    .job-tag { background: var(--bg); color: var(--ink-3); padding: 3px 9px; border-radius: var(--radius-xs); font-size: 11px; font-weight: 600; border: 1px solid var(--border); letter-spacing: 0.2px; }
     .job-tag.applied { background: var(--amber-light); color: var(--amber); border-color: #fcd34d; display: inline-flex; align-items: center; gap: 4px; }
-
-    /* status badges */
-    .status-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 4px 11px; border-radius: var(--radius-xs); font-size: 11px;
-      font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
-      margin-bottom: 12px;
-    }
+    .job-tag.hired-tag { background: var(--green-light); color: var(--green); border-color: #bbf7d0; display: inline-flex; align-items: center; gap: 4px; }
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: var(--radius-xs); font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; }
     .status-pending   { background: var(--amber-light); color: var(--amber); }
     .status-hired     { background: var(--green-light); color: var(--green); }
     .status-rejected  { background: var(--red-light); color: var(--red); }
     .status-completed { background: var(--violet-light); color: var(--violet); }
-
-    /* actions */
-    .job-actions { display: flex; gap: 8px; margin-top: auto; }
-    .apply-btn, .btn-details {
-      display: inline-flex; flex: 1; padding: 10px 12px;
-      border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;
-      text-align: center; transition: all 0.15s;
-      cursor: pointer; align-items: center; justify-content: center; gap: 6px;
-      font-family: 'Outfit', sans-serif; text-decoration: none; border: none;
-    }
+    .status-not-completed { background: var(--amber-light); color: var(--amber); }
+    .job-actions { display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
+    .apply-btn, .btn-details { display: inline-flex; flex: 1; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; text-align: center; transition: all 0.15s; cursor: pointer; align-items: center; justify-content: center; gap: 6px; font-family: 'Outfit', sans-serif; text-decoration: none; border: none; }
     .apply-btn { background: var(--blue); color: #fff; }
     .apply-btn:hover { background: #1a38b8; }
     .btn-applied { background: var(--bg); color: var(--ink-4); border: 1px solid var(--border); cursor: not-allowed; }
@@ -327,23 +145,11 @@
     .btn-hired:hover { background: var(--green-light); }
     .btn-details { background: transparent; color: var(--ink-2); border: 1px solid var(--border); }
     .btn-details:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-
-    .rate-link {
-      display: inline-flex; align-items: center; gap: 5px; margin-top: 8px;
-      padding: 8px 14px; background: var(--amber-light); color: var(--amber);
-      border-radius: var(--radius-sm); text-decoration: none;
-      font-size: 12px; font-weight: 700; border: 1px solid #fcd34d; transition: all 0.15s;
-    }
+    .rate-link { display: inline-flex; align-items: center; gap: 5px; padding: 8px 14px; background: var(--amber-light); color: var(--amber); border-radius: var(--radius-sm); text-decoration: none; font-size: 12px; font-weight: 700; border: 1px solid #fcd34d; transition: all 0.15s; }
     .rate-link:hover { background: var(--amber); color: #fff; border-color: var(--amber); }
-
-    /* no jobs */
-    .no-jobs {
-      text-align: center; padding: 56px 20px;
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: var(--radius); box-shadow: var(--shadow-sm);
-    }
+    .rating-stars { display: inline-flex; align-items: center; gap: 4px; padding: 8px 14px; background: var(--blue-light); color: var(--blue); border-radius: var(--radius-sm); font-size: 12px; font-weight: 700; border: 1px solid var(--blue-mid); }
+    .no-jobs { text-align: center; padding: 56px 20px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
     .no-jobs p { font-size: 15px; color: var(--ink-3); }
-
     @media (max-width: 1200px) { nav.navbar,.page-header,.container { padding-left: 24px; padding-right: 24px; } }
     @media (max-width: 768px) {
       nav.navbar { padding: 0 16px; }
@@ -359,7 +165,6 @@
 </head>
 <body>
 
-<!-- ── NAV ── -->
 <nav class="navbar">
   <div class="logo">
     <img src="{% static 'core/image/logo.png' %}" alt="BlueHire">
@@ -385,13 +190,11 @@
   </div>
 </nav>
 
-<!-- ── HERO ── -->
 <div class="page-header">
   <h1>Blue-Collar Jobs <span>in Surigao City</span></h1>
   <p>Find your next opportunity and manage your applications all in one place.</p>
 </div>
 
-<!-- ── CONTENT ── -->
 <div class="container">
 
   <div class="welcome-row">
@@ -404,24 +207,15 @@
   <div class="quick-actions">
     <a href="{% url 'jobseeker_recommendations' %}" class="action-card">
       <div class="action-icon"><i class="fas fa-robot"></i></div>
-      <div>
-        <h3>AI Recommendations</h3>
-        <p>Jobs matched to your skills</p>
-      </div>
+      <div><h3>AI Recommendations</h3><p>Jobs matched to your skills</p></div>
     </a>
     <a href="{% url 'jobseeker_profile' %}" class="action-card">
       <div class="action-icon"><i class="fas fa-id-card"></i></div>
-      <div>
-        <h3>My Profile</h3>
-        <p>Update info and documents</p>
-      </div>
+      <div><h3>My Profile</h3><p>Update info and documents</p></div>
     </a>
     <a href="{% url 'update_skills' %}" class="action-card">
       <div class="action-icon"><i class="fas fa-tools"></i></div>
-      <div>
-        <h3>Update Skills</h3>
-        <p>Improve your match score</p>
-      </div>
+      <div><h3>Update Skills</h3><p>Improve your match score</p></div>
     </a>
   </div>
 
@@ -440,7 +234,7 @@
     <button type="submit"><i class="fas fa-search"></i> Search</button>
   </form>
 
-  <!-- ── RECENTLY APPLIED ── -->
+  <!-- RECENTLY APPLIED -->
   {% if recent_applications %}
   <div class="section-title">Recently Applied</div>
   <div class="job-list">
@@ -491,14 +285,24 @@
         {% endif %}
       </div>
 
+      <!-- Tags: show actual status as tag -->
       <div class="job-tags">
         <span class="job-tag">{{ app.job.category }}</span>
         {% if app.job.job_type %}<span class="job-tag">{{ app.job.job_type }}</span>{% endif %}
-        <span class="job-tag applied"><i class="fas fa-check"></i> Applied</span>
+        {% if app.status == "Hired" or app.status == "Completed" or app.status == "Not Completed" %}
+          <span class="job-tag hired-tag"><i class="fas fa-check-circle"></i> Hired</span>
+        {% elif app.status == "Rejected" %}
+          <span class="job-tag" style="background:var(--red-light);color:var(--red);border-color:#fca5a5;display:inline-flex;align-items:center;gap:4px;"><i class="fas fa-times"></i> Rejected</span>
+        {% else %}
+          <span class="job-tag applied"><i class="fas fa-check"></i> Applied</span>
+        {% endif %}
       </div>
 
+      <!-- Status badge -->
       {% if app.status == "Completed" %}
         <span class="status-badge status-completed"><i class="fas fa-flag-checkered"></i> Completed</span>
+      {% elif app.status == "Not Completed" %}
+        <span class="status-badge status-not-completed"><i class="fas fa-exclamation-triangle"></i> Not Completed</span>
       {% elif app.status == "Hired" %}
         <span class="status-badge status-hired"><i class="fas fa-check-circle"></i> Hired</span>
       {% elif app.status == "Rejected" %}
@@ -507,14 +311,27 @@
         <span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending</span>
       {% endif %}
 
-      <div class="job-actions" style="margin-top: 12px;">
+      <div class="job-actions">
         <a href="{% url 'view_job_details' app.job.id %}" class="btn-details">
           <i class="fas fa-info-circle"></i> View Details
         </a>
         {% if app.status == "Completed" %}
-          <a href="{% url 'rate_employer' app.application_id %}" class="rate-link">
-            <i class="fas fa-star"></i> Rate Employer
-          </a>
+          {% if app.existing_rating %}
+            <span class="rating-stars">
+              {% for i in "12345" %}
+                {% if forloop.counter <= app.existing_rating.score %}
+                  <i class="fas fa-star" style="color:#f59e0b;"></i>
+                {% else %}
+                  <i class="far fa-star" style="color:#f59e0b;"></i>
+                {% endif %}
+              {% endfor %}
+              {{ app.existing_rating.score }}/5
+            </span>
+          {% else %}
+            <a href="{% url 'rate_employer' app.application_id %}" class="rate-link">
+              <i class="fas fa-star"></i> Rate Employer
+            </a>
+          {% endif %}
         {% endif %}
       </div>
     </div>
@@ -522,7 +339,7 @@
   </div>
   {% endif %}
 
-  <!-- ── ALL JOBS ── -->
+  <!-- ALL JOBS -->
   <div class="section-title">All Available Jobs</div>
   {% if jobs %}
   <div class="job-list">
@@ -589,6 +406,8 @@
         </a>
         {% if not job.is_available %}
           <button class="apply-btn btn-applied" disabled><i class="fas fa-ban"></i> Unavailable</button>
+        {% elif job.is_past_deadline %}
+          <button class="apply-btn btn-applied" disabled><i class="fas fa-hourglass-end"></i> Expired</button>
         {% elif job.id in applied_job_ids %}
           {% if applied_job_statuses|get_item:job.id == "Hired" %}
             <button class="apply-btn btn-hired" disabled><i class="fas fa-check-circle"></i> Hired</button>
