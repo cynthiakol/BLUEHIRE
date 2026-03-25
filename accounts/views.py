@@ -1115,8 +1115,7 @@ def system_admin_dashboard(request):
     # Get applications from this month
     total_applications = Application.objects.filter(applied_date__gte=month_start).count()
     hired_applications = Application.objects.filter(
-        applied_date__gte=month_start, 
-        status="Hired"
+        status__in=["Hired", "Completed", "Not Completed"]
     ).count()
     hired_percent = round((hired_applications / total_applications) * 100, 1) if total_applications else 0
 
@@ -2178,6 +2177,7 @@ def view_applications(request):
                     application=app,
                     rated_jobseeker=app.applicant,
                 ).first()
+                app.applicant.match_score = None  # will be filled after AI ranking
                 print(f"DEBUG: app={app.application_id} status={app.status} existing_rating={app.existing_rating}")
             else:
                 app.existing_rating = None
@@ -2290,6 +2290,16 @@ def view_applications(request):
                 match_reason.append("Complete profile with about (+5)")
                 print(f"      ✅ {seeker.user.username}: +5 pts (has about section)")
 
+            # 5. ✅ RATING BONUS — up to 15 points
+            avg_rating_val = Rating.objects.filter(
+                rated_jobseeker=seeker, is_visible=True
+            ).aggregate(avg=Avg('score'))['avg']
+            if avg_rating_val:
+                rating_bonus = round((avg_rating_val / 5.0) * 15, 1)
+                score += rating_bonus
+                match_reason.append(f"Avg rating {round(avg_rating_val,1)}/5 (+{rating_bonus})")
+                print(f"      ✅ {seeker.user.username}: +{rating_bonus} pts (rating {round(avg_rating_val,1)}/5)")
+
             score = min(100, round(score, 1))
 
             if score >= 90:
@@ -2314,6 +2324,12 @@ def view_applications(request):
         rankings.sort(key=lambda x: x['score'], reverse=True)
         print(f"   ✅ Ranked {len(rankings)} applicants")
         ai_recommendations[job.id] = rankings[:10]
+
+        # Attach match scores back to applications for the applicant list
+        score_map = {rec['seeker'].seeker_id: rec['score'] for rec in rankings}
+        for app in job_applications_map.get(job.id, []):
+            if app.applicant:
+                app.applicant.match_score = score_map.get(app.applicant.seeker_id)
 
     print("\n" + "="*80)
     print(f"🎯 FINAL RESULTS:")
@@ -2547,7 +2563,9 @@ def update_application_status(request, app_id):
             print(f"[DEBUG] Checking quota for job '{job.title}'")
             
             if job.auto_close_on_quota and job.is_available:
-                hired_count = Application.objects.filter(job=job, status="Hired").count()
+                hired_count = Application.objects.filter(
+    job=job, status__in=["Hired", "Completed", "Not Completed"]
+).count()
                 quota = job.hiring_quota
                 print(f"[DEBUG] Hired count: {hired_count}/{quota}")
                 
@@ -2851,6 +2869,7 @@ def jobseeker_recommendations(request):
     
     if has_profile_data:
         # Get available jobs
+        now = timezone.now()
         available_jobs = Job.objects.filter(
             is_available=True,
             is_approved=True
@@ -2858,6 +2877,9 @@ def jobseeker_recommendations(request):
             employer__user=request.user
         ).exclude(
             id__in=hired_job_ids
+        ).exclude(
+            application_deadline__isnull=False,
+            application_deadline__lt=now
         ).select_related('employer', 'employer__user')
         
         if available_jobs.exists():
@@ -2887,6 +2909,15 @@ def jobseeker_recommendations(request):
             # Sort by score (highest first) and filter out 0% matches
             matched_jobs.sort(key=lambda x: x[1], reverse=True)
             recommendations = [(job, score) for job, score in matched_jobs if score > 0]
+
+            # Attach employer avg rating to each job
+            from ratings.models import Rating
+            from django.db.models import Avg
+            for job, score in recommendations:
+                avg = Rating.objects.filter(
+                    rated_employer=job.employer
+                ).aggregate(avg=Avg('score'))['avg']
+                job.employer_avg_rating = round(avg, 1) if avg else None
             
             # If no matches found, recommendations stays empty
     

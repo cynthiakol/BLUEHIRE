@@ -235,6 +235,9 @@
         </a>
         {% if job.employer.employer_type == "Company" %}<span class="badge badge-company">Company</span>
         {% else %}<span class="badge badge-personal">Personal</span>{% endif %}
+        {% if job.employer_avg_rating %}
+          <span style="color:#f59e0b;font-size:12px;font-weight:700;margin-left:4px;">&#9733; {{ job.employer_avg_rating }}</span>
+        {% endif %}
       </div>
       {% endif %}
 

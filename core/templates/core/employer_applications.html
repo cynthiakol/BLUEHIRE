@@ -172,6 +172,15 @@
                   <span class="applicant-name">{{ app.applicant.user.first_name }} {{ app.applicant.user.last_name }}</span>
                   {% if app.applicant.avg_rating %}<span style="color:#f59e0b;font-size:12px;font-weight:700;">&#9733; {{ app.applicant.avg_rating }}</span>{% endif %}
                   {% if app.applicant.seeker_id %}<a href="{% url 'jobseeker_public_profile' app.applicant.seeker_id %}" class="profile-link"><i class="fas fa-eye"></i> Profile</a>{% endif %}
+                  {% if app.applicant.match_score is not None %}
+                    <span style="padding:3px 9px;border-radius:50px;font-size:11px;font-weight:700;border:1px solid;
+                      {% if app.applicant.match_score >= 90 %}background:var(--green-light);color:var(--green);border-color:#a7f3d0;
+                      {% elif app.applicant.match_score >= 70 %}background:var(--blue-light);color:var(--blue);border-color:var(--blue-mid);
+                      {% elif app.applicant.match_score >= 50 %}background:var(--amber-light);color:var(--amber);border-color:#fde68a;
+                      {% else %}background:var(--bg);color:var(--slate-3);border-color:var(--border);{% endif %}">
+                      {{ app.applicant.match_score|floatformat:0 }}% match
+                    </span>
+                  {% endif %}
                 {% else %}
                   <span class="applicant-name" style="color:var(--slate-3);">Unknown applicant</span>
                 {% endif %}
@@ -218,60 +227,7 @@
           </ul>
         {% else %}
           <div class="no-applicants"><i class="fas fa-inbox"></i> No applicants yet for this position</div>
-        {% endif %}
-
-        {% with job_recs=ai_recommendations|get_item:job.id %}
-          {% if job_recs %}
-          <div class="ai-section">
-            <div class="ai-header">
-              <h4><i class="fas fa-robot"></i> AI Ranked Applicants — Best Matches First</h4>
-              <span class="ai-label"><i class="fas fa-star"></i> SMART RANKING</span>
-            </div>
-            {% for rec in job_recs %}
-            <div class="ai-card {% if rec.score >= 90 %}excellent-match{% elif rec.score >= 70 %}good-match{% elif rec.score >= 50 %}fair-match{% else %}weak-match{% endif %}">
-              <div class="ai-card-header">
-                <div class="ai-card-info">
-                  <h5><i class="fas fa-user"></i> {{ rec.seeker.user.first_name }} {{ rec.seeker.user.last_name }}</h5>
-                  <div class="ai-card-email">{{ rec.seeker.user.email }}</div>
-                  <span class="applied-badge"><i class="fas fa-check-circle"></i> Applied for this position</span>
-                </div>
-                <div class="match-score-container">
-                  <div class="match-score-circle {% if rec.score >= 90 %}excellent{% elif rec.score >= 70 %}good{% elif rec.score >= 50 %}fair{% else %}weak{% endif %}">{{ rec.score|floatformat:0 }}%</div>
-                  <span class="match-label">{{ rec.match_level }}</span>
-                </div>
-              </div>
-              <div class="ai-info-section">
-                <strong><i class="fas fa-certificate"></i> Certificates (NC2):</strong>
-                {% if rec.uploaded_certificates %}{% for cert in rec.uploaded_certificates|slice:":3" %}<span class="cert-badge">{{ cert.name }}</span>{% endfor %}{% if rec.uploaded_certificates|length > 3 %}<span class="text-muted">+{{ rec.uploaded_certificates|length|add:"-3" }} more</span>{% endif %}
-                {% elif rec.seeker.certifications %}{% for cert in rec.seeker.certifications|slice:":3" %}<span class="cert-badge">{{ cert }}</span>{% endfor %}{% if rec.seeker.certifications|length > 3 %}<span class="text-muted">+{{ rec.seeker.certifications|length|add:"-3" }} more</span>{% endif %}
-                {% else %}<span class="text-muted">No certificates uploaded</span>{% endif %}
-              </div>
-              {% if rec.seeker.preferred_job_types %}
-              <div class="ai-info-section">
-                <strong><i class="fas fa-briefcase"></i> Preferred Job Types:</strong>
-                {% for job_type in rec.seeker.preferred_job_types|slice:":3" %}<span class="job-type-tag">{{ job_type }}</span>{% endfor %}
-                {% if rec.seeker.preferred_job_types|length > 3 %}<span class="text-muted">+{{ rec.seeker.preferred_job_types|length|add:"-3" }} more</span>{% endif %}
-              </div>
-              {% endif %}
-              {% if rec.seeker.experience_years %}
-              <div class="ai-info-section"><strong><i class="fas fa-clock"></i> Experience:</strong><span style="color:var(--slate);font-weight:600;"> {{ rec.seeker.experience_years }} years</span></div>
-              {% endif %}
-              {% if rec.seeker.about %}
-              <div class="ai-info-section"><strong><i class="fas fa-user-circle"></i> About:</strong><p class="about-text">{{ rec.seeker.about|truncatewords:30 }}</p></div>
-              {% endif %}
-              <a href="{% url 'jobseeker_public_profile' rec.seeker.seeker_id %}" class="profile-link" style="margin-top:10px;display:inline-flex;align-items:center;gap:5px;"><i class="fas fa-eye"></i> View Full Profile</a>
-            </div>
-            {% endfor %}
-          </div>
-          {% else %}
-          <div class="ai-section" style="background:var(--amber-light);border-color:#fde68a;">
-            <div class="empty-state" style="color:#92400e;">
-              <i class="fas fa-info-circle"></i> No applicants to rank yet.<br>
-              <small style="margin-top:6px;display:block;">Once applicants start applying, our AI will rank them based on certificates (NC2), job preferences, experience, and profile.</small>
-            </div>
-          </div>
-          {% endif %}
-        {% endwith %}
+        {% endif %}     
       </div>
     </div>
     {% endfor %}

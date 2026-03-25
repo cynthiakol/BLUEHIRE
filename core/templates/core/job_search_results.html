@@ -5,745 +5,161 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Job Search - BlueHire</title>
+  <title>Job Search — BlueHire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      font-size: 16px;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f8fafc;
-      color: #1a1a1a;
-      overflow-x: hidden;
-      width: 100%;
-      max-width: 100vw;
-    }
-
-    /* Navbar - Mobile First */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.8rem 2%;
-      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      width: 100%;
-      gap: 0.5rem;
-    }
-
-    .left-nav {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-    }
-
-    .brand-logo {
-      height: 32px;
-      width: auto;
-      filter: brightness(0) invert(1);
-    }
-
-    .navbar nav {
-      display: flex;
-      align-items: center;
-    }
-
-    .navbar nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.85rem;
-      transition: all 0.3s ease;
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
-    }
-
-    .navbar nav a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .divider {
-      color: rgba(255, 255, 255, 0.3);
-      margin: 0 0.3rem;
-      font-size: 0.8rem;
-    }
-
-    .auth {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .auth a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      padding: 0.45rem 0.8rem;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-      font-size: 0.8rem;
-      white-space: nowrap;
-    }
-
-    .auth a:first-child {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .auth a:last-child {
-      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-      box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
-    }
-
-    /* Search Section - Multi-Facet */
-    .search-section {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-      padding: 1.5rem 3%;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .search-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .search-box {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      background: white;
-      padding: 0.8rem;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-
-    /* Input/Select Shared Styles */
-    .search-box input,
-    .search-box select {
-      padding: 0.9rem 1rem;
-      border: 2px solid #e2e8f0;
-      outline: none;
-      font-size: 0.9rem;
-      border-radius: 8px;
-      transition: border-color 0.3s ease;
-      width: 100%;
-      background: white;
-      font-family: inherit;
-    }
-
-    .search-box input:focus,
-    .search-box select:focus {
-      border-color: #3b82f6;
-    }
-
-    .search-box select {
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 0.8rem center;
-      padding-right: 2.5rem;
-    }
-
-    .search-box .btn {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-      border: none;
-      padding: 0.9rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-      width: 100%;
-    }
-
-    .search-box .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
-    }
-
-    .search-tips {
-      text-align: center;
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.8rem;
-      margin-top: 0.8rem;
-      padding: 0 1rem;
-      line-height: 1.5;
-    }
-
-    .search-tips strong {
-      color: white;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1.5rem 3%;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      width: 100%;
-    }
-
-    /* Sidebar - Hidden on mobile by default */
-    .sidebar {
-      width: 100%;
-      order: 2;
-    }
-
-    .filter-card {
-      background: white;
-      border-radius: 12px;
-      padding: 1.2rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
-
-    .filter-card h3 {
-      font-size: 1rem;
-      color: #1e3a8a;
-      margin-bottom: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .filter-option {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .filter-option:last-child {
-      border-bottom: none;
-    }
-
-    .filter-option a {
-      color: #475569;
-      text-decoration: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: color 0.3s ease;
-      font-size: 0.9rem;
-    }
-
-    .filter-option a:hover {
-      color: #3b82f6;
-    }
-
-    .filter-option.active a {
-      color: #3b82f6;
-      font-weight: 600;
-    }
-
-    /* Main Content */
-    .main-content {
-      width: 100%;
-      order: 1;
-    }
-
-    .results-header {
-      background: white;
-      border-radius: 12px;
-      padding: 1.2rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
-
-    .results-header h2 {
-      font-size: clamp(1.2rem, 4vw, 1.5rem);
-      color: #1e3a8a;
-      margin-bottom: 0.5rem;
-    }
-
-    .results-info {
-      color: #64748b;
-      font-size: 0.85rem;
-      margin-bottom: 1rem;
-    }
-
-    .sort-dropdown {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .sort-dropdown label {
-      font-size: 0.85rem;
-      color: #64748b;
-    }
-
-    .sort-dropdown select {
-      padding: 0.5rem 0.8rem;
-      border: 2px solid #e2e8f0;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      background: white;
-      flex: 1;
-      min-width: 150px;
-    }
-
-    .active-filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.8rem;
-    }
-
-    .filter-tag {
-      background: #eff6ff;
-      color: #3b82f6;
-      padding: 0.3rem 0.8rem;
-      border-radius: 16px;
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .filter-tag .remove {
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1rem;
-    }
-
-    /* Job Cards - Mobile Optimized */
-    .job-card {
-      background: white;
-      border-radius: 12px;
-      padding: 1.2rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-    }
-
-    .job-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      border-color: #3b82f6;
-    }
-
-    .job-title {
-      font-size: clamp(1.1rem, 4vw, 1.5rem);
-      color: #1e3a8a;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      line-height: 1.3;
-    }
-
-    .company-info {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      color: #64748b;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .company-logo {
-      width: 35px;
-      height: 35px;
-      border-radius: 6px;
-      object-fit: cover;
-      border: 2px solid #e2e8f0;
-    }
-
-    .job-meta {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 0.8rem;
-      margin: 1rem 0;
-      padding: 1rem 0;
-      border-top: 1px solid #f1f5f9;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .meta-item {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: #64748b;
-      font-size: 0.85rem;
-    }
-
-    .meta-item i {
-      color: #3b82f6;
-      font-size: 0.9rem;
-    }
-
-    .meta-item strong {
-      color: #1e3a8a;
-    }
-
-    .job-description {
-      color: #475569;
-      line-height: 1.6;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-    }
-
-    /* ✅ NEW: Stats Bar - Same as Dashboard */
-    .job-stats {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.8rem;
-      background: #f8fafc;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.85rem;
-      color: #64748b;
-    }
-
-    .stat-item i {
-      font-size: 0.9rem;
-    }
-
-    .stat-item.applicants i {
-      color: #3b82f6;
-    }
-
-    .stat-item.hired i {
-      color: #10b981;
-    }
-
-    .stat-item.deadline i {
-      color: #ef4444;
-    }
-
-    .stat-item.deadline.expired {
-      color: #dc2626;
-      font-weight: 600;
-    }
-
-    .stat-item.deadline.soon {
-      color: #f59e0b;
-      font-weight: 600;
-    }
-
-    .job-footer {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .job-tags {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
-    .tag {
-      background: #eff6ff;
-      color: #3b82f6;
-      padding: 0.3rem 0.8rem;
-      border-radius: 16px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    /* ✅ NEW: Applied Badge - Same as Dashboard */
-    .tag.applied {
-      background: #fef3c7;
-      color: #d97706;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .applicant-count {
-      background: #fef3c7;
-      color: #d97706;
-      padding: 0.3rem 0.8rem;
-      border-radius: 16px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .apply-btn {
-      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-      color: white;
-      text-decoration: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 50px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
-      width: 100%;
-      font-size: 0.9rem;
-    }
-
-    .apply-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
-    }
-
-    .applied-badge {
-      background: #10b981;
-      color: white;
-      padding: 0.8rem 1.2rem;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-    }
-
-    /* ✅ NEW: Status Badges - Same as Dashboard */
-    .status-badge {
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .status-badge.pending {
-      background: #fef3c7;
-      color: #d97706;
-    }
-
-    .status-badge.hired {
-      background: #d1fae5;
-      color: #059669;
-    }
-
-    .status-badge.rejected {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    .status-badge.approved {
-      background: #dbeafe;
-      color: #2563eb;
-    }
-
-    .no-results {
-      text-align: center;
-      padding: 3rem 1.5rem;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
-
-    .no-results i {
-      font-size: 3rem;
-      color: #cbd5e1;
-      margin-bottom: 1rem;
-    }
-
-    .no-results h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .no-results p {
-      color: #64748b;
-      font-size: 0.9rem;
-    }
-
-    .footer {
-      background: #0f172a;
-      color: white;
-      padding: 2rem 3%;
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    .footer .links {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .footer a {
-      color: rgba(255, 255, 255, 0.8);
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-
-    .footer p {
-      font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.5);
-    }
-
-    /* Tablet & Desktop */
-    @media (min-width: 768px) {
-      .navbar {
-        padding: 1rem 4%;
-        gap: 2rem;
-      }
-
-      .brand-logo {
-        height: 40px;
-      }
-
-      .navbar nav a {
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-      }
-
-      .divider {
-        margin: 0 0.5rem;
-        font-size: 1rem;
-      }
-
-      .auth a {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.95rem;
-      }
-
-      .search-section {
-        padding: 2.5rem 4%;
-      }
-
-      .search-box {
-        display: grid;
-        grid-template-columns: 2fr 1.5fr 1.5fr auto;
-        gap: 0.8rem;
-      }
-
-      .search-box input,
-      .search-box select {
-        padding: 1rem 1.2rem;
-        font-size: 0.95rem;
-      }
-
-      .search-box .btn {
-        padding: 1rem 2rem;
-        font-size: 0.95rem;
-        width: auto;
-        white-space: nowrap;
-      }
-
-      .search-tips {
-        font-size: 0.9rem;
-      }
-
-      .container {
-        padding: 2.5rem 4%;
-        flex-direction: row;
-        gap: 2rem;
-      }
-
-      .sidebar {
-        width: 280px;
-        order: 1;
-        flex-shrink: 0;
-      }
-
-      .main-content {
-        order: 2;
-      }
-
-      .results-header {
-        padding: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-      }
-
-      .sort-dropdown {
-        margin-top: 0;
-      }
-
-      .sort-dropdown select {
-        flex: none;
-      }
-
-      .job-card {
-        padding: 1.8rem;
-      }
-
-      .job-footer {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .apply-btn {
-        width: auto;
-      }
-
-      .applied-badge {
-        width: auto;
-      }
-
-      .status-badge {
-        width: auto;
-      }
-
-      .footer .links {
-        flex-direction: row;
-        justify-content: center;
-        gap: 2rem;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .navbar {
-        padding: 1.2rem 5%;
-      }
-
-      .brand-logo {
-        height: 45px;
-      }
-
-      .search-section {
-        padding: 3rem 5%;
-      }
-
-      .container {
-        padding: 3rem 5%;
-      }
-
-      .job-card {
-        padding: 2rem;
-      }
+    :root{
+      --bg:#f0ede8; --white:#ffffff; --ink:#0f0f14; --ink-2:#3c3c48; --ink-3:#7a7a8a; --ink-4:#b0b0be;
+      --blue:#2347d6; --blue-light:#ebeffc; --blue-mid:#c7d2f8;
+      --green:#16936a; --green-light:#e3f5ef;
+      --red:#c92626; --red-light:#fee2e2;
+      --amber:#c47d06; --amber-light:#fef3c7;
+      --violet:#5e3ec8; --violet-light:#ede9fe;
+      --border:#dcd8d2; --border-2:#ccc8c2;
+      --shadow-sm:0 1px 3px rgba(0,0,0,0.06); --shadow-md:0 4px 12px rgba(0,0,0,0.08); --shadow-lg:0 12px 32px rgba(0,0,0,0.10);
+      --radius:14px; --radius-sm:8px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{font-size:16px;}
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;}
+
+    /* ── NAV ── */
+    .navbar{display:flex;justify-content:space-between;align-items:center;padding:0 52px;height:62px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:var(--shadow-sm);}
+    .left-nav{display:flex;align-items:center;gap:10px;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .brand-logo{height:34px;border-radius:6px;}
+    .logo-text{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-0.4px;}
+    .logo-text b{color:var(--blue);}
+    .navbar nav{display:flex;align-items:center;gap:4px;}
+    .navbar nav a{color:var(--ink-3);text-decoration:none;font-weight:600;font-size:14px;transition:all 0.15s;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid transparent;}
+    .navbar nav a:hover{color:var(--blue);background:var(--blue-light);border-color:var(--blue-mid);}
+    .auth{display:flex;align-items:center;gap:8px;}
+    .auth a{text-decoration:none;font-weight:600;padding:8px 16px;border-radius:var(--radius-sm);transition:all 0.15s;font-size:14px;white-space:nowrap;}
+    .auth a:first-child{color:var(--ink-2);border:1px solid var(--border);background:var(--white);}
+    .auth a:first-child:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light);}
+    .auth a:last-child{background:var(--ink);color:var(--white);border:1px solid var(--ink);}
+    .auth a:last-child:hover{background:var(--blue);border-color:var(--blue);}
+    .auth a.single{background:var(--ink);color:var(--white);border:1px solid var(--ink);}
+    .auth a.single:hover{background:var(--blue);border-color:var(--blue);}
+
+    /* ── SEARCH STRIP ── */
+    .search-section{background:var(--ink);padding:28px 52px;box-shadow:var(--shadow-md);position:relative;overflow:hidden;}
+    .search-section::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+    .search-container{max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+    .search-box{display:flex;flex-direction:column;gap:8px;background:var(--white);padding:10px;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);}
+    .search-box input,.search-box select{padding:11px 14px;border:1.5px solid var(--border);outline:none;font-size:14px;border-radius:var(--radius-sm);transition:border-color 0.15s;width:100%;background:var(--bg);font-family:'Outfit',sans-serif;color:var(--ink);}
+    .search-box input:focus,.search-box select:focus{border-color:var(--blue);background:var(--white);}
+    .search-box input::placeholder{color:var(--ink-4);}
+    .search-box select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%237a7a8a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:var(--bg);padding-right:36px;}
+    .search-box .btn{background:var(--blue);color:white;border:none;padding:11px 24px;border-radius:var(--radius-sm);font-weight:700;font-size:14px;cursor:pointer;transition:background 0.15s;width:100%;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;}
+    .search-box .btn:hover{background:#1a38b8;}
+    .search-tips{text-align:center;color:rgba(255,255,255,0.4);font-size:12px;margin-top:12px;}
+    .search-tips strong{color:rgba(255,255,255,0.65);}
+
+    /* ── LAYOUT ── */
+    .container{max-width:1380px;margin:0 auto;padding:28px 52px 72px;display:flex;flex-direction:column;gap:20px;}
+
+    /* ── SIDEBAR ── */
+    .sidebar{width:100%;order:2;}
+    .filter-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
+    .filter-card h3{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:7px;letter-spacing:-0.1px;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;color:var(--ink-3);}
+    .filter-card h3 i{color:var(--blue);font-size:11px;}
+    .filter-option{padding:7px 0;border-bottom:1px solid var(--bg);}
+    .filter-option:last-child{border-bottom:none;}
+    .filter-option a{color:var(--ink-3);text-decoration:none;display:flex;justify-content:space-between;align-items:center;transition:color 0.15s;font-size:13px;font-weight:500;}
+    .filter-option a:hover{color:var(--blue);}
+    .filter-option.active a{color:var(--blue);font-weight:700;}
+    .filter-option a i{font-size:11px;opacity:0.5;}
+
+    /* ── MAIN CONTENT ── */
+    .main-content{width:100%;order:1;}
+
+    /* ── RESULTS HEADER ── */
+    .results-header{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:14px;box-shadow:var(--shadow-sm);}
+    .results-header-inner{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;}
+    .results-header h2{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-0.3px;margin-bottom:4px;}
+    .results-info{color:var(--ink-3);font-size:13px;}
+    .results-info strong{color:var(--ink);font-weight:700;}
+    .active-filters{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+    .filter-tag{background:var(--blue-light);color:var(--blue);padding:3px 10px;border-radius:50px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px;text-decoration:none;border:1px solid var(--blue-mid);}
+    .filter-tag .remove{cursor:pointer;font-weight:800;font-size:13px;color:var(--blue);}
+    .filter-tag.clear{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+
+    .sort-dropdown{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .sort-dropdown label{font-size:12px;color:var(--ink-3);font-weight:600;white-space:nowrap;}
+    .sort-dropdown select{padding:7px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;cursor:pointer;background:var(--bg);font-family:'Outfit',sans-serif;color:var(--ink);transition:border-color 0.15s;appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%237a7a8a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
+    .sort-dropdown select:focus{outline:none;border-color:var(--blue);}
+
+    /* ── JOB CARD ── */
+    .job-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:12px;transition:all 0.2s ease;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);}
+    .job-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue);transform:scaleX(0);transform-origin:left;transition:transform 0.2s ease;}
+    .job-card:hover{border-color:var(--blue-mid);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+    .job-card:hover::before{transform:scaleX(1);}
+
+    .job-title{font-size:17px;color:var(--ink);font-weight:800;margin-bottom:6px;letter-spacing:-0.3px;line-height:1.3;}
+    .company-info{display:flex;align-items:center;gap:8px;color:var(--ink-3);font-size:13px;margin-bottom:14px;font-weight:500;}
+    .company-logo{width:28px;height:28px;border-radius:5px;object-fit:cover;border:1px solid var(--border);}
+    .company-info i{color:var(--blue);}
+
+    .job-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;padding:12px 0;border-top:1px solid var(--bg);border-bottom:1px solid var(--bg);}
+    .meta-item{display:inline-flex;align-items:center;gap:5px;color:var(--ink-3);font-size:13px;background:var(--bg);padding:4px 10px;border-radius:50px;border:1px solid var(--border);}
+    .meta-item i{color:var(--blue);font-size:11px;}
+
+    /* STATS BAR */
+    .job-stats{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+    .stat-item{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:50px;border:1px solid;}
+    .stat-item.applicants{color:var(--blue);background:var(--blue-light);border-color:var(--blue-mid);}
+    .stat-item.hired{color:var(--green);background:var(--green-light);border-color:#a7f3d0;}
+    .stat-item.deadline{color:var(--ink-3);background:var(--bg);border-color:var(--border);}
+    .stat-item.deadline.expired{color:var(--red);background:var(--red-light);border-color:#fca5a5;}
+    .stat-item.deadline.soon{color:var(--amber);background:var(--amber-light);border-color:#fde68a;}
+
+    .job-description{color:var(--ink-3);line-height:1.65;margin-bottom:14px;font-size:13px;}
+
+    /* JOB FOOTER */
+    .job-footer{display:flex;flex-direction:column;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+    .job-tags{display:flex;gap:6px;flex-wrap:wrap;}
+    .tag{background:var(--bg);color:var(--ink-2);padding:3px 10px;border-radius:50px;font-size:12px;font-weight:600;border:1px solid var(--border);}
+    .tag.applied{background:var(--amber-light);color:var(--amber);border-color:#fde68a;display:inline-flex;align-items:center;gap:4px;}
+
+    .apply-btn{background:var(--ink);color:white;text-decoration:none;padding:10px 22px;border-radius:var(--radius-sm);font-weight:700;transition:background 0.15s;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;}
+    .apply-btn:hover{background:var(--blue);}
+
+    /* STATUS BADGES */
+    .status-badge{padding:6px 14px;border-radius:50px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:5px;letter-spacing:0.3px;border:1px solid;}
+    .status-badge.pending{background:var(--amber-light);color:var(--amber);border-color:#fde68a;}
+    .status-badge.hired{background:var(--green-light);color:var(--green);border-color:#a7f3d0;}
+    .status-badge.rejected{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+    .status-badge.approved{background:var(--blue-light);color:var(--blue);border-color:var(--blue-mid);}
+
+    /* EMPTY STATE */
+    .no-results{text-align:center;padding:48px 24px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);}
+    .no-results i{font-size:36px;color:var(--ink-4);margin-bottom:12px;display:block;opacity:0.4;}
+    .no-results h3{font-size:16px;font-weight:700;color:var(--ink-2);margin-bottom:6px;}
+    .no-results p{color:var(--ink-3);font-size:13px;}
+
+    /* FOOTER */
+    .footer{background:var(--ink);padding:32px 52px;text-align:center;}
+    .footer .links{display:flex;justify-content:center;gap:24px;margin-bottom:14px;flex-wrap:wrap;}
+    .footer a{color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.15s;}
+    .footer a:hover{color:rgba(255,255,255,0.85);}
+    .footer p{font-size:12px;color:rgba(255,255,255,0.25);}
+
+    @media(min-width:768px){
+      .search-box{display:grid;grid-template-columns:2fr 1.5fr 1.5fr auto;gap:8px;}
+      .search-box .btn{width:auto;}
+      .container{flex-direction:row;gap:20px;padding:28px 52px 72px;}
+      .sidebar{width:260px;order:1;flex-shrink:0;}
+      .main-content{flex:1;order:2;}
+      .results-header{display:flex;justify-content:space-between;}
+      .job-footer{flex-direction:row;justify-content:space-between;align-items:center;}
+    }
+    @media(max-width:768px){
+      .navbar{padding:0 16px;}
+      .search-section{padding:20px 16px;}
+      .container{padding:20px 16px 48px;}
+      .footer{padding:24px 16px;}
     }
   </style>
 </head>
@@ -755,65 +171,53 @@
         <a href="{% url 'homepage' %}">
           <img src="{% static 'core/image/logo.png' %}" alt="BlueHire Logo" class="brand-logo">
         </a>
+        <span class="logo-text">Blue<b>Hire</b></span>
       </div>
       <nav>
-        <a href="{% url 'homepage' %}">Home</a><span class="divider">|</span>
+        <a href="{% url 'homepage' %}">Home</a>
       </nav>
     </div>
     <div class="auth">
       {% if user.is_authenticated %}
         {% if user.role == 'JobSeeker' %}
-          <a href="{% url 'jobseeker_dashboard' %}">Dashboard</a>
+          <a href="{% url 'jobseeker_dashboard' %}" class="single">Dashboard</a>
         {% elif user.role == 'Employer' %}
-          <a href="{% url 'employer_dashboard' %}">Dashboard</a>
+          <a href="{% url 'employer_dashboard' %}" class="single">Dashboard</a>
         {% endif %}
       {% else %}
         <a href="{% url 'signin_register' %}">Sign in</a>
-        <span class="divider">|</span>
-        <a href="{% url 'employer' %}">Employer / Post Job</a>
+        <a href="{% url 'employer' %}">Post a Job</a>
       {% endif %}
     </div>
   </header>
 
-  <!-- Multi-Facet Search Section -->
+  <!-- SEARCH STRIP -->
   <section class="search-section">
     <div class="search-container">
       <form action="{% url 'public_job_search' %}" method="GET" class="search-box">
-        <!-- Keywords Input -->
-        <input type="text" name="q" placeholder="🔍 Job title, keywords, or company" value="{{ query }}">
-        
-        <!-- Location Dropdown -->
+        <input type="text" name="q" placeholder="Job title, keywords, or company" value="{{ query }}">
         <select name="location" id="location">
-          <option value="">📍 All Locations</option>
+          <option value="">All Locations</option>
           {% for loc in locations %}
             <option value="{{ loc }}" {% if location == loc %}selected{% endif %}>{{ loc }}</option>
           {% endfor %}
         </select>
-        
-        <!-- Category Dropdown -->
         <select name="category" id="category">
-          <option value="">💼 All Categories</option>
+          <option value="">All Categories</option>
           {% for cat in categories %}
             <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
           {% endfor %}
         </select>
-        
-        <!-- Search Button -->
-        <button type="submit" class="btn">
-          <i class="fas fa-search"></i> Search
-        </button>
+        <button type="submit" class="btn"><i class="fas fa-search"></i> Search</button>
       </form>
-      <div class="search-tips">
-        <strong>Pro tip:</strong> Use the dropdowns to filter by location and category, or leave blank to see all jobs
-      </div>
+      <p class="search-tips"><strong>Tip:</strong> Use dropdowns to filter by location and category, or leave blank to see all jobs</p>
     </div>
   </section>
 
   <div class="container">
-    
-    <!-- Sidebar - Employer List -->
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <!-- Employers -->
       {% if employers %}
       <div class="filter-card">
         <h3><i class="fas fa-building"></i> Top Employers</h3>
@@ -821,7 +225,7 @@
           <div class="filter-option">
             <a href="{% url 'employer_public_profile' emp.employer_id %}">
               {{ emp.company_name|default:emp.user.username }}
-              <i class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i>
+              <i class="fas fa-arrow-up-right-from-square"></i>
             </a>
           </div>
         {% endfor %}
@@ -829,199 +233,118 @@
       {% endif %}
     </aside>
 
-    <!-- Main Content -->
+    <!-- MAIN CONTENT -->
     <main class="main-content">
-      
-      <!-- Results Header with Sort -->
+
+      <!-- RESULTS HEADER -->
       <div class="results-header">
-        <div style="flex: 1;">
-          <h2>
-            {% if query %}Results for "{{ query }}"{% else %}All Jobs{% endif %}
-          </h2>
-          <p class="results-info">
-            <strong>{{ total_results }}</strong> job{{ total_results|pluralize }} found
-            {% if location %} in {{ location }}{% endif %}
-            {% if category %} • {{ category }}{% endif %}
-          </p>
-
-          <!-- Active Filters Display -->
-          {% if query or location or category %}
-          <div class="active-filters">
-            {% if query %}
-              <span class="filter-tag">
-                🔍 "{{ query }}"
-                <a href="?location={{ location }}&category={{ category }}&sort={{ sort_by }}" class="remove">×</a>
-              </span>
+        <div class="results-header-inner">
+          <div style="flex:1;">
+            <h2>{% if query %}Results for "{{ query }}"{% else %}All Jobs{% endif %}</h2>
+            <p class="results-info">
+              <strong>{{ total_results }}</strong> job{{ total_results|pluralize }} found
+              {% if location %} in {{ location }}{% endif %}
+              {% if category %} &middot; {{ category }}{% endif %}
+            </p>
+            {% if query or location or category %}
+            <div class="active-filters">
+              {% if query %}
+                <span class="filter-tag"><i class="fas fa-search"></i> "{{ query }}" <a href="?location={{ location }}&category={{ category }}&sort={{ sort_by }}" class="remove">×</a></span>
+              {% endif %}
+              {% if location %}
+                <span class="filter-tag"><i class="fas fa-map-marker-alt"></i> {{ location }} <a href="?q={{ query }}&category={{ category }}&sort={{ sort_by }}" class="remove">×</a></span>
+              {% endif %}
+              {% if category %}
+                <span class="filter-tag"><i class="fas fa-tag"></i> {{ category }} <a href="?q={{ query }}&location={{ location }}&sort={{ sort_by }}" class="remove">×</a></span>
+              {% endif %}
+              <a href="{% url 'public_job_search' %}" class="filter-tag clear">Clear All ×</a>
+            </div>
             {% endif %}
-            {% if location %}
-              <span class="filter-tag">
-                📍 {{ location }}
-                <a href="?q={{ query }}&category={{ category }}&sort={{ sort_by }}" class="remove">×</a>
-              </span>
-            {% endif %}
-            {% if category %}
-              <span class="filter-tag">
-                💼 {{ category }}
-                <a href="?q={{ query }}&location={{ location }}&sort={{ sort_by }}" class="remove">×</a>
-              </span>
-            {% endif %}
-            <a href="{% url 'public_job_search' %}" class="filter-tag" style="background: #fee2e2; color: #dc2626;">
-              Clear All ×
-            </a>
           </div>
-          {% endif %}
-        </div>
-
-        <!-- Sort Dropdown -->
-        <div class="sort-dropdown">
-          <label for="sort">Sort by:</label>
-          <select id="sort" onchange="window.location.href='?q={{ query }}&location={{ location }}&category={{ category }}&sort=' + this.value">
-            <option value="recent" {% if sort_by == 'recent' %}selected{% endif %}>Most Recent</option>
-            <option value="title_asc" {% if sort_by == 'title_asc' %}selected{% endif %}>Title (A-Z)</option>
-            <option value="title_desc" {% if sort_by == 'title_desc' %}selected{% endif %}>Title (Z-A)</option>
-            <option value="location" {% if sort_by == 'location' %}selected{% endif %}>Location</option>
-            <option value="company" {% if sort_by == 'company' %}selected{% endif %}>Company</option>
-          </select>
+          <div class="sort-dropdown">
+            <label for="sort">Sort:</label>
+            <select id="sort" onchange="window.location.href='?q={{ query }}&location={{ location }}&category={{ category }}&sort=' + this.value">
+              <option value="recent" {% if sort_by == 'recent' %}selected{% endif %}>Most Recent</option>
+              <option value="title_asc" {% if sort_by == 'title_asc' %}selected{% endif %}>Title (A–Z)</option>
+              <option value="title_desc" {% if sort_by == 'title_desc' %}selected{% endif %}>Title (Z–A)</option>
+              <option value="location" {% if sort_by == 'location' %}selected{% endif %}>Location</option>
+              <option value="company" {% if sort_by == 'company' %}selected{% endif %}>Company</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <!-- Job Listings -->
+      <!-- JOB LISTINGS -->
       {% if jobs %}
         {% for job in jobs %}
-          <div class="job-card">
-            <h2 class="job-title">{{ job.title }}</h2>
-            <div class="company-info">
-              {% if job.employer.company_logo %}
-                <img src="{{ job.employer.company_logo.url }}" alt="Logo" class="company-logo">
-              {% else %}
-                <i class="fas fa-building" style="font-size: 1.3rem; color: #3b82f6;"></i>
-              {% endif %}
-              <span>{{ job.employer.company_name|default:job.employer.user.username }}</span>
-            </div>
-
-            <div class="job-meta">
-              <div class="meta-item">
-                <i class="fas fa-map-marker-alt"></i>
-                {{ job.location }}
-              </div>
-              
-              {% if job.job_type %}
-              <div class="meta-item">
-                <i class="fas fa-clock"></i>
-                {{ job.job_type }}
-              </div>
-              {% endif %}
-              
-              {% if job.salary %}
-              <div class="meta-item">
-                <i class="fas fa-money-bill-wave"></i>
-                {{ job.salary }}
-              </div>
-              {% endif %}
-
-              <div class="meta-item">
-                <i class="fas fa-calendar-alt"></i>
-                {{ job.created_at|timesince }} ago
-              </div>
-            </div>
-
-            <!-- ✅ NEW: Stats Bar (Applicants, Hired, Deadline) -->
-            <div class="job-stats">
-              <!-- Applicants Count -->
-              <div class="stat-item applicants">
-                <i class="fas fa-users"></i>
-                <strong>{{ job.total_applicants }}</strong> applicant{{ job.total_applicants|pluralize }}
-              </div>
-
-              <!-- Hired Count -->
-              {% if job.hired_count > 0 %}
-              <div class="stat-item hired">
-                <i class="fas fa-check-circle"></i>
-                <strong>{{ job.hired_count }}/{{ job.hiring_quota }}</strong> hired
-              </div>
-              {% else %}
-              <div class="stat-item hired">
-                <i class="fas fa-briefcase"></i>
-                <strong>0/{{ job.hiring_quota }}</strong> hired
-              </div>
-              {% endif %}
-
-              <!-- Deadline Countdown -->
-              {% if job.application_deadline %}
-                {% if job.is_past_deadline %}
-                <div class="stat-item deadline expired">
-                  <i class="fas fa-hourglass-end"></i>
-                  <strong>Expired</strong>
-                </div>
-                {% else %}
-                  {% with deadline=job.get_deadline_status %}
-                    {% if 'hour' in deadline or 'Less' in deadline %}
-                    <div class="stat-item deadline soon">
-                      <i class="fas fa-clock"></i>
-                      <strong>{{ deadline }}</strong>
-                    </div>
-                    {% else %}
-                    <div class="stat-item deadline">
-                      <i class="fas fa-calendar-check"></i>
-                      <strong>{{ deadline }}</strong>
-                    </div>
-                    {% endif %}
-                  {% endwith %}
-                {% endif %}
-              {% endif %}
-            </div>
-
-            <p class="job-description">{{ job.description|truncatewords:40 }}</p>
-
-            <div class="job-footer">
-              <div class="job-tags">
-                <span class="tag">{{ job.category }}</span>
-                {% if job.job_type %}
-                  <span class="tag">{{ job.job_type }}</span>
-                {% endif %}
-                
-                <!-- ✅ NEW: "1 applied" badge if user applied -->
-                {% if job.id in applied_job_ids %}
-                  <span class="tag applied">
-                    <i class="fas fa-check"></i> 1 applied
-                  </span>
-                {% endif %}
-              </div>
-
-              {% if user.is_authenticated %}
-                {% if job.id in applied_job_ids %}
-                  <!-- ✅ Show status badge based on application status -->
-                  {% with status=applied_job_statuses|get_item:job.id %}
-                    {% if status == 'Pending' %}
-                      <span class="status-badge pending">
-                        <i class="fas fa-clock"></i> PENDING
-                      </span>
-                    {% elif status == 'Hired' %}
-                      <span class="status-badge hired">
-                        <i class="fas fa-check-circle"></i> HIRED
-                      </span>
-                    {% elif status == 'Rejected' %}
-                      <span class="status-badge rejected">
-                        <i class="fas fa-times-circle"></i> REJECTED
-                      </span>
-                    {% elif status == 'Approved' %}
-                      <span class="status-badge approved">
-                        <i class="fas fa-thumbs-up"></i> APPROVED
-                      </span>
-                    {% endif %}
-                  {% endwith %}
-                {% else %}
-                  <a href="{% url 'apply_job' job.id %}" class="apply-btn">
-                    Apply Now <i class="fas fa-arrow-right"></i>
-                  </a>
-                {% endif %}
-              {% else %}
-                <a href="{% url 'signin_register' %}?next={% url 'apply_job' job.id %}" class="apply-btn">
-                  Sign in to Apply <i class="fas fa-sign-in-alt"></i>
-                </a>
-              {% endif %}
-            </div>
+        <div class="job-card">
+          <h2 class="job-title">{{ job.title }}</h2>
+          <div class="company-info">
+            {% if job.employer.company_logo %}
+              <img src="{{ job.employer.company_logo.url }}" alt="Logo" class="company-logo">
+            {% else %}
+              <i class="fas fa-building"></i>
+            {% endif %}
+            <span>{{ job.employer.company_name|default:job.employer.user.username }}</span>
           </div>
+
+          <div class="job-meta">
+            <span class="meta-item"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
+            {% if job.job_type %}<span class="meta-item"><i class="fas fa-clock"></i> {{ job.job_type }}</span>{% endif %}
+            {% if job.salary %}<span class="meta-item"><i class="fas fa-coins"></i> {{ job.salary }}</span>{% endif %}
+            <span class="meta-item"><i class="fas fa-calendar-alt"></i> {{ job.created_at|timesince }} ago</span>
+          </div>
+
+          <div class="job-stats">
+            <span class="stat-item applicants"><i class="fas fa-users"></i> {{ job.total_applicants }} applicant{{ job.total_applicants|pluralize }}</span>
+            {% if job.hired_count > 0 %}
+              <span class="stat-item hired"><i class="fas fa-check-circle"></i> {{ job.hired_count }}/{{ job.hiring_quota }} hired</span>
+            {% else %}
+              <span class="stat-item hired"><i class="fas fa-briefcase"></i> 0/{{ job.hiring_quota }} hired</span>
+            {% endif %}
+            {% if job.application_deadline %}
+              {% if job.is_past_deadline %}
+                <span class="stat-item deadline expired"><i class="fas fa-hourglass-end"></i> Expired</span>
+              {% else %}
+                {% with deadline=job.get_deadline_status %}
+                  {% if 'hour' in deadline or 'Less' in deadline %}
+                    <span class="stat-item deadline soon"><i class="fas fa-clock"></i> {{ deadline }}</span>
+                  {% else %}
+                    <span class="stat-item deadline"><i class="fas fa-calendar-check"></i> {{ deadline }}</span>
+                  {% endif %}
+                {% endwith %}
+              {% endif %}
+            {% endif %}
+          </div>
+
+          <p class="job-description">{{ job.description|truncatewords:40 }}</p>
+
+          <div class="job-footer">
+            <div class="job-tags">
+              <span class="tag">{{ job.category }}</span>
+              {% if job.job_type %}<span class="tag">{{ job.job_type }}</span>{% endif %}
+              {% if job.id in applied_job_ids %}
+                <span class="tag applied"><i class="fas fa-check"></i> Applied</span>
+              {% endif %}
+            </div>
+
+            {% if user.is_authenticated %}
+              {% if job.id in applied_job_ids %}
+                {% with status=applied_job_statuses|get_item:job.id %}
+                  {% if status == 'Pending' %}<span class="status-badge pending"><i class="fas fa-clock"></i> Pending</span>
+                  {% elif status == 'Hired' %}<span class="status-badge hired"><i class="fas fa-check-circle"></i> Hired</span>
+                  {% elif status == 'Rejected' %}<span class="status-badge rejected"><i class="fas fa-times-circle"></i> Rejected</span>
+                  {% elif status == 'Approved' %}<span class="status-badge approved"><i class="fas fa-thumbs-up"></i> Approved</span>
+                  {% endif %}
+                {% endwith %}
+              {% else %}
+                <a href="{% url 'apply_job' job.id %}" class="apply-btn">Apply Now <i class="fas fa-arrow-right"></i></a>
+              {% endif %}
+            {% else %}
+              <a href="{% url 'signin_register' %}?next={% url 'apply_job' job.id %}" class="apply-btn">Sign in to Apply <i class="fas fa-sign-in-alt"></i></a>
+            {% endif %}
+          </div>
+        </div>
         {% endfor %}
 
       {% else %}
@@ -1043,7 +366,7 @@
       <a href="{% url 'contact' %}">Contact</a>
       <a href="{% url 'about' %}">About</a>
     </div>
-    <p>© 2025 BlueHire</p>
+    <p>&copy; 2025 BlueHire</p>
   </footer>
 
 </body>

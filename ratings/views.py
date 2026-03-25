@@ -82,7 +82,7 @@ def rate_employer(request, application_id):
         Application,
         pk=application_id,
         applicant=jobseeker,
-        status='Completed',
+        status__in=['Completed', 'Not Completed'],
     )
     employer = application.job.employer
     already_rated = Rating.objects.filter(

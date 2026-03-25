@@ -315,7 +315,7 @@
         <a href="{% url 'view_job_details' app.job.id %}" class="btn-details">
           <i class="fas fa-info-circle"></i> View Details
         </a>
-        {% if app.status == "Completed" %}
+        {% if app.status == "Completed" or app.status == "Not Completed" %}
           {% if app.existing_rating %}
             <span class="rating-stars">
               {% for i in "12345" %}

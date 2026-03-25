@@ -261,10 +261,13 @@ def view_job_details(request, job_id):
     from django.db.models import Count, Q
 
     job.total_applicants = Application.objects.filter(job=job).count()
-    job.hired_count = Application.objects.filter(job=job, status="Hired").count()
+    job.hired_count = Application.objects.filter(
+        job=job, status__in=["Hired", "Completed", "Not Completed"]
+    ).count()
 
     has_applied = False
     application_status = None
+    missing_docs = False
 
     if hasattr(request.user, 'role') and request.user.role == 'JobSeeker':
         try:
@@ -274,13 +277,15 @@ def view_job_details(request, job_id):
             if application:
                 has_applied = True
                 application_status = application.status
+            missing_docs = not (jobseeker.barangay_clearance and jobseeker.nbi_clearance and jobseeker.police_clearance)
         except Exception:
-            pass
+            missing_docs = True
 
     return render(request, "core/view_job_details.html", {
         "job": job,
         "has_applied": has_applied,
         "application_status": application_status,
+        "missing_docs": missing_docs,
     })
 
 @login_required
